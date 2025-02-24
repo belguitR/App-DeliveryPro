@@ -1,0 +1,39 @@
+# Complete list of all available properties: https://docs.upsun.com/create-apps/app-reference.html
+applications:
+  api:
+    # Application source code directory
+    source:
+      root: "/backend"
+      
+    type: "java:21"
+    
+    variables:
+      env:
+        MAVEN_VERSION: 4.0.0
+
+    web:
+      commands:
+        start: java -jar $JAVA_OPTS server/target/server-1.0-SNAPSHOT.jar --server.port=$PORT
+
+    hooks:
+      build: |
+        set -eux
+        mvn clean package
+          
+    relationships:
+      postgresql:
+
+services:
+  # The name of the service container. Must be unique within a project.
+  postgresql:
+    type: postgresql:16
+
+routes:
+  "https://{default}/":
+    type: upstream
+    upstream: "api:http"
+  # A basic redirect definition
+  # More information: https://docs.upsun.com/define-routes.html#basic-redirect-definition
+  "https://www.{default}":
+    type: redirect
+    to: "https://{default}/"
