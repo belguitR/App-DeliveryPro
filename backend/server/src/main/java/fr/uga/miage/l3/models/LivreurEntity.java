@@ -2,13 +2,13 @@ package fr.uga.miage.l3.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -30,4 +30,6 @@ public class LivreurEntity extends EmployeEntity {
     @ManyToOne
     @JoinColumn(name = "equipe_livreur_id")
     private EquipeLivreurEntity equipeLivreur;
+
+    private boolean affecte;
 }

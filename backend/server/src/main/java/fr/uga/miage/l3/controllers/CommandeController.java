@@ -26,7 +26,6 @@ public class CommandeController {
     // Récupère les commandes associées à une tournée donnée
     @GetMapping("/tournee/{idTournee}")
     public ResponseEntity<List<CommandeEntity>> getCommandesByTournee(@PathVariable Integer idTournee) {
-        // On suppose ici que la méthode findByTourneeNumTournee est définie dans CommandeRepository
         List<CommandeEntity> commandes = commandeRepository.findByTourneeNumTournee(idTournee);
         return ResponseEntity.ok(commandes);
     }
