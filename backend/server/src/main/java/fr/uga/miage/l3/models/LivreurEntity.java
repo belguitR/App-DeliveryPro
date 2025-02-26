@@ -1,49 +1,27 @@
 package fr.uga.miage.l3.models;
 
-
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Date;
 
-import lombok.*;
-
 @Entity
-@Setter
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class LivreurEntity {
-    @Id
-    @Column(nullable = false)
-    private String idEmploye;
-
-    @Column(nullable = false)
-    private String nom;
-
-    @Column(nullable = false)
-    private String prenom;
-
-    private String photoURL;
-
-    @Column(nullable = false)
-    private String telephone;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date dateNaissance;
-
-    @OneToOne
-    @JoinColumn(name = "disponibilite_id")
-    private AgendaEntity disponibilite;
+@EqualsAndHashCode(callSuper = true)
+@Table(name = "livreur")
+public class LivreurEntity extends EmployeEntity {
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateExpirationPermis;
+
+    @OneToOne
+    @JoinColumn(name = "disponibilite_id")
+    private AgendaEntity disponibilite;
 
     @ManyToOne
     @JoinColumn(name = "entrepot_id")

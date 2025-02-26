@@ -15,6 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "creneau")
 public class CreneauEntity {
     @Id
     @Column(nullable = false)

@@ -13,6 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "commande")
 public class CommandeEntity {
     @Id
     @Column(nullable = false)

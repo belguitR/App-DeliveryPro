@@ -1,10 +1,7 @@
 package fr.uga.miage.l3.models;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.Set;
 import lombok.*;
@@ -16,6 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "type_camion")
 public class TypeCamionEntity {
     @Id
     @Column(nullable = false)

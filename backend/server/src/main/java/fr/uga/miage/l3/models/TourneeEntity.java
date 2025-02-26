@@ -16,6 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "tournee")
 public class TourneeEntity {
     @Id
     @Column(nullable = false)

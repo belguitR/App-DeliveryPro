@@ -14,6 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "client")
 public class ClientEntity {
     @Id
     @Column(nullable = false)

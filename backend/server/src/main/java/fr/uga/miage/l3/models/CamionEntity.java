@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Table(name = "camion")
 public class CamionEntity {
     @Id
     @Column(nullable = false)
