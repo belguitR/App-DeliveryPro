@@ -26,10 +26,10 @@ public abstract class EmployeEntity {
 
     private String photoURL;
 
-    @Column(nullable = false)
+
     private String telephone;
 
-    @Column(nullable = false)
+
     private String email;
 
     @Column(nullable = false)
