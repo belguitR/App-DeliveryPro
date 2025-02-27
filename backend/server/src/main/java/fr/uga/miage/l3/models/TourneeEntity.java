@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.models;
 
 
+import fr.uga.miage.l3.enums.EtatTournee;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -49,4 +50,8 @@ public class TourneeEntity {
             inverseJoinColumns = @JoinColumn(name = "client_id")
     )
     private List<ClientEntity> clients;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EtatTournee etat;
 }

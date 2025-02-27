@@ -32,4 +32,5 @@ public class LivreurEntity extends EmployeEntity {
     private EquipeLivreurEntity equipeLivreur;
 
     private boolean affecte;
+    private boolean aPermis;
 }

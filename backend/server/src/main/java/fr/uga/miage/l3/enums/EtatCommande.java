@@ -2,7 +2,7 @@ package fr.uga.miage.l3.enums;
 
 public enum EtatCommande {
     OUVERTE,
-    PLANIFIREE,
+    PLANIFIEE,
     EN_LIVRAISON,
     LIVREE
 }

@@ -1,7 +1,8 @@
-package fr.uga.miage.l3.controller;
+package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
-import fr.uga.miage.l3.repository.EquipeLivreurRepository;
+import fr.uga.miage.l3.models.LivreurEntity;
+import fr.uga.miage.l3.services.EquipeLivreurService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,32 +13,36 @@ import java.util.List;
 @RequestMapping("/api/equipes")
 public class EquipeLivreurController {
 
-    private final EquipeLivreurRepository equipeLivreurRepository;
+    private final EquipeLivreurService equipeLivreurService;
 
-    public EquipeLivreurController(EquipeLivreurRepository equipeLivreurRepository) {
-        this.equipeLivreurRepository = equipeLivreurRepository;
+    public EquipeLivreurController(EquipeLivreurService equipeLivreurService) {
+        this.equipeLivreurService = equipeLivreurService;
     }
 
     // Récupère toutes les équipes de livreurs
     @GetMapping
     public ResponseEntity<List<EquipeLivreurEntity>> getAllEquipes() {
-        return ResponseEntity.ok(equipeLivreurRepository.findAll());
+        return ResponseEntity.ok(equipeLivreurService.getAllEquipes());
     }
 
     // Crée une nouvelle équipe de livreurs
     @PostMapping
-    public ResponseEntity<EquipeLivreurEntity> createEquipe(@RequestBody EquipeLivreurEntity equipe) {
-        EquipeLivreurEntity saved = equipeLivreurRepository.save(equipe);
+    public ResponseEntity<EquipeLivreurEntity> createEquipe(@RequestBody List<LivreurEntity> livreurs, @RequestParam Integer numEquipe) {
+        EquipeLivreurEntity saved = equipeLivreurService.createEquipeLivreur(livreurs, numEquipe);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // Met à jour une équipe existante identifiée par son id
-    @PutMapping("/{idEquipe}")
-    public ResponseEntity<EquipeLivreurEntity> updateEquipe(@PathVariable Integer idEquipe, @RequestBody EquipeLivreurEntity equipe) {
-        if (!equipeLivreurRepository.existsById(idEquipe)) {
-            return ResponseEntity.notFound().build();
-        }
-        equipe.setNumEquipe(idEquipe);
-        return ResponseEntity.ok(equipeLivreurRepository.save(equipe));
+    // Affecte une tournée à une équipe
+    @PutMapping("/{idEquipe}/affecter-tournee")
+    public ResponseEntity<Void> affecterTournee(@PathVariable Integer idEquipe) {
+        equipeLivreurService.affecterTournee(idEquipe);
+        return ResponseEntity.ok().build();
+    }
+
+    // Libère une équipe de livreurs
+    @PutMapping("/{idEquipe}/liberer")
+    public ResponseEntity<Void> libererEquipe(@PathVariable Integer idEquipe) {
+        equipeLivreurService.libererEquipe(idEquipe);
+        return ResponseEntity.ok().build();
     }
 }

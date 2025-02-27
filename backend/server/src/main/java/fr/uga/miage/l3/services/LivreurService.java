@@ -54,7 +54,14 @@ public class LivreurService {
      * Vérifie que la date de naissance correspond à un âge >= 18 ans.
      */
     private boolean isAtLeast18(Date dateNaissance) {
-        return true;
+        if (dateNaissance == null) {
+            return false;
+        }
+
+        LocalDate birthDate = dateNaissance.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        return Period.between(birthDate, today).getYears() >= 18;
     }
 }
 

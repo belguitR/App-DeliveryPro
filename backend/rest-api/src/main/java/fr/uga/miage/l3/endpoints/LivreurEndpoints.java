@@ -30,4 +30,3 @@ public interface LivreurEndpoints {
     LivreurDTO updateLivreur(@PathVariable String idLivreur, @RequestBody LivreurDTO livreur);
 }
 
-
