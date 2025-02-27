@@ -1,55 +1,66 @@
 package fr.uga.miage.l3.controllers;
 
+import fr.uga.miage.l3.dto.LivreurDTO;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.services.LivreurService;
+import fr.uga.miage.l3.mappers.LivreurMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livreur")
 public class LivreurController {
 
     private final LivreurService livreurService;
+    private final LivreurMapper livreurMapper;
 
-    public LivreurController(LivreurService livreurService) {
+    public LivreurController(LivreurService livreurService, LivreurMapper livreurMapper) {
         this.livreurService = livreurService;
+        this.livreurMapper = livreurMapper;
     }
 
     /**
      * Récupère tous les livreurs
      */
     @GetMapping
-    public ResponseEntity<List<LivreurEntity>> getAllLivreurs() {
+    public ResponseEntity<List<LivreurDTO>> getAllLivreurs() {
         List<LivreurEntity> livreurs = livreurService.getAllLivreurs();
-        return ResponseEntity.ok(livreurs);
+        List<LivreurDTO> livreurDTOs = livreurs.stream()
+                .map(livreurMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(livreurDTOs);
     }
 
     /**
      * Crée un nouveau livreur
      */
     @PostMapping
-    public ResponseEntity<LivreurEntity> createLivreur(@RequestBody LivreurEntity livreur) {
-        LivreurEntity saved = livreurService.createLivreur(livreur);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<LivreurDTO> createLivreur(@RequestBody LivreurDTO livreurDTO) {
+        LivreurEntity livreurEntity = livreurMapper.fromDTO(livreurDTO);
+        LivreurEntity saved = livreurService.createLivreur(livreurEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(livreurMapper.toDTO(saved));
     }
 
     /**
      * Met à jour un livreur existant identifié par son id
      */
     @PutMapping("/{idLivreur}")
-    public ResponseEntity<LivreurEntity> updateLivreur(@PathVariable String idLivreur,
-                                                       @RequestBody LivreurEntity livreur) {
+    public ResponseEntity<LivreurDTO> updateLivreur(@PathVariable String idLivreur,
+                                                    @RequestBody LivreurDTO livreurDTO) {
         try {
-            LivreurEntity updated = livreurService.updateLivreur(idLivreur, livreur);
-            return ResponseEntity.ok(updated);
+            LivreurEntity livreurEntity = livreurMapper.fromDTO(livreurDTO);
+            LivreurEntity updated = livreurService.updateLivreur(idLivreur, livreurEntity);
+            return ResponseEntity.ok(livreurMapper.toDTO(updated));
         } catch (RuntimeException ex) {
             // Si le livreur n'existe pas, on renvoie un 404
             return ResponseEntity.notFound().build();
         }
     }
 }
+
 
 

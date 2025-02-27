@@ -1,0 +1,28 @@
+package fr.uga.miage.l3.mappers;
+
+import fr.uga.miage.l3.dto.TourneeDTO;
+import fr.uga.miage.l3.models.TourneeEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import java.util.stream.Collectors;
+
+@Mapper(componentModel = "spring", imports = {Collectors.class})
+public interface TourneeMapper {
+
+    @Mapping(source = "numTournee", target = "numTournee")
+    @Mapping(source = "date", target = "date")
+    @Mapping(source = "distanceAParcourir", target = "distanceAParcourir")
+    @Mapping(source = "montant", target = "montant")
+    @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
+    @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
+    @Mapping(source = "etat", target = "etat")
+    @Mapping(source = "equipeLivreur.numEquipe", target = "equipeLivreurId")
+    @Mapping(expression = "java(entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))", target = "commandes")
+    TourneeDTO toDTO(TourneeEntity entity);
+
+    @Mapping(target = "equipeLivreur", ignore = true)
+    @Mapping(target = "commandes", ignore = true)
+    @Mapping(target = "planificateur", ignore = true)
+    @Mapping(target = "clients", ignore = true)
+    TourneeEntity fromDTO(TourneeDTO dto);
+}

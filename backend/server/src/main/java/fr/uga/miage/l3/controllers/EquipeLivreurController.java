@@ -1,35 +1,44 @@
 package fr.uga.miage.l3.controllers;
 
+import fr.uga.miage.l3.dto.EquipeLivreurDTO;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.services.EquipeLivreurService;
+import fr.uga.miage.l3.mappers.EquipeLivreurMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/equipes")
 public class EquipeLivreurController {
 
     private final EquipeLivreurService equipeLivreurService;
+    private final EquipeLivreurMapper equipeLivreurMapper;
 
-    public EquipeLivreurController(EquipeLivreurService equipeLivreurService) {
+    public EquipeLivreurController(EquipeLivreurService equipeLivreurService, EquipeLivreurMapper equipeLivreurMapper) {
         this.equipeLivreurService = equipeLivreurService;
+        this.equipeLivreurMapper = equipeLivreurMapper;
     }
 
     // Récupère toutes les équipes de livreurs
     @GetMapping
-    public ResponseEntity<List<EquipeLivreurEntity>> getAllEquipes() {
-        return ResponseEntity.ok(equipeLivreurService.getAllEquipes());
+    public ResponseEntity<List<EquipeLivreurDTO>> getAllEquipes() {
+        List<EquipeLivreurEntity> entities = equipeLivreurService.getAllEquipes();
+        List<EquipeLivreurDTO> dtos = entities.stream()
+                .map(equipeLivreurMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     // Crée une nouvelle équipe de livreurs
     @PostMapping
-    public ResponseEntity<EquipeLivreurEntity> createEquipe(@RequestBody List<LivreurEntity> livreurs, @RequestParam Integer numEquipe) {
+    public ResponseEntity<EquipeLivreurDTO> createEquipe(@RequestBody List<LivreurEntity> livreurs, @RequestParam Integer numEquipe) {
         EquipeLivreurEntity saved = equipeLivreurService.createEquipeLivreur(livreurs, numEquipe);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(equipeLivreurMapper.toDTO(saved));
     }
 
     // Affecte une tournée à une équipe

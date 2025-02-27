@@ -1,13 +1,13 @@
-/*package fr.uga.miage.l3.mappers;
+package fr.uga.miage.l3.mappers;
 
 import fr.uga.miage.l3.dto.LivreurDTO;
 import fr.uga.miage.l3.models.LivreurEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.stream.Collectors;
 
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = {Collectors.class})
 public interface LivreurMapper {
 
     @Mapping(source = "idEmploye", target = "idEmploye")
@@ -24,5 +24,5 @@ public interface LivreurMapper {
     @Mapping(source = "dateExpirationPermis", target = "dateExpirationPermis")
     LivreurEntity fromDTO(LivreurDTO dto);
 }
-*/
+
 
