@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.dto.LivreurDTO;
+import fr.uga.miage.l3.endpoints.LivreurEndpoints;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.services.LivreurService;
 import fr.uga.miage.l3.mappers.LivreurMapper;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livreur")
-public class LivreurController {
+public class LivreurController implements LivreurEndpoints {
 
     private final LivreurService livreurService;
     private final LivreurMapper livreurMapper;

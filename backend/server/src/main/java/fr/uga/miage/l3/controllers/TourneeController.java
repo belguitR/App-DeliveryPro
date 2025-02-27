@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.dto.TourneeDTO;
+import fr.uga.miage.l3.endpoints.TourneeEndpoints;
 import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.services.TourneeService;
 import fr.uga.miage.l3.mappers.TourneeMapper;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tournee")
-public class TourneeController {
+public class TourneeController implements TourneeEndpoints {
 
     private final TourneeService tourneeService;
     private final TourneeMapper tourneeMapper;
