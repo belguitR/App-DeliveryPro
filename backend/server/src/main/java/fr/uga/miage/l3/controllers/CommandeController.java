@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/commandes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CommandeController {
 
     private final CommandeService commandeService;
@@ -48,10 +49,17 @@ public class CommandeController {
     public ResponseEntity<CommandeDTO> updateCommande(@PathVariable String reference,
                                                       @RequestBody CommandeDTO commandeDTO) {
         try {
+            System.out.println("Received update request for reference: " + reference);
+            System.out.println("Request body: " + commandeDTO);
+
             CommandeEntity commandeEntity = commandeMapper.fromDTO(commandeDTO);
             CommandeEntity updated = commandeService.updateCommande(reference, commandeEntity);
-            return ResponseEntity.ok(commandeMapper.toDTO(updated));
+            CommandeDTO responseDTO = commandeMapper.toDTO(updated);
+
+            System.out.println("Sending response: " + responseDTO);
+            return ResponseEntity.ok(responseDTO);
         } catch (RuntimeException ex) {
+            System.err.println("Error updating commande: " + ex.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

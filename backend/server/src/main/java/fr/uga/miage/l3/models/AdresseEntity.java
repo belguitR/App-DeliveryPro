@@ -26,8 +26,8 @@ public class AdresseEntity {
     private String ville;
     @Column(nullable = false)
     private Integer codePostal;
-    private Integer latitude;
-    private Integer longitude;
+    private double latitude;
+    private double longitude;
 
 
 }

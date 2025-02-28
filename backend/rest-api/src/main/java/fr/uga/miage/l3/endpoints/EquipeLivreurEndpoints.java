@@ -36,4 +36,10 @@ public interface EquipeLivreurEndpoints {
      */
     @PutMapping("/{idEquipe}/liberer")
     ResponseEntity<Void> libererEquipe(@PathVariable Integer idEquipe);
+
+    @PutMapping("/{idEquipe}")
+    ResponseEntity<EquipeLivreurDTO> modifierEquipe(@PathVariable Integer idEquipe, @RequestBody List<LivreurDTO> livreurs);
+
+    @DeleteMapping("/{idEquipe}")
+    ResponseEntity<Void> suprimeEquipe(@PathVariable Integer idEquipe);
 }

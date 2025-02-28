@@ -31,9 +31,10 @@ public class ClientEntity {
 
     private String telephone;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "adresse_id")
     private AdresseEntity adresse;
+
 
     @OneToMany(mappedBy = "client")
     private Set<CommandeEntity> commandes;

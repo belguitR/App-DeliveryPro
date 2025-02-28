@@ -33,14 +33,31 @@ public class CommandeService {
         CommandeEntity commande = commandeRepository.findById(reference)
                 .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec la référence : " + reference));
 
-        // Mise à jour des champs
+        // Update all fields including nested objects
         commande.setEtat(commandeDetails.getEtat());
         commande.setDate(commandeDetails.getDate());
         commande.setHorairePreferable(commandeDetails.getHorairePreferable());
         commande.setDateLivre(commandeDetails.getDateLivre());
         commande.setDateLivraisonEstimee(commandeDetails.getDateLivraisonEstimee());
         commande.setMontantTotal(commandeDetails.getMontantTotal());
-        commande.setTournee(commandeDetails.getTournee());
+
+        // Update client information if present
+        if (commandeDetails.getClient() != null) {
+            commande.getClient().setEmail(commandeDetails.getClient().getEmail());
+            commande.getClient().setPrenom(commandeDetails.getClient().getPrenom());
+            commande.getClient().setNom(commandeDetails.getClient().getNom());
+            commande.getClient().setTelephone(commandeDetails.getClient().getTelephone());
+
+            // Update address if present
+            if (commandeDetails.getClient().getAdresse() != null) {
+                commande.getClient().getAdresse().setAdressePostal(commandeDetails.getClient().getAdresse().getAdressePostal());
+                commande.getClient().getAdresse().setComplementAdresse(commandeDetails.getClient().getAdresse().getComplementAdresse());
+                commande.getClient().getAdresse().setVille(commandeDetails.getClient().getAdresse().getVille());
+                commande.getClient().getAdresse().setCodePostal(commandeDetails.getClient().getAdresse().getCodePostal());
+                commande.getClient().getAdresse().setLatitude(commandeDetails.getClient().getAdresse().getLatitude());
+                commande.getClient().getAdresse().setLongitude(commandeDetails.getClient().getAdresse().getLongitude());
+            }
+        }
 
         CommandeEntity updatedCommande = commandeRepository.save(commande);
 

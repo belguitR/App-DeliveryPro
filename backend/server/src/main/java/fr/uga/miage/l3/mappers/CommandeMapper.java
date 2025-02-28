@@ -6,11 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.stream.Collectors;
-
-@Mapper(componentModel = "spring", imports = {Collectors.class})
+@Mapper(componentModel = "spring", uses = {ClientMapper.class})
 public interface CommandeMapper {
-
     CommandeMapper INSTANCE = Mappers.getMapper(CommandeMapper.class);
 
     @Mapping(source = "reference", target = "reference")

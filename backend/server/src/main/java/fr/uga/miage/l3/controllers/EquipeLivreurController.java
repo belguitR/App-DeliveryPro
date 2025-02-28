@@ -60,4 +60,17 @@ public class EquipeLivreurController {
         equipeLivreurService.libererEquipe(idEquipe);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{idEquipe}")
+    public ResponseEntity<EquipeLivreurDTO> modifierEquipe(@PathVariable Integer idEquipe,
+                                                           @RequestBody EquipeLivreurEntity equipeLivreur) {
+        EquipeLivreurEntity updated = equipeLivreurService.modifierEquipe(idEquipe, equipeLivreur);
+        return ResponseEntity.ok(equipeLivreurMapper.toDTO(updated));
+    }
+
+    @DeleteMapping("/{idEquipe}")
+    public ResponseEntity<Void> suprimeEquipe(@PathVariable Integer idEquipe) {
+        equipeLivreurService.suprimeEquipe(idEquipe);
+        return ResponseEntity.noContent().build();
+    }
 }

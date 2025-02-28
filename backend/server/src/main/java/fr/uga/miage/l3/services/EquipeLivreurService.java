@@ -62,4 +62,25 @@ public class EquipeLivreurService {
         equipeLivreur.setStatus(StatusEquipeLivreur.PRET);
         equipeLivreurRepository.save(equipeLivreur);
     }
+
+
+    @Transactional
+    public EquipeLivreurEntity modifierEquipe(Integer idEquipe, EquipeLivreurEntity equipeLivreur) {
+        EquipeLivreurEntity existingEquipe = equipeLivreurRepository.findById(idEquipe)
+                .orElseThrow(() -> new EntityNotFoundException("Équipe non trouvée avec le numéro : " + idEquipe));
+
+        existingEquipe.setLivreurs(equipeLivreur.getLivreurs());
+        existingEquipe.setNumEquipe(equipeLivreur.getNumEquipe());
+
+        return equipeLivreurRepository.save(existingEquipe);
+    }
+
+
+    @Transactional
+    public void suprimeEquipe(Integer idEquipe) {
+        if (!equipeLivreurRepository.existsById(idEquipe)) {
+            throw new EntityNotFoundException("Équipe non trouvée avec le numéro : " + idEquipe);
+        }
+        equipeLivreurRepository.deleteById(idEquipe);
+    }
 }
