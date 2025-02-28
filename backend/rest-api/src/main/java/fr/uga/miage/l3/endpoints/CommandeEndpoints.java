@@ -9,6 +9,7 @@ import java.util.List;
 
 @Tag(name = "Commande", description = "Endpoints pour gérer les commandes")
 @RequestMapping("/api/commandes")
+@CrossOrigin(origins = "http://localhost:4200")
 public interface CommandeEndpoints {
 
     /**

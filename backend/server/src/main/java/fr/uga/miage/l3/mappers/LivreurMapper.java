@@ -15,6 +15,12 @@ public interface LivreurMapper {
     @Mapping(source = "prenom", target = "prenom")
     @Mapping(source = "dateNaissance", target = "dateNaissance")
     @Mapping(source = "dateExpirationPermis", target = "dateExpirationPermis")
+    @Mapping(source = "photoURL", target = "photoURL")
+    @Mapping(source = "telephone", target = "telephone")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "affecte", target = "affecte")
+    @Mapping(source = "APermis", target = "APermis")
+    @Mapping(source = "entrepot", target = "entrepot")
     LivreurDTO toDTO(LivreurEntity entity);
 
     @Mapping(source = "idEmploye", target = "idEmploye")
@@ -22,6 +28,12 @@ public interface LivreurMapper {
     @Mapping(source = "prenom", target = "prenom")
     @Mapping(source = "dateNaissance", target = "dateNaissance")
     @Mapping(source = "dateExpirationPermis", target = "dateExpirationPermis")
+    @Mapping(source = "photoURL", target = "photoURL")
+    @Mapping(source = "telephone", target = "telephone")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "affecte", target = "affecte")
+    @Mapping(source = "APermis", target = "APermis")
+    @Mapping(source = "entrepot", target = "entrepot")
     LivreurEntity fromDTO(LivreurDTO dto);
 }
 

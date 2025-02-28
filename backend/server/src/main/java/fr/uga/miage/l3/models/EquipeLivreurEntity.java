@@ -25,11 +25,14 @@ public class EquipeLivreurEntity {
     @Column(nullable = false)
     private StatusEquipeLivreur status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agenda_id")
     private AgendaEntity agenda;
 
-    @OneToMany(mappedBy = "equipeLivreur")
+    @ManyToMany
+    @JoinTable(name = "equipe_livreur_livreur",
+            joinColumns = @JoinColumn(name = "equipe_livreur_id"),
+            inverseJoinColumns = @JoinColumn(name = "livreur_id"))
     private List<LivreurEntity> livreurs;
 
     @OneToMany(mappedBy = "equipeLivreur")

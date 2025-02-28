@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface EquipeLivreurRepository extends JpaRepository<EquipeLivreurEntity,Integer> {
 
+
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 @Tag(name = "EquipeLivreur", description = "Endpoints pour gérer les équipes de livreurs")
 @RequestMapping("/api/equipes")
+@CrossOrigin(origins = "http://localhost:4200")
 public interface EquipeLivreurEndpoints {
 
     /**

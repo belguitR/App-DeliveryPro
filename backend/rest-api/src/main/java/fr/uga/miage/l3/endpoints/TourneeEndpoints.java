@@ -9,6 +9,7 @@ import java.util.List;
 
 @Tag(name = "Tournee", description = "Endpoints pour gérer les tournées")
 @RequestMapping("/api/tournee")
+@CrossOrigin(origins = "http://localhost:4200")
 public interface TourneeEndpoints {
 
     /**

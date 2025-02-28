@@ -1,0 +1,116 @@
+[
+  {
+    "idEmploye": "jdd1",
+    "nom": "Morel",
+    "prenom": "Aline",
+    "telephone": "0612345678",
+    "photoURL": "https://randomuser.me/api/portraits/women/10.jpg",
+    "email": "abr@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd1",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": true,
+    "apermis": true
+  },
+  {
+    "idEmploye": "jdd2",
+    "nom": "Leclerc",
+    "prenom": "Bruno",
+    "telephone": "0687654321",
+    "photoURL": "https://randomuser.me/api/portraits/men/2.jpg",
+    "email": "bcl@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd2",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": true,
+    "apermis": true
+  },
+  {
+    "idEmploye": "jdd3",
+    "nom": "Morin",
+    "prenom": "Clara",
+    "telephone": "0678541234",
+    "photoURL": "https://randomuser.me/api/portraits/women/3.jpg",
+    "email": "cmr@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd3",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": true,
+    "apermis": true
+  },
+  {
+    "idEmploye": "jdd4",
+    "nom": "Gallet",
+    "prenom": "Denis",
+    "telephone": "0654987123",
+    "photoURL": "https://randomuser.me/api/portraits/men/4.jpg",
+    "email": "dgl@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd4",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": true,
+    "apermis": true
+  },
+  {
+    "idEmploye": "jdd5",
+    "nom": "Martin",
+    "prenom": "Élodie",
+    "telephone": "0609876543",
+    "photoURL": "https://randomuser.me/api/portraits/women/5.jpg",
+    "email": "emt@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd5",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": false,
+    "apermis": true
+  },
+  {
+    "idEmploye": "jdd6",
+    "nom": "Rolland",
+    "prenom": "Félix",
+    "telephone": "0667123456",
+    "photoURL": "https://randomuser.me/api/portraits/men/6.jpg",
+    "email": "fro@mobilis.fr",
+    "dateNaissance": "1990-01-01T00:00:00.000Z",
+    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
+    "disponibilite": {
+      "idAgenda": "agenda_jdd6",
+      "creneaux": []
+    },
+    "entrepot": {
+      "nom": "Grenis"
+    },
+    "affecte": false,
+    "apermis": true
+  }
+]

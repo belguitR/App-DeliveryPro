@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/equipes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EquipeLivreurController {
 
     private final EquipeLivreurService equipeLivreurService;
@@ -36,10 +37,15 @@ public class EquipeLivreurController {
 
     // Crée une nouvelle équipe de livreurs
     @PostMapping
-    public ResponseEntity<EquipeLivreurDTO> createEquipe(@RequestBody List<LivreurEntity> livreurs, @RequestParam Integer numEquipe) {
-        EquipeLivreurEntity saved = equipeLivreurService.createEquipeLivreur(livreurs, numEquipe);
-        return ResponseEntity.status(HttpStatus.CREATED).body(equipeLivreurMapper.toDTO(saved));
+    public ResponseEntity<EquipeLivreurDTO> createEquipe(@RequestBody EquipeLivreurEntity equipeLivreur) {
+        EquipeLivreurEntity saved = equipeLivreurService.createEquipeLivreur(
+                equipeLivreur.getLivreurs(),
+                equipeLivreur.getNumEquipe()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(equipeLivreurMapper.toDTO(saved));
     }
+
 
     // Affecte une tournée à une équipe
     @PutMapping("/{idEquipe}/affecter-tournee")

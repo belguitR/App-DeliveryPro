@@ -24,6 +24,24 @@ public class LivreurDTO {
     @Schema(description = "Date d'expiration du permis")
     private Date dateExpirationPermis;
 
+    @Schema(description = "URL de la photo du livreur")
+    private String photoURL;
+
+    @Schema(description = "Téléphone du livreur")
+    private String telephone;
+
+    @Schema(description = "Email du livreur")
+    private String email;
+
+    @Schema(description = "Statut d'affectation du livreur")
+    private boolean affecte;
+
+    @Schema(description = "Indique si le livreur possède un permis")
+    private boolean APermis;
+
+    @Schema(description = "Entrepôt associé au livreur")
+    private EntrepotDTO entrepot;
+
 
 }
 
