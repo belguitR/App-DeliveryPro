@@ -4,10 +4,14 @@ import fr.uga.miage.l3.dto.TourneeDTO;
 import fr.uga.miage.l3.models.TourneeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", imports = {Collectors.class})
 public interface TourneeMapper {
+
+    TourneeMapper INSTANCE = Mappers.getMapper(TourneeMapper.class);
 
     @Mapping(source = "numTournee", target = "numTournee")
     @Mapping(source = "date", target = "date")
@@ -16,16 +20,12 @@ public interface TourneeMapper {
     @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
     @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
     @Mapping(source = "etat", target = "etat")
-    @Mapping(source = "equipeLivreur.numEquipe", target = "equipeLivreurId")
-    @Mapping(
-            expression = "java(entity.getCommandes() == null ? (java.util.List<Integer>) null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))",
-            target = "commandes"
-    )
+    @Mapping(expression = "java(entity.getEquipeLivreur() == null ? null : entity.getEquipeLivreur().getNumEquipe())", target = "equipeLivreurId")
+    @Mapping(expression = "java(entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))", target = "commandesIds")
     TourneeDTO toDTO(TourneeEntity entity);
 
     @Mapping(target = "equipeLivreur", ignore = true)
     @Mapping(target = "commandes", ignore = true)
-    @Mapping(target = "planificateur", ignore = true)
     @Mapping(target = "clients", ignore = true)
     TourneeEntity fromDTO(TourneeDTO dto);
 }

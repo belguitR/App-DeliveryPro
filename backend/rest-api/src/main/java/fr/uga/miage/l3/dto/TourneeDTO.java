@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import fr.uga.miage.l3.enums.EtatTournee;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class TourneeDTO {
     @Schema(description = "Numéro unique de la tournée")
     private Integer numTournee;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     @Schema(description = "Date de la tournée")
     private Date date;
 
@@ -37,5 +39,5 @@ public class TourneeDTO {
     private Integer equipeLivreurId;
 
     @Schema(description = "Liste des références des commandes de la tournée")
-    private List<Integer> commandes;
+    private List<Integer> commandesIds;
 }

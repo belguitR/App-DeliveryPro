@@ -1,3 +1,4 @@
+// Java
 package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.dto.TourneeDTO;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tournee")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TourneeController implements TourneeEndpoints {
 
     private final TourneeService tourneeService;
@@ -24,7 +26,6 @@ public class TourneeController implements TourneeEndpoints {
         this.tourneeMapper = tourneeMapper;
     }
 
-    // Récupère toutes les tournées
     @GetMapping
     public ResponseEntity<List<TourneeDTO>> getAllTournees() {
         List<TourneeEntity> entities = tourneeService.getAllTournees();
@@ -34,15 +35,16 @@ public class TourneeController implements TourneeEndpoints {
         return ResponseEntity.ok(dtos);
     }
 
-    // Crée une nouvelle tournée
     @PostMapping
     public ResponseEntity<TourneeDTO> createTournee(@RequestBody TourneeDTO tourneeDTO) {
         TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
-        TourneeEntity saved = tourneeService.createTournee(tourneeEntity);
+        Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
+        // Changed from getCommandes() to getCommandesIds()
+        List<Integer> commandesIds = tourneeDTO.getCommandesIds();
+        TourneeEntity saved = tourneeService.createTournee(tourneeEntity, equipeLivreurId, commandesIds);
         return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
     }
 
-    // Met à jour une tournée existante identifiée par son id
     @PutMapping("/{idTournee}")
     public ResponseEntity<TourneeDTO> updateTournee(@PathVariable Integer idTournee, @RequestBody TourneeDTO tourneeDTO) {
         try {
@@ -54,7 +56,6 @@ public class TourneeController implements TourneeEndpoints {
         }
     }
 
-    // Récupère la tournée du jour pour un livreur donné
     @GetMapping("/livreur/{email}")
     public ResponseEntity<TourneeDTO> getTourneeDuJour(@PathVariable String email) {
         try {

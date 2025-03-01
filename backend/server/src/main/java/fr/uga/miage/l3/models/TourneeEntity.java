@@ -40,8 +40,8 @@ public class TourneeEntity {
     @JoinColumn(name = "equipe_livreur_id")
     private EquipeLivreurEntity equipeLivreur;
 
-    @OneToMany(mappedBy = "tournee")
-    private Set<CommandeEntity> commandes;
+    @OneToMany(mappedBy = "tournee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CommandeEntity> commandes;
 
     @ManyToMany
     @JoinTable(

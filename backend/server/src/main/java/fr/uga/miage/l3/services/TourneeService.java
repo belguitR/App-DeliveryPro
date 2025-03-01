@@ -1,19 +1,26 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.models.CommandeEntity;
+import fr.uga.miage.l3.models.EquipeLivreurEntity;
 import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
+import fr.uga.miage.l3.repository.CommandeRepository;
+import fr.uga.miage.l3.repository.EquipeLivreurRepository;
 import fr.uga.miage.l3.repository.TourneeRepository;
 import fr.uga.miage.l3.repository.LivreurRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +28,37 @@ public class TourneeService {
 
     private final TourneeRepository tourneeRepository;
     private final LivreurRepository livreurRepository;
+    private final EquipeLivreurRepository equipeLivreurRepository;
+    private final CommandeRepository commandeRepository;
 
     public List<TourneeEntity> getAllTournees() {
         return tourneeRepository.findAll();
     }
 
-    public TourneeEntity createTournee(TourneeEntity tournee) {
-        return tourneeRepository.save(tournee);
+    @Transactional
+    public TourneeEntity getTourneeWithCommandes(Integer numTournee) {
+        TourneeEntity tournee = tourneeRepository.findByNumTourneeWithCommandes(numTournee);
+        if(tournee == null){
+            throw new EntityNotFoundException("Tournee not found with id: " + numTournee);
+        }
+        // Force initialization in case the commandes list is lazy loaded
+        tournee.getCommandes().size();
+        return tournee;
     }
 
+    @Transactional
+    public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
+        EquipeLivreurEntity equipe = equipeLivreurRepository.findById(equipeLivreurId)
+                .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
+        tourneeEntity.setEquipeLivreur(equipe);
+
+        if (commandesIds != null && !commandesIds.isEmpty()) {
+            List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
+            tourneeEntity.setCommandes(commandes);
+        }
+
+        return tourneeRepository.save(tourneeEntity);
+    }
     @Transactional
     public TourneeEntity updateTournee(Integer idTournee, TourneeEntity tourneeDetails) {
         TourneeEntity tournee = tourneeRepository.findById(idTournee)

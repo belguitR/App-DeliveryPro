@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livreur")
+@CrossOrigin(origins = "http://localhost:4200")
 public class LivreurController implements LivreurEndpoints {
 
     private final LivreurService livreurService;
