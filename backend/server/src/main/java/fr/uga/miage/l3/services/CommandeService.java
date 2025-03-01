@@ -29,7 +29,7 @@ public class CommandeService {
     }
 
     @Transactional
-    public CommandeEntity updateCommande(String reference, CommandeEntity commandeDetails) {
+    public CommandeEntity updateCommande(Integer reference, CommandeEntity commandeDetails) {
         CommandeEntity commande = commandeRepository.findById(reference)
                 .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec la référence : " + reference));
 

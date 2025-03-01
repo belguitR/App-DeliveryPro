@@ -19,7 +19,7 @@ import java.util.Date;
 public class CommandeEntity {
     @Id
     @Column(nullable = false)
-    private String reference;
+    private Integer reference;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

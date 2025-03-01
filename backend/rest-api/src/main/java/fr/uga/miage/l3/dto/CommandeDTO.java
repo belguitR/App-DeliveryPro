@@ -12,7 +12,7 @@ import java.util.Date;
 @Schema(description = "Représente une commande pour l'API")
 public class CommandeDTO {
 
-    private String reference;
+    private Integer reference;
     private EtatCommande etat;
     private Date date;
     private Date horairePreferable;

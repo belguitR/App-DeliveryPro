@@ -17,7 +17,10 @@ public interface TourneeMapper {
     @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
     @Mapping(source = "etat", target = "etat")
     @Mapping(source = "equipeLivreur.numEquipe", target = "equipeLivreurId")
-    @Mapping(expression = "java(entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))", target = "commandes")
+    @Mapping(
+            expression = "java(entity.getCommandes() == null ? (java.util.List<Integer>) null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))",
+            target = "commandes"
+    )
     TourneeDTO toDTO(TourneeEntity entity);
 
     @Mapping(target = "equipeLivreur", ignore = true)

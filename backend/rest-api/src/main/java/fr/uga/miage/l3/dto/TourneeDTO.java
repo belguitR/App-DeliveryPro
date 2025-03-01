@@ -37,5 +37,5 @@ public class TourneeDTO {
     private Integer equipeLivreurId;
 
     @Schema(description = "Liste des références des commandes de la tournée")
-    private List<String> commandes;
+    private List<Integer> commandes;
 }

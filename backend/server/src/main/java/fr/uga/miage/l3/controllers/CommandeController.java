@@ -46,7 +46,7 @@ public class CommandeController {
 
     // Met à jour une commande existante identifiée par sa référence
     @PutMapping("/{reference}")
-    public ResponseEntity<CommandeDTO> updateCommande(@PathVariable String reference,
+    public ResponseEntity<CommandeDTO> updateCommande(@PathVariable Integer reference,
                                                       @RequestBody CommandeDTO commandeDTO) {
         try {
             System.out.println("Received update request for reference: " + reference);

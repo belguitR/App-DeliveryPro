@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommandeRepository extends JpaRepository<CommandeEntity, String> {
+public interface CommandeRepository extends JpaRepository<CommandeEntity, Integer> {
 
     List<CommandeEntity> findByTourneeNumTournee(Integer numTournee);
 }
