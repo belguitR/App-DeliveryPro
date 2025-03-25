@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,24 +48,35 @@ public class TourneeService {
         tournee.getCommandes().size();
         return tournee;
     }
-// Java - TourneeService.java
+@Transactional
+public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
+    EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
+            .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
+    tourneeEntity.setEquipeLivreur(equipe);
+
+    if (commandesIds != null && !commandesIds.isEmpty()) {
+        // Retrieve commandes without guarantee of order
+        List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
+        // Map commandes by id
+        Map<Integer, CommandeEntity> commandesMap = commandes.stream()
+                .collect(Collectors.toMap(CommandeEntity::getReference, Function.identity()));
+        // Reorder commandes according to commandesIds order
+        List<CommandeEntity> orderedCommandes = commandesIds.stream()
+                .map(commandesMap::get)
+                .collect(Collectors.toList());
+        // Set the tournee for each commande and update their status
+        orderedCommandes.forEach(commande -> {
+            commande.setTournee(tourneeEntity);
+            commande.setEtat(EtatCommande.PLANIFIEE);
+        });
+        tourneeEntity.setCommandes(orderedCommandes);
+    }
+
+    return tourneeRepository.save(tourneeEntity);
+}
+
+
     @Transactional
-    public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
-        EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
-                .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
-        tourneeEntity.setEquipeLivreur(equipe);
-
-        if (commandesIds != null && !commandesIds.isEmpty()) {
-            List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
-            for (CommandeEntity commande : commandes) {
-                commande.setTournee(tourneeEntity);
-                commande.setEtat(EtatCommande.PLANIFIEE); // updating the status to PLANIFIEE
-            }
-            tourneeEntity.setCommandes(commandes);
-        }
-
-        return tourneeRepository.save(tourneeEntity);
-    }    @Transactional
     public TourneeEntity updateTournee(Integer idTournee, TourneeEntity tourneeDetails) {
         TourneeEntity tournee = tourneeRepository.findByNumTournee(idTournee)
                 .orElseThrow(() -> new EntityNotFoundException("Tournée non trouvée avec l'ID : " + idTournee));
