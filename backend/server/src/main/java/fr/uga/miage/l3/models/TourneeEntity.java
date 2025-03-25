@@ -21,6 +21,7 @@ import lombok.*;
 public class TourneeEntity {
     @Id
     @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer numTournee;
 
     @Column(nullable = false)
@@ -41,6 +42,7 @@ public class TourneeEntity {
     private EquipeLivreurEntity equipeLivreur;
 
     @OneToMany(mappedBy = "tournee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderColumn(name = "commande_order")
     private List<CommandeEntity> commandes;
 
     @ManyToMany

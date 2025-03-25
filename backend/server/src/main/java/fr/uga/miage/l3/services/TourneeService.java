@@ -1,5 +1,6 @@
 package fr.uga.miage.l3.services;
 
+import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
@@ -45,10 +46,10 @@ public class TourneeService {
         tournee.getCommandes().size();
         return tournee;
     }
-
+// Java - TourneeService.java
     @Transactional
     public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
-        EquipeLivreurEntity equipe = equipeLivreurRepository.findById(equipeLivreurId)
+        EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
                 .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
         tourneeEntity.setEquipeLivreur(equipe);
 
@@ -56,16 +57,15 @@ public class TourneeService {
             List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
             for (CommandeEntity commande : commandes) {
                 commande.setTournee(tourneeEntity);
+                commande.setEtat(EtatCommande.PLANIFIEE); // updating the status to PLANIFIEE
             }
             tourneeEntity.setCommandes(commandes);
         }
 
-
         return tourneeRepository.save(tourneeEntity);
-    }
-    @Transactional
+    }    @Transactional
     public TourneeEntity updateTournee(Integer idTournee, TourneeEntity tourneeDetails) {
-        TourneeEntity tournee = tourneeRepository.findById(idTournee)
+        TourneeEntity tournee = tourneeRepository.findByNumTournee(idTournee)
                 .orElseThrow(() -> new EntityNotFoundException("Tournée non trouvée avec l'ID : " + idTournee));
 
         if (tourneeDetails.getDate() == null || tourneeDetails.getEquipeLivreur() == null) {

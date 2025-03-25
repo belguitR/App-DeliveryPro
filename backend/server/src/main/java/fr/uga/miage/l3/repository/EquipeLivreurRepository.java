@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface EquipeLivreurRepository extends JpaRepository<EquipeLivreurEntity,Integer> {
 
 
+
+    Optional<EquipeLivreurEntity> findByNumEquipe(Integer numEquipe);
+
 }
