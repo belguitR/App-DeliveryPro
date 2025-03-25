@@ -19,9 +19,6 @@ public class LivreurEntity extends EmployeEntity {
     @Temporal(TemporalType.DATE)
     private Date dateExpirationPermis;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "disponibilite_id")
-    private AgendaEntity disponibilite;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entrepot_id")

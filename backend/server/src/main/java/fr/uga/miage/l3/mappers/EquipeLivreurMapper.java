@@ -18,7 +18,5 @@ public interface EquipeLivreurMapper {
 
     @Mapping(target = "livreurs", ignore = true)
     @Mapping(target = "tournees", ignore = true)
-    @Mapping(target = "agenda", ignore = true)
     EquipeLivreurEntity fromDTO(EquipeLivreurDTO dto);
 }
-

@@ -4,7 +4,9 @@ package fr.uga.miage.l3.models;
 import fr.uga.miage.l3.enums.StatusEquipeLivreur;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import lombok.*;
 
@@ -25,9 +27,12 @@ public class EquipeLivreurEntity {
     @Column(nullable = false)
     private StatusEquipeLivreur status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "agenda_id")
-    private AgendaEntity agenda;
+
+
+    @ElementCollection
+    private Set<LocalDate> datesAffectes;
+
+
 
     @ManyToMany
     @JoinTable(name = "equipe_livreur_livreur",

@@ -54,8 +54,12 @@ public class TourneeService {
 
         if (commandesIds != null && !commandesIds.isEmpty()) {
             List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
+            for (CommandeEntity commande : commandes) {
+                commande.setTournee(tourneeEntity);
+            }
             tourneeEntity.setCommandes(commandes);
         }
+
 
         return tourneeRepository.save(tourneeEntity);
     }

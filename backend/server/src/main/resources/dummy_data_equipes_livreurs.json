@@ -2,19 +2,11 @@
   {
     "numEquipe": 1,
     "status": "PRET",
-    "agenda": {
-      "idAgenda": "agenda_T1",
-      "creneaux": []
-    },
     "livreursIds": ["jdd1", "jdd2"]
   },
   {
     "numEquipe": 2,
     "status": "EN_LIVRAISON",
-    "agenda": {
-      "idAgenda": "agenda_T2",
-      "creneaux": []
-    },
     "livreursIds": ["jdd3", "jdd4"]
   }
 ]

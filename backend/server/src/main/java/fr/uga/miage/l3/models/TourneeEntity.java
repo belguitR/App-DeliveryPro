@@ -54,4 +54,6 @@ public class TourneeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EtatTournee etat;
+
+
 }

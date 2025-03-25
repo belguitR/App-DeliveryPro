@@ -2,8 +2,6 @@ package fr.uga.miage.l3.dummyDataSeeder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.uga.miage.l3.models.AgendaEntity;
-import fr.uga.miage.l3.models.AdresseEntity;
 import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
@@ -73,10 +71,6 @@ public class DataSeeder implements CommandLineRunner {
                     // Convert status string to enum
                     equipe.setStatus(Enum.valueOf(fr.uga.miage.l3.enums.StatusEquipeLivreur.class, dto.getStatus()));
                     // Create AgendaEntity from DTO data (adjust as needed)
-                    equipe.setAgenda(new AgendaEntity(
-                            dto.getAgenda().getIdAgenda(),
-                            new HashSet<>((List<fr.uga.miage.l3.models.CreneauEntity>) dto.getAgenda().getCreneaux())
-                    ));
                     // Look up each LivreurEntity by ID
                     List<LivreurEntity> equipeLivreurs = new ArrayList<>();
                     for (String id : dto.getLivreursIds()) {

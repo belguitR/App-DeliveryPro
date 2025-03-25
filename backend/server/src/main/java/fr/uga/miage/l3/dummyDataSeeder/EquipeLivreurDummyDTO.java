@@ -10,6 +10,5 @@ import java.util.List;
 public class EquipeLivreurDummyDTO {
     private int numEquipe;
     private String status;
-    private AgendaDummyDTO agenda;
     private List<String> livreursIds;
 }

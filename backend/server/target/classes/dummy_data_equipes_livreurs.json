@@ -1,0 +1,12 @@
+[
+  {
+    "numEquipe": 1,
+    "status": "PRET",
+    "livreursIds": ["jdd1", "jdd2"]
+  },
+  {
+    "numEquipe": 2,
+    "status": "EN_LIVRAISON",
+    "livreursIds": ["jdd3", "jdd4"]
+  }
+]

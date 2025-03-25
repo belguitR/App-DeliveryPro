@@ -8,10 +8,6 @@
     "email": "abr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd1",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
@@ -27,10 +23,6 @@
     "email": "bcl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd2",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
@@ -46,10 +38,6 @@
     "email": "cmr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd3",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
@@ -65,10 +53,6 @@
     "email": "dgl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd4",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
@@ -84,10 +68,6 @@
     "email": "emt@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd5",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
@@ -103,10 +83,6 @@
     "email": "fro@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "disponibilite": {
-      "idAgenda": "agenda_jdd6",
-      "creneaux": []
-    },
     "entrepot": {
       "nom": "Grenis"
     },
