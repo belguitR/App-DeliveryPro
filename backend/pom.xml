@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Inheritance de Spring Boot Starter Parent -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.4</version>
 	</parent>
 
+	<groupId>fr.uga.miage.l3</groupId>
 	<artifactId>backend</artifactId>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
+	<name>Spring Boot Data JPA Sample</name>
+	<description>Spring Boot Data JPA Sample</description>
+
 	<modules>
 		<module>server</module>
 		<module>rest-api</module>
 	</modules>
-	<groupId>fr.uga.miage.l3</groupId>
-	<name>Spring Boot Data JPA Sample</name>
-	<description>Spring Boot Data JPA Sample</description>
-	<version>1.0-SNAPSHOT</version>
 
 	<properties>
+		<!-- Version de Lombok utilisée dans les modules -->
 		<lombok.version>1.18.30</lombok.version>
+		<!-- Versions du compilateur Java -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Versions pour Swagger et SpringDoc -->
 		<springFoxSwagger.version>3.0.0</springFoxSwagger.version>
 		<swagger-annotation.version>1.6.14</swagger-annotation.version>
 		<springDoc.version>1.8.0</springDoc.version>
@@ -30,21 +39,25 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- Gestion de la version de springfox-swagger-ui -->
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
 				<version>${springFoxSwagger.version}</version>
 			</dependency>
+			<!-- Gestion de la version de swagger-annotations -->
 			<dependency>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger-annotation.version}</version>
 			</dependency>
+			<!-- Gestion de la version de springdoc-openapi-ui -->
 			<dependency>
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-ui</artifactId>
 				<version>${springDoc.version}</version>
 			</dependency>
+			<!-- Gestion de la version du driver PostgreSQL -->
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
