@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Inheritance du pom parent -->
+    <!-- Référence au POM parent -->
     <parent>
         <groupId>fr.uga.miage.l3</groupId>
         <artifactId>backend</artifactId>
@@ -16,25 +17,25 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- Spring Web -->
+        <!-- Pour exposer vos endpoints ou DTOs (si besoin de Spring Web) -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <!-- Swagger Annotations (la version est héritée du parent via dependencyManagement) -->
+        <!-- Swagger Annotations (les classes se trouvent dans io.swagger.core.v3:swagger-annotations) -->
         <dependency>
-            <groupId>io.swagger</groupId>
+            <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>
 
-        <!-- Springdoc OpenAPI UI (la version est héritée du parent via dependencyManagement) -->
+        <!-- Jackson Annotations (pour @JsonFormat, etc.) -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
 
-        <!-- Lombok (vous pouvez aussi hériter de la version si elle est définie dans le parent) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

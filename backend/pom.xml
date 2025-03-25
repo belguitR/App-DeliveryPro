@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- Inheritance de Spring Boot Starter Parent -->
+	<!-- Inheritance du Spring Boot Starter Parent -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -25,39 +26,31 @@
 	</modules>
 
 	<properties>
-		<!-- Version de Lombok utilisée dans les modules -->
 		<lombok.version>1.18.30</lombok.version>
-		<!-- Versions du compilateur Java -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Versions pour Swagger et SpringDoc -->
-		<springFoxSwagger.version>3.0.0</springFoxSwagger.version>
-		<swagger-annotation.version>1.6.14</swagger-annotation.version>
-		<springDoc.version>1.8.0</springDoc.version>
+		<!-- Pour OpenAPI 3, on utilise les annotations de io.swagger.core.v3 -->
+		<swagger-annotation.version>2.2.8</swagger-annotation.version>
+		<!-- Version de SpringDoc Starter adaptée à Spring Boot 3 -->
+		<springDoc.version>2.1.0</springDoc.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Gestion de la version de springfox-swagger-ui -->
+			<!-- Swagger Annotations pour OpenAPI 3 -->
 			<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-swagger-ui</artifactId>
-				<version>${springFoxSwagger.version}</version>
-			</dependency>
-			<!-- Gestion de la version de swagger-annotations -->
-			<dependency>
-				<groupId>io.swagger</groupId>
+				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger-annotation.version}</version>
 			</dependency>
-			<!-- Gestion de la version de springdoc-openapi-ui -->
+			<!-- SpringDoc Starter WebMVC UI pour générer Swagger UI -->
 			<dependency>
 				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-ui</artifactId>
+				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 				<version>${springDoc.version}</version>
 			</dependency>
-			<!-- Gestion de la version du driver PostgreSQL -->
+			<!-- PostgreSQL -->
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
