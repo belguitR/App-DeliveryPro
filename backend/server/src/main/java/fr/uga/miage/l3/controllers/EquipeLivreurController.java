@@ -5,6 +5,7 @@ import fr.uga.miage.l3.responses.EquipeLivreurDTO;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
 import fr.uga.miage.l3.services.EquipeLivreurService;
 import fr.uga.miage.l3.mappers.EquipeLivreurMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/equipes")
 @CrossOrigin(origins = "http://localhost:4200")
+@Tag(name = "EquipeLivreur", description = "Endpoints pour gérer les équipes de livreurs")
 public class EquipeLivreurController {
 
     private final EquipeLivreurService equipeLivreurService;

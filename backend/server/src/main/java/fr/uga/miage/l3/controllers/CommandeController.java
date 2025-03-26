@@ -4,6 +4,7 @@ import fr.uga.miage.l3.responses.CommandeDTO;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.services.CommandeService;
 import fr.uga.miage.l3.mappers.CommandeMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/commandes")
 @CrossOrigin(origins = "http://localhost:4200")
+@Tag(name = "Commande", description = "Endpoints pour gérer les commandes")
 public class CommandeController {
 
     private final CommandeService commandeService;

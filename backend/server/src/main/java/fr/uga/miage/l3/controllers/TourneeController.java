@@ -4,6 +4,7 @@ import fr.uga.miage.l3.mappers.TourneeMapper;
 import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.responses.TourneeDTO;
 import fr.uga.miage.l3.services.TourneeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/tournee")
 @CrossOrigin(origins = "http://localhost:4200")
+@Tag(name = "Tournée", description = "Endpoints pour gérer les Tournées")
 public class TourneeController {
 
     private final TourneeService tourneeService;

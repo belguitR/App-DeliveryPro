@@ -44,5 +44,5 @@ public interface TourneeEndpoints {
             @ApiResponse(responseCode = "404", description = "Aucune tournée trouvée pour aujourd'hui ou le livreur n'est pas affecté")
     })
     @GetMapping("/livreur/{email}")
-    ResponseEntity<TourneeDTO> getTourneeDuJour(@PathVariable String email);
+        ResponseEntity<TourneeDTO> getTourneeDuJour(@PathVariable String email);
 }
