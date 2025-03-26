@@ -21,6 +21,7 @@ public interface LivreurMapper {
     @Mapping(source = "affecte", target = "affecte")
     @Mapping(source = "APermis", target = "APermis")
     @Mapping(source = "entrepot", target = "entrepot")
+    @Mapping(source = "equipeLivreur", target = "equipeLivreur")
     LivreurDTO toDTO(LivreurEntity entity);
 
     @Mapping(source = "idEmploye", target = "idEmploye")

@@ -8,9 +8,7 @@
     "email": "abr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": true,
     "apermis": true
   },
@@ -23,9 +21,7 @@
     "email": "bcl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": true,
     "apermis": true
   },
@@ -38,9 +34,7 @@
     "email": "cmr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": true,
     "apermis": true
   },
@@ -53,9 +47,7 @@
     "email": "dgl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": true,
     "apermis": true
   },
@@ -68,9 +60,7 @@
     "email": "emt@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": false,
     "apermis": true
   },
@@ -83,9 +73,7 @@
     "email": "fro@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
     "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-    "entrepot": {
-      "nom": "Grenis"
-    },
+
     "affecte": false,
     "apermis": true
   }

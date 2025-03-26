@@ -24,7 +24,7 @@ public class LivreurEntity extends EmployeEntity {
     private EntrepotEntity entrepot;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "equipe_livreur_id")
     private EquipeLivreurEntity equipeLivreur;
 

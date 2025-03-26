@@ -1,15 +1,17 @@
 package fr.uga.miage.l3.mappers;
 
+import fr.uga.miage.l3.enums.EtatTournee;
 import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.responses.TourneeDTO;
+import java.util.Date;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-26T05:12:30+0100",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.6 (Oracle Corporation)"
+    date = "2025-03-26T20:28:53+0100",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.5 (Oracle Corporation)"
 )
 @Component
 public class TourneeMapperImpl implements TourneeMapper {
@@ -20,17 +22,26 @@ public class TourneeMapperImpl implements TourneeMapper {
             return null;
         }
 
-        TourneeDTO tourneeDTO = new TourneeDTO();
+        Integer numTournee = null;
+        Date date = null;
+        Integer distanceAParcourir = null;
+        Integer montant = null;
+        Integer tempsDeMontageTheorique = null;
+        Integer tempsDeMontageEffectif = null;
+        EtatTournee etat = null;
 
-        tourneeDTO.setNumTournee( entity.getNumTournee() );
-        tourneeDTO.setDate( entity.getDate() );
-        tourneeDTO.setDistanceAParcourir( entity.getDistanceAParcourir() );
-        tourneeDTO.setMontant( entity.getMontant() );
-        tourneeDTO.setTempsDeMontageTheorique( entity.getTempsDeMontageTheorique() );
-        tourneeDTO.setTempsDeMontageEffectif( entity.getTempsDeMontageEffectif() );
-        tourneeDTO.setEtat( entity.getEtat() );
+        numTournee = entity.getNumTournee();
+        date = entity.getDate();
+        distanceAParcourir = entity.getDistanceAParcourir();
+        montant = entity.getMontant();
+        tempsDeMontageTheorique = entity.getTempsDeMontageTheorique();
+        tempsDeMontageEffectif = entity.getTempsDeMontageEffectif();
+        etat = entity.getEtat();
 
-        tourneeDTO.setEquipeLivreurId( entity.getEquipeLivreur() == null ? null : entity.getEquipeLivreur().getNumEquipe() );
+        Integer equipeLivreurId = entity.getEquipeLivreur() == null ? null : entity.getEquipeLivreur().getNumEquipe();
+
+        TourneeDTO tourneeDTO = new TourneeDTO( numTournee, date, distanceAParcourir, montant, tempsDeMontageTheorique, tempsDeMontageEffectif, etat, equipeLivreurId );
+
         tourneeDTO.setCommandesIds( entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()) );
 
         return tourneeDTO;

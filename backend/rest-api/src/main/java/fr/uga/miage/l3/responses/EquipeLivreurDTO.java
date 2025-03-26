@@ -5,7 +5,9 @@ import fr.uga.miage.l3.enums.StatusEquipeLivreur;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Schema(description = "Représente une équipe de livreurs pour l'API")
@@ -16,6 +18,9 @@ public class EquipeLivreurDTO {
 
     @Schema(description = "Statut de l'équipe livreur")
     private StatusEquipeLivreur status;
+
+    @Schema(description = "Les dates affectés pour chaque équipe")
+    private Set<LocalDate> datesAffectes;
 
     @Schema(description = "Liste des identifiants des livreurs de l'équipe")
     private List<String> livreursIds;

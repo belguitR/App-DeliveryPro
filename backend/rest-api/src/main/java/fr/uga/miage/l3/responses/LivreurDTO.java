@@ -10,8 +10,7 @@ import java.util.Date;
 @Schema(description = "Représente un livreur pour l'API")
 public class LivreurDTO {
 
-    @NotNull
-    @Schema(description = "Identifiant unique du livreur (employé)", example = "304")
+    @Schema(description = "Identifiant unique du livreur (employé) commance par JDD", example = "jdd1")
     private String idEmploye;
 
     @NotNull
@@ -26,7 +25,6 @@ public class LivreurDTO {
     @Schema(description = "Date de naissance du livreur", example = "1985-06-15")
     private Date dateNaissance;
 
-    @NotNull
     @Schema(description = "Date d'expiration du permis du livreur", example = "2025-12-31")
     private Date dateExpirationPermis;
 
@@ -42,14 +40,16 @@ public class LivreurDTO {
     @Schema(description = "Email du livreur", example = "jean.dupont@example.com")
     private String email;
 
-    // Ces champs booléens peuvent rester sans @NotNull car leur valeur par défaut est false
     @Schema(description = "Indique si le livreur est affecté à une tournée", example = "true")
     private boolean affecte;
 
     @Schema(description = "Indique si le livreur possède un permis valide", example = "true")
     private boolean APermis;
 
-    @NotNull
     @Schema(description = "Entrepôt de rattachement du livreur")
     private EntrepotDTO entrepot;
+
+    @Schema(description = "Equipe associée au livreur")
+    private EquipeLivreurDTO equipeLivreur;
+
 }

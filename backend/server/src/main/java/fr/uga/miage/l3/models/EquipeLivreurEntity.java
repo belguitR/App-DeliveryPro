@@ -5,6 +5,7 @@ import fr.uga.miage.l3.enums.StatusEquipeLivreur;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,14 +35,25 @@ public class EquipeLivreurEntity {
 
 
 
-    @ManyToMany
-    @JoinTable(name = "equipe_livreur_livreur",
-            joinColumns = @JoinColumn(name = "equipe_livreur_id"),
-            inverseJoinColumns = @JoinColumn(name = "livreur_id"))
+    @OneToMany(mappedBy = "equipeLivreur", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LivreurEntity> livreurs;
+
 
     @OneToMany(mappedBy = "equipeLivreur")
     private List<TourneeEntity> tournees;
 
+
+    public void addLivreur(LivreurEntity livreur) {
+        if (!livreurs.contains(livreur)) {
+            livreurs.add(livreur);
+            livreur.setEquipeLivreur(this);
+        }
+    }
+
+    public void removeLivreur(LivreurEntity livreur) {
+        if (livreurs.remove(livreur)) {
+            livreur.setEquipeLivreur(null);
+        }
+    }
 
 }

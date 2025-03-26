@@ -3,6 +3,7 @@ package fr.uga.miage.l3.models;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 
@@ -16,7 +17,8 @@ import java.util.Date;
 public abstract class EmployeEntity {
 
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(generator = "jdd-generator")
+    @GenericGenerator(name = "jdd-generator", strategy = "fr.uga.miage.l3.generator.JddStringGenerator")
     private String idEmploye;
 
     @Column(nullable = false)

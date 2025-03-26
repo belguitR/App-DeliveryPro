@@ -6,7 +6,7 @@
   },
   {
     "numEquipe": 2,
-    "status": "EN_LIVRAISON",
+    "status": "PRET",
     "livreursIds": ["jdd3", "jdd4"]
   }
 ]

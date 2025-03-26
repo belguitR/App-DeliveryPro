@@ -17,6 +17,7 @@ fr\uga\miage\l3\services\EquipeLivreurService.class
 fr\uga\miage\l3\mappers\TourneeMapperImpl.class
 fr\uga\miage\l3\repository\EquipeLivreurRepository.class
 fr\uga\miage\l3\enums\TypeCreneau.class
+fr\uga\miage\l3\generator\JddStringGenerator.class
 fr\uga\miage\l3\services\TourneeService.class
 fr\uga\miage\l3\models\PlanificateurEntity$PlanificateurEntityBuilder.class
 fr\uga\miage\l3\models\LivreurEntity.class

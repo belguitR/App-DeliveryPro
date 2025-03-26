@@ -21,7 +21,7 @@ public class EntrepotEntity {
     @Column(nullable = false)
     private String nom;
 
-    @OneToMany(mappedBy = "entrepot")
+    @OneToMany(mappedBy = "entrepot", fetch = FetchType.EAGER)
     private Set<LivreurEntity> livreurs;
 
     @OneToMany(mappedBy = "entrepot")

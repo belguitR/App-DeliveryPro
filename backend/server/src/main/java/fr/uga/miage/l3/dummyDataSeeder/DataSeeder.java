@@ -54,10 +54,13 @@ public class DataSeeder implements CommandLineRunner {
             ClassPathResource resourceLivreurs = new ClassPathResource("dummy_data_livreurs.json");
             try (InputStream inputStream = resourceLivreurs.getInputStream()) {
                 List<LivreurEntity> livreurs = mapper.readValue(inputStream, new TypeReference<List<LivreurEntity>>() {});
+
+                // Persist livreurs if they are not already in the database
                 livreurRepository.saveAll(livreurs);
                 System.out.println("Livreurs dummy data seeded!");
             }
         }
+
 
         // --- Seed EquipeLivreurEntities ---
         if (equipeLivreurRepository.count() == 0) {
@@ -65,24 +68,35 @@ public class DataSeeder implements CommandLineRunner {
             try (InputStream inputStream = resourceEquipes.getInputStream()) {
                 List<EquipeLivreurDummyDTO> equipesDummy = mapper.readValue(inputStream, new TypeReference<List<EquipeLivreurDummyDTO>>() {});
                 List<EquipeLivreurEntity> equipesToSave = new ArrayList<>();
+
                 for (EquipeLivreurDummyDTO dto : equipesDummy) {
                     EquipeLivreurEntity equipe = new EquipeLivreurEntity();
                     equipe.setNumEquipe(dto.getNumEquipe());
-                    // Convert status string to enum
                     equipe.setStatus(Enum.valueOf(fr.uga.miage.l3.enums.StatusEquipeLivreur.class, dto.getStatus()));
-                    // Create AgendaEntity from DTO data (adjust as needed)
-                    // Look up each LivreurEntity by ID
+
+                    // Fetch livreurs using the ids
                     List<LivreurEntity> equipeLivreurs = new ArrayList<>();
                     for (String id : dto.getLivreursIds()) {
-                        livreurRepository.findById(id).ifPresent(equipeLivreurs::add);
+                        livreurRepository.findById(id).ifPresent(livreur -> {
+                            livreur.setEquipeLivreur(equipe); // Set the equipeLivreur reference
+                            equipeLivreurs.add(livreur);
+                        });
                     }
-                    equipe.setLivreurs(equipeLivreurs);
-                    equipesToSave.add(equipe);
+
+                    // Ensure livreurs are not empty before associating them
+                    if (!equipeLivreurs.isEmpty()) {
+                        equipe.setLivreurs(equipeLivreurs);
+                        equipesToSave.add(equipe);
+                        livreurRepository.saveAll(equipeLivreurs); // Save the livreurs with updated equipe association
+                    } else {
+                        System.out.println("Warning: No livreurs found for EquipeLivreur with numEquipe: " + dto.getNumEquipe());
+                    }
                 }
                 equipeLivreurRepository.saveAll(equipesToSave);
                 System.out.println("EquipesLivreurs dummy data seeded!");
             }
         }
+
 
         // --- Seed CommandeEntities ---
         // --- Seed CommandeEntities ---
