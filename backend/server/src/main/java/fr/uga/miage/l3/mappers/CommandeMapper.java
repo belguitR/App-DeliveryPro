@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.CommandeDTO;
+import fr.uga.miage.l3.responses.CommandeDTO;
 import fr.uga.miage.l3.models.CommandeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

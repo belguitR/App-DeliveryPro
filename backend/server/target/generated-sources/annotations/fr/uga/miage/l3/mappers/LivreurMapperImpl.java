@@ -1,16 +1,16 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.EntrepotDTO;
-import fr.uga.miage.l3.dto.LivreurDTO;
 import fr.uga.miage.l3.models.EntrepotEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
+import fr.uga.miage.l3.responses.EntrepotDTO;
+import fr.uga.miage.l3.responses.LivreurDTO;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-25T06:03:26+0100",
+    date = "2025-03-26T03:43:20+0100",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.6 (Oracle Corporation)"
 )
 @Component

@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.AdresseDTO;
+import fr.uga.miage.l3.responses.AdresseDTO;
 import fr.uga.miage.l3.models.AdresseEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

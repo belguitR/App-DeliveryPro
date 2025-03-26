@@ -1,4 +1,4 @@
-package fr.uga.miage.l3.dto;
+package fr.uga.miage.l3.responses;
 
 
 import fr.uga.miage.l3.enums.StatusEquipeLivreur;

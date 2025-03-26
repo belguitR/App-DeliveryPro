@@ -19,10 +19,10 @@ public class LivreurEntity extends EmployeEntity {
     @Temporal(TemporalType.DATE)
     private Date dateExpirationPermis;
 
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entrepot_id")
     private EntrepotEntity entrepot;
+
 
     @ManyToOne
     @JoinColumn(name = "equipe_livreur_id")

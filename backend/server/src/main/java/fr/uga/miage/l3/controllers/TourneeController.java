@@ -1,11 +1,10 @@
-// Java
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.dto.TourneeDTO;
-import fr.uga.miage.l3.endpoints.TourneeEndpoints;
-import fr.uga.miage.l3.models.TourneeEntity;
-import fr.uga.miage.l3.services.TourneeService;
 import fr.uga.miage.l3.mappers.TourneeMapper;
+import fr.uga.miage.l3.models.TourneeEntity;
+import fr.uga.miage.l3.responses.TourneeDTO;
+import fr.uga.miage.l3.services.TourneeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/tournee")
 @CrossOrigin(origins = "http://localhost:4200")
-public class TourneeController implements TourneeEndpoints {
+public class TourneeController {
 
     private final TourneeService tourneeService;
     private final TourneeMapper tourneeMapper;
@@ -39,20 +38,18 @@ public class TourneeController implements TourneeEndpoints {
     public ResponseEntity<TourneeDTO> createTournee(@RequestBody TourneeDTO tourneeDTO) {
         TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
         Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
-        // Changed from getCommandes() to getCommandesIds()
         List<Integer> commandesIds = tourneeDTO.getCommandesIds();
         TourneeEntity saved = tourneeService.createTournee(tourneeEntity, equipeLivreurId, commandesIds);
         return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
     }
 
-    @PutMapping("/{idTournee}")
-    public ResponseEntity<TourneeDTO> updateTournee(@PathVariable Integer idTournee, @RequestBody TourneeDTO tourneeDTO) {
+    @DeleteMapping("/{idTournee}")
+    public ResponseEntity<Void> deleteTournee(@PathVariable Integer idTournee) {
         try {
-            TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
-            TourneeEntity updated = tourneeService.updateTournee(idTournee, tourneeEntity);
-            return ResponseEntity.ok(tourneeMapper.toDTO(updated));
-        } catch (RuntimeException ex) {
-            return ResponseEntity.notFound().build();
+            tourneeService.deleteTournee(idTournee);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
         }
     }
 
@@ -61,8 +58,8 @@ public class TourneeController implements TourneeEndpoints {
         try {
             TourneeEntity tourneeEntity = tourneeService.getTourneeDuJourParLivreur(email);
             return ResponseEntity.ok(tourneeMapper.toDTO(tourneeEntity));
-        } catch (RuntimeException ex) {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

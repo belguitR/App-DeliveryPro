@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.EquipeLivreurDTO;
+import fr.uga.miage.l3.responses.EquipeLivreurDTO;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

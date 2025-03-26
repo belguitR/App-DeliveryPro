@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.dto.LivreurDTO;
+import fr.uga.miage.l3.responses.LivreurDTO;
 import fr.uga.miage.l3.endpoints.LivreurEndpoints;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.services.LivreurService;
@@ -51,14 +51,12 @@ public class LivreurController implements LivreurEndpoints {
      * Met à jour un livreur existant identifié par son id
      */
     @PutMapping("/{idLivreur}")
-    public ResponseEntity<LivreurDTO> updateLivreur(@PathVariable String idLivreur,
-                                                    @RequestBody LivreurDTO livreurDTO) {
+    public ResponseEntity<LivreurDTO> updateLivreur(@PathVariable String idLivreur, @RequestBody LivreurDTO livreurDTO) {
         try {
             LivreurEntity livreurEntity = livreurMapper.fromDTO(livreurDTO);
             LivreurEntity updated = livreurService.updateLivreur(idLivreur, livreurEntity);
             return ResponseEntity.ok(livreurMapper.toDTO(updated));
         } catch (RuntimeException ex) {
-            // Si le livreur n'existe pas, on renvoie un 404
             return ResponseEntity.notFound().build();
         }
     }

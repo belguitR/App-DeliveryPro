@@ -1,0 +1,55 @@
+package fr.uga.miage.l3.responses;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Date;
+
+@Data
+@Schema(description = "Représente un livreur pour l'API")
+public class LivreurDTO {
+
+    @NotNull
+    @Schema(description = "Identifiant unique du livreur (employé)", example = "304")
+    private String idEmploye;
+
+    @NotNull
+    @Schema(description = "Nom du livreur", example = "Dupont")
+    private String nom;
+
+    @NotNull
+    @Schema(description = "Prénom du livreur", example = "Jean")
+    private String prenom;
+
+    @NotNull
+    @Schema(description = "Date de naissance du livreur", example = "1985-06-15")
+    private Date dateNaissance;
+
+    @NotNull
+    @Schema(description = "Date d'expiration du permis du livreur", example = "2025-12-31")
+    private Date dateExpirationPermis;
+
+    @NotNull
+    @Schema(description = "URL de la photo du livreur", example = "http://example.com/photos/dupont.jpg")
+    private String photoURL;
+
+    @NotNull
+    @Schema(description = "Numéro de téléphone du livreur", example = "0601020304")
+    private String telephone;
+
+    @NotNull
+    @Schema(description = "Email du livreur", example = "jean.dupont@example.com")
+    private String email;
+
+    // Ces champs booléens peuvent rester sans @NotNull car leur valeur par défaut est false
+    @Schema(description = "Indique si le livreur est affecté à une tournée", example = "true")
+    private boolean affecte;
+
+    @Schema(description = "Indique si le livreur possède un permis valide", example = "true")
+    private boolean APermis;
+
+    @NotNull
+    @Schema(description = "Entrepôt de rattachement du livreur")
+    private EntrepotDTO entrepot;
+}

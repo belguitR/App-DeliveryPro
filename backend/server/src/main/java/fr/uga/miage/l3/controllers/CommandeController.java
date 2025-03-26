@@ -1,10 +1,9 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.dto.CommandeDTO;
+import fr.uga.miage.l3.responses.CommandeDTO;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.services.CommandeService;
 import fr.uga.miage.l3.mappers.CommandeMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

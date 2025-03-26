@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.ClientDTO;
+import fr.uga.miage.l3.responses.ClientDTO;
 import fr.uga.miage.l3.models.ClientEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

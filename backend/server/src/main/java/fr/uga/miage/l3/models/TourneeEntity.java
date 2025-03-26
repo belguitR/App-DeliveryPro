@@ -21,7 +21,6 @@ import lombok.*;
 public class TourneeEntity {
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer numTournee;
 
     @Column(nullable = false)

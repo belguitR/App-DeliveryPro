@@ -1,4 +1,4 @@
-package fr.uga.miage.l3.dto;
+package fr.uga.miage.l3.responses;
 
 import lombok.*;
 
@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AdresseDTO {
+
     private String adressePostal;
     private String complementAdresse;
     private String ville;

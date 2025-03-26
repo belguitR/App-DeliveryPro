@@ -1,6 +1,6 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.dto.TourneeDTO;
+import fr.uga.miage.l3.responses.TourneeDTO;
 import fr.uga.miage.l3.models.TourneeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,5 +27,6 @@ public interface TourneeMapper {
     @Mapping(target = "equipeLivreur", ignore = true)
     @Mapping(target = "commandes", ignore = true)
     @Mapping(target = "clients", ignore = true)
+    @Mapping(source = "numTournee", target = "numTournee")
     TourneeEntity fromDTO(TourneeDTO dto);
 }
