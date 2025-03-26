@@ -37,13 +37,24 @@ public class TourneeController {
     }
 
     @PostMapping
-    public ResponseEntity<TourneeDTO> createTournee(@RequestBody TourneeDTO tourneeDTO) {
-        TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
-        Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
-        List<Integer> commandesIds = tourneeDTO.getCommandesIds();
-        TourneeEntity saved = tourneeService.createTournee(tourneeEntity, equipeLivreurId, commandesIds);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
+    public ResponseEntity<?> createTournee(@RequestBody TourneeDTO tourneeDTO) {
+        try {
+            TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
+            Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
+            List<Integer> commandesIds = tourneeDTO.getCommandesIds();
+
+            TourneeEntity saved = tourneeService.createTournee(tourneeEntity, equipeLivreurId, commandesIds);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
+        } catch (IllegalArgumentException ex) {
+            // Si au moins une commande n'est pas OUVERTE
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (RuntimeException ex) {
+            // Si l'équipe n'existe pas ou autre problème
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
+
 
     @DeleteMapping("/{idTournee}")
     public ResponseEntity<Void> deleteTournee(@PathVariable Integer idTournee) {
