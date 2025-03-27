@@ -5,6 +5,8 @@ import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.services.CommandeService;
 import fr.uga.miage.l3.mappers.CommandeMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,6 @@ public class CommandeController {
         this.commandeMapper = commandeMapper;
     }
 
-    // Récupère toutes les commandes
     @GetMapping
     public ResponseEntity<List<CommandeDTO>> getAllCommandes() {
         List<CommandeEntity> commandes = commandeService.getAllCommandes();
@@ -35,7 +36,6 @@ public class CommandeController {
         return ResponseEntity.ok(dtos);
     }
 
-    // Récupère les commandes associées à une tournée donnée
     @GetMapping("/tournee/{idTournee}")
     public ResponseEntity<List<CommandeDTO>> getCommandesByTournee(@PathVariable Integer idTournee) {
         List<CommandeEntity> commandes = commandeService.getCommandesByTournee(idTournee);
@@ -45,23 +45,22 @@ public class CommandeController {
         return ResponseEntity.ok(dtos);
     }
 
-    // Met à jour une commande existante identifiée par sa référence
+
     @PutMapping("/{reference}")
-    public ResponseEntity<CommandeDTO> updateCommande(@PathVariable Integer reference,
-                                                      @RequestBody CommandeDTO commandeDTO) {
+    public ResponseEntity<?> updateCommande(@PathVariable Integer reference,
+                                            @RequestBody CommandeDTO commandeDTO) {
         try {
-            System.out.println("Received update request for reference: " + reference);
-            System.out.println("Request body: " + commandeDTO);
-
-            CommandeEntity commandeEntity = commandeMapper.fromDTO(commandeDTO);
-            CommandeEntity updated = commandeService.updateCommande(reference, commandeEntity);
-            CommandeDTO responseDTO = commandeMapper.toDTO(updated);
-
-            System.out.println("Sending response: " + responseDTO);
-            return ResponseEntity.ok(responseDTO);
-        } catch (RuntimeException ex) {
-            System.err.println("Error updating commande: " + ex.getMessage());
-            return ResponseEntity.notFound().build();
+            CommandeEntity entity = commandeMapper.fromDTO(commandeDTO);
+            CommandeEntity updated = commandeService.updateCommande(reference, entity);
+            return ResponseEntity.ok(commandeMapper.toDTO(updated));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la mise à jour");
         }
     }
+
 }

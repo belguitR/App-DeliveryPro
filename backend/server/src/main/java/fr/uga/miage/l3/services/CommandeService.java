@@ -2,8 +2,10 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.models.TourneeEntity;
+import fr.uga.miage.l3.repository.ClientRepository;
 import fr.uga.miage.l3.repository.CommandeRepository;
 import fr.uga.miage.l3.repository.TourneeRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +22,14 @@ public class CommandeService {
 
     private final CommandeRepository commandeRepository;
     private final TourneeRepository tourneeRepository;
+    private final ClientRepository clientRepository;
 
     public List<CommandeEntity> getAllCommandes() {
         return commandeRepository.findAll();
     }
 
     public List<CommandeEntity> getCommandesByTournee(Integer idTournee) {
-        return commandeRepository.findByTourneeNumTournee(idTournee);
+        return tourneeRepository.findByNumTourneeWithCommandes(idTournee).getCommandes();
     }
 
     @Transactional
@@ -33,7 +37,25 @@ public class CommandeService {
         CommandeEntity commande = commandeRepository.findById(reference)
                 .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec la référence : " + reference));
 
-        // Update all fields including nested objects
+        // Vérifier doublon (mêmes champs sauf référence)
+        List<CommandeEntity> commandes = commandeRepository.findAll();
+        for (CommandeEntity c : commandes) {
+            if (!c.getReference().equals(reference)
+                    && Objects.equals(c.getEtat(), commandeDetails.getEtat())
+                    && Objects.equals(c.getDate(), commandeDetails.getDate())
+                    && Objects.equals(c.getHorairePreferable(), commandeDetails.getHorairePreferable())
+                    && Objects.equals(c.getDateLivre(), commandeDetails.getDateLivre())
+                    && Objects.equals(c.getDateLivraisonEstimee(), commandeDetails.getDateLivraisonEstimee())
+                    && Objects.equals(c.getMontantTotal(), commandeDetails.getMontantTotal())) {
+                throw new IllegalArgumentException("Commande en doublons");
+            }
+        }
+
+        if (commandeDetails.getEtat() != EtatCommande.LIVREE && commandeDetails.getDateLivre() != null) {
+            throw new IllegalArgumentException("Impossible de définir une dateLivre si la commande n'est pas LIVREE");
+        }
+
+        // Mettre à jour les champs
         commande.setEtat(commandeDetails.getEtat());
         commande.setDate(commandeDetails.getDate());
         commande.setHorairePreferable(commandeDetails.getHorairePreferable());
@@ -41,22 +63,13 @@ public class CommandeService {
         commande.setDateLivraisonEstimee(commandeDetails.getDateLivraisonEstimee());
         commande.setMontantTotal(commandeDetails.getMontantTotal());
 
-        // Update client information if present
-        if (commandeDetails.getClient() != null) {
-            commande.getClient().setEmail(commandeDetails.getClient().getEmail());
-            commande.getClient().setPrenom(commandeDetails.getClient().getPrenom());
-            commande.getClient().setNom(commandeDetails.getClient().getNom());
-            commande.getClient().setTelephone(commandeDetails.getClient().getTelephone());
 
-            // Update address if present
-            if (commandeDetails.getClient().getAdresse() != null) {
-                commande.getClient().getAdresse().setAdressePostal(commandeDetails.getClient().getAdresse().getAdressePostal());
-                commande.getClient().getAdresse().setComplementAdresse(commandeDetails.getClient().getAdresse().getComplementAdresse());
-                commande.getClient().getAdresse().setVille(commandeDetails.getClient().getAdresse().getVille());
-                commande.getClient().getAdresse().setCodePostal(commandeDetails.getClient().getAdresse().getCodePostal());
-                commande.getClient().getAdresse().setLatitude(commandeDetails.getClient().getAdresse().getLatitude());
-                commande.getClient().getAdresse().setLongitude(commandeDetails.getClient().getAdresse().getLongitude());
-            }
+        if (commandeDetails.getClient() != null) {
+            String clientCode = commandeDetails.getClient().getCode();
+            ClientEntity existingClient = clientRepository.findById(clientCode)
+                    .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec le code : " + clientCode));
+
+            commande.setClient(existingClient);
         }
 
         CommandeEntity updatedCommande = commandeRepository.save(commande);

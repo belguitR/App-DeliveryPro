@@ -2,6 +2,7 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.enums.StatusEquipeLivreur;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
 import fr.uga.miage.l3.models.TourneeEntity;
@@ -19,9 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,69 +40,98 @@ public class TourneeService {
     @Transactional
     public TourneeEntity getTourneeWithCommandes(Integer numTournee) {
         TourneeEntity tournee = tourneeRepository.findByNumTourneeWithCommandes(numTournee);
-        if(tournee == null){
+        if (tournee == null) {
             throw new EntityNotFoundException("Tournee not found with id: " + numTournee);
         }
-        // Force initialization in case the commandes list is lazy loaded
         tournee.getCommandes().size();
         return tournee;
     }
+
     @Transactional
-    public TourneeEntity createTournee(TourneeEntity tourneeEntity,
-                                       Integer equipeLivreurId,
-                                       List<Integer> commandesIds) {
-        // 1. Vérifier que l'équipe existe
+    public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
+        // Generate a unique ID for the new Tournee
+        int newId = tourneeRepository.findAll().stream()
+                .map(TourneeEntity::getNumTournee)
+                .max(Integer::compareTo)
+                .orElse(0) + 1;
+        tourneeEntity.setNumTournee(newId);
+
+        // Retrieve the EquipeLivreur entity
         EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
                 .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
 
-        // Associer l'équipe à la tournée
-        tourneeEntity.setEquipeLivreur(equipe);
 
-        // 2. Si des commandesIds sont fournies, vérifier leur état
-        if (commandesIds != null && !commandesIds.isEmpty()) {
-            // Récupère toutes les commandes correspondantes aux IDs
-            List<CommandeEntity> commandes = commandeRepository.findAllById(commandesIds);
-
-            // Vérifier que chaque commande est en état OUVERTE
-            boolean hasInvalidCommand = commandes.stream()
-                    .anyMatch(cmd -> cmd.getEtat() != EtatCommande.OUVERTE);
-
-            if (hasInvalidCommand) {
-                // Si au moins une commande n'est pas OUVERTE, on rejette la création
-                throw new IllegalArgumentException("Une ou plusieurs commandes ne sont pas en état OUVERTE !");
-            }
-
-            // 3. Réordonner les commandes selon l'ordre des IDs
-            Map<Integer, CommandeEntity> commandesMap = commandes.stream()
-                    .collect(Collectors.toMap(CommandeEntity::getReference, Function.identity()));
-            List<CommandeEntity> orderedCommandes = commandesIds.stream()
-                    .map(commandesMap::get)
-                    .collect(Collectors.toList());
-
-            // 4. Associer la tournée à chaque commande
-            orderedCommandes.forEach(commande -> {
-                commande.setTournee(tourneeEntity);
-                // On met l'état à PLANIFIEE
-                commande.setEtat(EtatCommande.PLANIFIEE);
-            });
-            // Assigner la liste ordonnée à la tournée
-            tourneeEntity.setCommandes(orderedCommandes);
+        if (equipe.getStatus() != StatusEquipeLivreur.PRET) {
+            throw new IllegalStateException("L'équipe n'est pas prête");
         }
 
-        // 5. Sauvegarder la tournée
+        LocalDate tourneeDate = tourneeEntity.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        if (equipe.getDatesAffectes().contains(tourneeDate)) {
+            throw new IllegalStateException("L'équipe est déjà affectée à cette date");
+        }
+
+
+        Map<Integer, CommandeEntity> commandesMap = commandeRepository.findAllById(commandesIds).stream()
+                .collect(Collectors.toMap(CommandeEntity::getReference, Function.identity()));
+
+        if (commandesMap.size() != commandesIds.size()) {
+            throw new EntityNotFoundException("One or more Commande entities not found");
+        }
+
+        // garder l'ordre
+        List<CommandeEntity> orderedCommandes = commandesIds.stream()
+                .map(id -> {
+                    CommandeEntity cmd = commandesMap.get(id);
+                    if (cmd.getEtat() != EtatCommande.OUVERTE) {
+                        throw new IllegalArgumentException("Commande " + cmd.getReference() + " n'est pas OUVERTE");
+                    }
+                    cmd.setTournee(tourneeEntity);
+                    cmd.setEtat(EtatCommande.PLANIFIEE);
+                    return cmd;
+                })
+                .collect(Collectors.toList());
+
+        tourneeEntity.setCommandes(orderedCommandes);
+
+
+        tourneeEntity.setEquipeLivreur(equipe);
+        equipe.getDatesAffectes().add(tourneeDate);
+        equipe.setStatus(StatusEquipeLivreur.EN_LIVRAISON);
+
         return tourneeRepository.save(tourneeEntity);
     }
-
 
 
     @Transactional
     public void deleteTournee(Integer idTournee) {
         TourneeEntity tournee = tourneeRepository.findByNumTournee(idTournee)
                 .orElseThrow(() -> new EntityNotFoundException("Tournée non trouvée avec l'ID : " + idTournee));
+
+        if (tournee.getEtat() != EtatTournee.EN_ATTENTE) {
+            throw new IllegalStateException("Seules les tournées en attente peuvent être supprimées");
+        }
+
+
+        List<CommandeEntity> commandes = tournee.getCommandes();
+        commandes.forEach(cmd -> {
+            cmd.setEtat(EtatCommande.OUVERTE);
+            cmd.setTournee(null);
+            commandeRepository.save(cmd);
+        });
+        EquipeLivreurEntity equipe = tournee.getEquipeLivreur();
+        if (equipe != null) {
+            LocalDate tourneeDate = new java.sql.Date(tournee.getDate().getTime()).toLocalDate();
+            equipe.getDatesAffectes().remove(tourneeDate);
+            equipe.setStatus(StatusEquipeLivreur.PRET);
+        }
+
         tourneeRepository.delete(tournee);
     }
 
-    public TourneeEntity getTourneeDuJourParLivreur(String emailLivreur) {
+
+    public List<TourneeEntity> getTourneesParLivreur(String emailLivreur) {
         LivreurEntity livreur = livreurRepository.findByEmail(emailLivreur)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun livreur trouvé avec l'email : " + emailLivreur));
 
@@ -111,13 +139,99 @@ public class TourneeService {
             throw new EntityNotFoundException("Le livreur n'est pas affecté à une équipe.");
         }
 
-        LocalDate today = LocalDate.now();
-
-        Optional<TourneeEntity> tourneeOpt = tourneeRepository.findAll().stream()
-                .filter(tournee -> tournee.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(today)
-                        && tournee.getEquipeLivreur().equals(livreur.getEquipeLivreur()))
-                .findFirst();
-
-        return tourneeOpt.orElseThrow(() -> new EntityNotFoundException("Aucune tournée trouvée pour aujourd'hui."));
+        return tourneeRepository.findAll().stream()
+                .filter(t -> t.getEquipeLivreur() != null &&
+                        t.getEquipeLivreur().getNumEquipe().equals(livreur.getEquipeLivreur().getNumEquipe()))
+                .collect(Collectors.toList());
     }
+
+    @Transactional
+    public TourneeEntity updateTournee(TourneeEntity updatedTournee, Integer equipeLivreurId, List<Integer> newCommandeIds) {
+        TourneeEntity existingTournee = tourneeRepository.findByNumTournee(updatedTournee.getNumTournee())
+                .orElseThrow(() -> new EntityNotFoundException("Tournée non trouvée avec l'ID : " + updatedTournee.getNumTournee()));
+
+
+        List<CommandeEntity> previousCommandes = existingTournee.getCommandes();
+        previousCommandes.forEach(cmd -> {
+            cmd.setEtat(EtatCommande.OUVERTE);
+            cmd.setTournee(null);
+            commandeRepository.save(cmd);
+        });
+
+
+        EquipeLivreurEntity newEquipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
+                .orElseThrow(() -> new EntityNotFoundException("Équipe non trouvée avec l'ID : " + equipeLivreurId));
+
+        LocalDate newDate;
+        LocalDate oldDate;
+
+        Date rawNewDate = updatedTournee.getDate();
+        Date rawOldDate = existingTournee.getDate();
+
+        if (rawNewDate instanceof java.sql.Date) {
+            newDate = ((java.sql.Date) rawNewDate).toLocalDate();
+        } else {
+            newDate = rawNewDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+        if (rawOldDate instanceof java.sql.Date) {
+            oldDate = ((java.sql.Date) rawOldDate).toLocalDate();
+        } else {
+            oldDate = rawOldDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+
+        EquipeLivreurEntity oldEquipe = existingTournee.getEquipeLivreur();
+        if (!Objects.equals(oldEquipe.getNumEquipe(), newEquipe.getNumEquipe())) {
+            oldEquipe.getDatesAffectes().remove(oldDate);
+            oldEquipe.setStatus(StatusEquipeLivreur.PRET);
+        }
+
+
+        if (newEquipe.getStatus() != StatusEquipeLivreur.PRET && !Objects.equals(oldEquipe.getNumEquipe(), newEquipe.getNumEquipe())) {
+            throw new IllegalStateException("Nouvelle équipe non disponible");
+        }
+        if (!Objects.equals(oldDate, newDate) && newEquipe.getDatesAffectes().contains(newDate)) {
+            throw new IllegalStateException("Nouvelle équipe déjà affectée à cette date");
+        }
+
+        // garder l'ordre
+        Map<Integer, CommandeEntity> commandesMap = commandeRepository.findAllById(newCommandeIds).stream()
+                .collect(Collectors.toMap(CommandeEntity::getReference, Function.identity()));
+
+        if (commandesMap.size() != newCommandeIds.size()) {
+            throw new EntityNotFoundException("Une ou plusieurs commandes sont introuvables");
+        }
+
+        List<CommandeEntity> orderedCommandes = newCommandeIds.stream()
+                .map(id -> {
+                    CommandeEntity cmd = commandesMap.get(id);
+                    if (cmd.getEtat() != EtatCommande.OUVERTE && !Objects.equals(cmd.getTournee(), existingTournee)) {
+                        throw new IllegalArgumentException("Commande " + id + " non modifiable");
+                    }
+                    cmd.setTournee(existingTournee);
+                    cmd.setEtat(EtatCommande.PLANIFIEE);
+                    return cmd;
+                })
+                .collect(Collectors.toList());
+
+        // --- Update tournée
+        existingTournee.setDate(updatedTournee.getDate());
+        existingTournee.setEtat(updatedTournee.getEtat());
+        existingTournee.setDistanceAParcourir(updatedTournee.getDistanceAParcourir());
+        existingTournee.setMontant(updatedTournee.getMontant());
+        existingTournee.setTempsDeMontageTheorique(updatedTournee.getTempsDeMontageTheorique());
+        existingTournee.setTempsDeMontageEffectif(updatedTournee.getTempsDeMontageEffectif());
+        existingTournee.setCommandes(orderedCommandes);
+        existingTournee.setEquipeLivreur(newEquipe);
+
+        // --- Set équipe dispo
+        newEquipe.getDatesAffectes().add(newDate);
+        newEquipe.setStatus(StatusEquipeLivreur.EN_LIVRAISON);
+
+        return tourneeRepository.save(existingTournee);
+    }
+
+
+
 }

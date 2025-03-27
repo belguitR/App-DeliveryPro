@@ -3,11 +3,13 @@ package fr.uga.miage.l3.responses;
 import fr.uga.miage.l3.enums.EtatCommande;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @Schema(description = "Représente une commande pour l'API")
 public class CommandeDTO {
 

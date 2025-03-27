@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", imports = {Collectors.class})
 public interface TourneeMapper {
 
-    TourneeMapper INSTANCE = Mappers.getMapper(TourneeMapper.class);
-
     @Mapping(source = "numTournee", target = "numTournee")
     @Mapping(source = "date", target = "date")
     @Mapping(source = "distanceAParcourir", target = "distanceAParcourir")
@@ -24,9 +22,15 @@ public interface TourneeMapper {
     @Mapping(expression = "java(entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))", target = "commandesIds")
     TourneeDTO toDTO(TourneeEntity entity);
 
+    @Mapping(source = "numTournee", target = "numTournee")
+    @Mapping(source = "date", target = "date")
+    @Mapping(source = "distanceAParcourir", target = "distanceAParcourir")
+    @Mapping(source = "montant", target = "montant")
+    @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
+    @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
+    @Mapping(source = "etat", target = "etat")
     @Mapping(target = "equipeLivreur", ignore = true)
     @Mapping(target = "commandes", ignore = true)
     @Mapping(target = "clients", ignore = true)
-    @Mapping(source = "numTournee", target = "numTournee")
     TourneeEntity fromDTO(TourneeDTO dto);
 }

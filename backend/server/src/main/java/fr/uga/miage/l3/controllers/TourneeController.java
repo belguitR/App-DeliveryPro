@@ -47,32 +47,57 @@ public class TourneeController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
         } catch (IllegalArgumentException ex) {
-            // Si au moins une commande n'est pas OUVERTE
             return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (RuntimeException ex) {
-            // Si l'équipe n'existe pas ou autre problème
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la création de la tournée");
         }
     }
 
-
     @DeleteMapping("/{idTournee}")
-    public ResponseEntity<Void> deleteTournee(@PathVariable Integer idTournee) {
+    public ResponseEntity<?> deleteTournee(@PathVariable Integer idTournee) {
         try {
             tourneeService.deleteTournee(idTournee);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournée non trouvée");
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
     }
 
     @GetMapping("/livreur/{email}")
-    public ResponseEntity<TourneeDTO> getTourneeDuJour(@PathVariable String email) {
+    public ResponseEntity<List<TourneeDTO>> getTourneesParLivreur(@PathVariable String email) {
         try {
-            TourneeEntity tourneeEntity = tourneeService.getTourneeDuJourParLivreur(email);
-            return ResponseEntity.ok(tourneeMapper.toDTO(tourneeEntity));
+            List<TourneeEntity> list = tourneeService.getTourneesParLivreur(email);
+            return ResponseEntity.ok(list.stream().map(tourneeMapper::toDTO).collect(Collectors.toList()));
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PutMapping
+    public ResponseEntity<?> updateTournee(@RequestBody TourneeDTO tourneeDTO) {
+        try {
+            TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
+            Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
+            List<Integer> commandesIds = tourneeDTO.getCommandesIds();
+
+            TourneeEntity updated = tourneeService.updateTournee(tourneeEntity, equipeLivreurId, commandesIds);
+            System.out.println("PUT: TourneeDTO ID = " + tourneeDTO.getNumTournee());
+
+            return ResponseEntity.ok(tourneeMapper.toDTO(updated));
+
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la mise à jour de la tournée");
+        }
+    }
+
+
 }

@@ -17,6 +17,7 @@ public interface CommandeMapper {
     @Mapping(source = "dateLivre", target = "dateLivre")
     @Mapping(source = "dateLivraisonEstimee", target = "dateLivraisonEstimee")
     @Mapping(source = "montantTotal", target = "montantTotal")
+    @Mapping(source = "client", target = "client")
     CommandeDTO toDTO(CommandeEntity entity);
 
     @Mapping(source = "reference", target = "reference")
@@ -26,5 +27,7 @@ public interface CommandeMapper {
     @Mapping(source = "dateLivre", target = "dateLivre")
     @Mapping(source = "dateLivraisonEstimee", target = "dateLivraisonEstimee")
     @Mapping(source = "montantTotal", target = "montantTotal")
+    @Mapping(source = "client", target = "client")
+    @Mapping(target = "tournee", ignore = true)
     CommandeEntity fromDTO(CommandeDTO dto);
 }

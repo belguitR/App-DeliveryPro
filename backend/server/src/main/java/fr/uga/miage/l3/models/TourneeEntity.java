@@ -37,10 +37,10 @@ public class TourneeEntity {
     private PlanificateurEntity planificateur;
 
     @ManyToOne
-    @JoinColumn(name = "equipe_livreur_id")
+    @JoinColumn(name = "equipe_livreur_idSCCCCCC")
     private EquipeLivreurEntity equipeLivreur;
 
-    @OneToMany(mappedBy = "tournee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tournee", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @OrderColumn(name = "commande_order")
     private List<CommandeEntity> commandes;
 

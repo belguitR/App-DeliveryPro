@@ -45,4 +45,15 @@ public interface TourneeEndpoints {
     })
     @GetMapping("/livreur/{email}")
         ResponseEntity<TourneeDTO> getTourneeDuJour(@PathVariable String email);
+
+
+    @Operation(summary = "Met à jour une tournée existante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tournée mise à jour avec succès"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide"),
+            @ApiResponse(responseCode = "404", description = "Tournée ou éléments associés non trouvés")
+    })
+    @PutMapping
+    ResponseEntity<TourneeDTO> updateTournee(@RequestBody TourneeDTO tournee);
+
 }
