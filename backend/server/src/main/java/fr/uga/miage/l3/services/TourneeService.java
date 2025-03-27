@@ -58,15 +58,21 @@ public class TourneeService {
         EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
                 .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
 
-        if (equipe.getStatus() != StatusEquipeLivreur.PRET) {
-            throw new IllegalStateException("L'équipe n'est pas prête");
-        }
+//        if (equipe.getStatus() != StatusEquipeLivreur.PRET) {
+//            throw new IllegalStateException("L'équipe n'est pas prête");
+//        }
 
         LocalDate tourneeDate = tourneeEntity.getDate().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
-        if (equipe.getDatesAffectes().contains(tourneeDate)) {
+
+        if (equipe.getDatesAffectes() != null && equipe.getDatesAffectes().contains(tourneeDate)) {
             throw new IllegalStateException("L'équipe est déjà affectée à cette date");
+        }
+
+        // Initialize the dates list if null
+        if (equipe.getDatesAffectes() == null) {
+            equipe.setDatesAffectes(new HashSet<>());
         }
 
         Map<Integer, CommandeEntity> commandesMap = commandeRepository.findAllById(commandesIds).stream()
@@ -94,8 +100,11 @@ public class TourneeService {
         tourneeEntity.setCommandes(orderedCommandes);
         tourneeEntity.setEquipeLivreur(equipe);
 
+        // Add the date to datesAffectes
         equipe.getDatesAffectes().add(tourneeDate);
         equipe.setStatus(StatusEquipeLivreur.EN_LIVRAISON);
+        equipeLivreurRepository.save(equipe); // Make sure to save the updated equipe
+
 
         TourneeEntity saved = tourneeRepository.save(tourneeEntity);
         return getTourneeWithCommandes(saved.getNumTournee());
