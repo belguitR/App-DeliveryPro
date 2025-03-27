@@ -36,6 +36,10 @@ public class TourneeDTO {
     @Schema(description = "Numéro de l'équipe livreur associée", example = "1")
     private Integer equipeLivreurId;
 
-    @Schema(description = "Liste des références des commandes de la tournée")
+    @Schema(description = "Liste des commandes de la tournée")
+    private List<CommandeDTO> commandes;
+
     private List<Integer> commandesIds;
+
+
 }
