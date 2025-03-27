@@ -21,6 +21,9 @@ public class EquipeLivreurService {
     private final EquipeLivreurRepository equipeLivreurRepository;
     private final LivreurRepository livreurRepository;
 
+    /**
+     * Récupère toutes les équipes ; si aucune équipe n'est présente, lève "Aucune équipe trouvée."
+     */
     public List<EquipeLivreurEntity> getAllEquipes() {
         List<EquipeLivreurEntity> equipes = equipeLivreurRepository.findAll();
         if (equipes.isEmpty()) {
@@ -29,69 +32,79 @@ public class EquipeLivreurService {
         return equipes;
     }
 
+    /**
+     * Crée une nouvelle équipe à partir d'une liste de 2 idEmploye.
+     * Pour chaque id :
+     *   - Vérifie que le livreur existe.
+     *   - Vérifie que le livreur n'est pas déjà affecté (affecte == true).
+     * Si l'un des livreurs est déjà affecté, lève une exception avec le message "le livreur {{idEmploye}} est déjà affecté".
+     * Si la vérification réussit, marque les livreurs comme affectés, associe l'équipe et sauvegarde.
+     */
     @Transactional
-    public EquipeLivreurEntity createEquipeLivreur(List<LivreurEntity> livreurs) {
-        if (livreurs.size() != 2) {
-            throw new IllegalArgumentException("L'équipe doit contenir exactement 2 livreurs.");
+    public EquipeLivreurEntity createEquipeLivreur(List<String> idEmployes) {
+        if (idEmployes.size() != 2) {
+            throw new IllegalArgumentException("Une équipe doit contenir exactement 2 livreurs.");
         }
 
-        // Extraire les identifiants et récupérer les livreurs depuis la base
-        List<String> ids = livreurs.stream().map(LivreurEntity::getIdEmploye).toList();
-        List<LivreurEntity> existingLivreurs = livreurRepository.findAllByIdEmployeIn(ids);
+        // Récupérer les livreurs depuis la base
+        List<LivreurEntity> existingLivreurs = livreurRepository.findAllByIdEmployeIn(idEmployes);
         if (existingLivreurs.size() != 2) {
             throw new IllegalArgumentException("Un ou plusieurs livreurs n'existent pas dans la base.");
         }
 
-        boolean permisFound = false;
-        for (LivreurEntity l : existingLivreurs) {
+        // Pour éviter les modifications concurrentes, on travaille sur une copie de la liste
+        List<LivreurEntity> livreursCopy = new ArrayList<>(existingLivreurs);
+        for (LivreurEntity l : livreursCopy) {
             if (l.isAffecte()) {
-                throw new IllegalArgumentException("Le livreur " + l.getIdEmploye() + " est déjà affecté.");
+                throw new IllegalArgumentException("le livreur " + l.getIdEmploye() + " est déjà affecté");
             }
-            if (l.isAPermis()) {
-                permisFound = true;
-            }
-            // Nettoyer toute ancienne référence à une équipe
+            // Supprimer toute ancienne association
             l.setEquipeLivreur(null);
         }
-        if (!permisFound) {
-            throw new IllegalArgumentException("Il doit y avoir au moins un livreur qui a le permis.");
+
+        // Marquer chaque livreur comme affecté et assigner l'équipe (numEquipe sera auto-généré)
+        for (LivreurEntity l : new ArrayList<>(livreursCopy)) {
+            l.setAffecte(true);
+            // On suppose que le numéro d'équipe est généré automatiquement en base,
+            // donc on ne fixe pas explicitement numEquipe ici.
         }
 
-        // Marquer les livreurs comme affectés
-        existingLivreurs.forEach(l -> l.setAffecte(true));
-
-        // Créer l'équipe avec une nouvelle ArrayList pour éviter les modifications concurrentes
+        // Créer l'équipe avec la liste des livreurs
         EquipeLivreurEntity equipe = EquipeLivreurEntity.builder()
                 .status(StatusEquipeLivreur.PRET)
-                .livreurs(new ArrayList<>(existingLivreurs))
+                .livreurs(new ArrayList<>(livreursCopy))
                 .build();
 
-        // Lier l'équipe aux livreurs
-        existingLivreurs.forEach(l -> l.setEquipeLivreur(equipe));
+        // Associer l'équipe à chaque livreur (pour chaque copie, on ne modifie plus la liste originale)
+        for (LivreurEntity l : new ArrayList<>(livreursCopy)) {
+            l.setEquipeLivreur(equipe);
+        }
 
-        // Sauvegarder uniquement l'équipe (la cascade sauvegarde les livreurs)
+        // Sauvegarder l'équipe, la cascade devrait gérer l'association aux livreurs
         equipeLivreurRepository.save(equipe);
+        // Mettre à jour les livreurs en base
+        livreurRepository.saveAll(new ArrayList<>(livreursCopy));
 
         return equipe;
     }
 
+    /**
+     * Supprime une équipe à partir de son numéro.
+     * Pour chaque livreur de l'équipe, réinitialise son affectation.
+     * Si l'équipe n'existe pas, lève une exception.
+     */
     @Transactional
     public void supprimerEquipe(Integer numEquipe) {
         EquipeLivreurEntity equipe = equipeLivreurRepository.findById(numEquipe)
-                .orElseThrow(() -> new EntityNotFoundException("Équipe non trouvée."));
-        // Vérifier que l'équipe n'est pas en livraison
-        if(equipe.getStatus() == StatusEquipeLivreur.EN_LIVRAISON) {
-            throw new IllegalArgumentException("Impossible de supprimer une équipe en livraison.");
+                .orElseThrow(() -> new EntityNotFoundException("ne peut pas supprimer cette équipe car elle n’existe pas"));
+        List<LivreurEntity> affectes = livreurRepository.findAll().stream()
+                .filter(l -> numEquipe.equals(l.getEquipeLivreur() != null ? l.getEquipeLivreur().getNumEquipe() : null))
+                .collect(Collectors.toList());
+        for (LivreurEntity l : affectes) {
+            l.setAffecte(false);
+            l.setEquipeLivreur(null);
+            livreurRepository.save(l);
         }
-
-        // Pour chaque livreur de l'équipe, désaffecter et retirer l'association
-        equipe.getLivreurs().forEach(livreur -> {
-            livreur.setAffecte(false);
-            livreur.setEquipeLivreur(null);
-        });
-
         equipeLivreurRepository.delete(equipe);
     }
-
-    // La méthode modifierEquipe peut être adaptée de façon similaire si besoin...
 }
