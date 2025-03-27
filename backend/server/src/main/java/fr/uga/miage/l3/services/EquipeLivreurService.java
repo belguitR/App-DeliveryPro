@@ -45,7 +45,7 @@ public class EquipeLivreurService {
         boolean permisFound = false;
         for (LivreurEntity l : existingLivreurs) {
             if (l.isAffecte()) {
-                throw new IllegalArgumentException("Le livreur avec l'ID " + l.getIdEmploye() + " est déjà affecté.");
+                throw new IllegalArgumentException("Le livreur " + l.getIdEmploye() + " est déjà affecté.");
             }
             if (l.isAPermis()) {
                 permisFound = true;
@@ -54,7 +54,7 @@ public class EquipeLivreurService {
             l.setEquipeLivreur(null);
         }
         if (!permisFound) {
-            throw new IllegalArgumentException("Un des deux livreurs doit avoir le permis.");
+            throw new IllegalArgumentException("Il doit y avoir au moins un livreur qui a le permis.");
         }
 
         // Marquer les livreurs comme affectés
@@ -78,8 +78,7 @@ public class EquipeLivreurService {
     @Transactional
     public void supprimerEquipe(Integer numEquipe) {
         EquipeLivreurEntity equipe = equipeLivreurRepository.findById(numEquipe)
-                .orElseThrow(() -> new EntityNotFoundException("Ne peut pas supprimer cette équipe car elle n'existe pas."));
-
+                .orElseThrow(() -> new EntityNotFoundException("Équipe non trouvée."));
         // Vérifier que l'équipe n'est pas en livraison
         if(equipe.getStatus() == StatusEquipeLivreur.EN_LIVRAISON) {
             throw new IllegalArgumentException("Impossible de supprimer une équipe en livraison.");
@@ -94,53 +93,5 @@ public class EquipeLivreurService {
         equipeLivreurRepository.delete(equipe);
     }
 
-
-
-
-
-    /*@Transactional
-    public EquipeLivreurEntity modifierEquipe(Integer idEquipe, List<LivreurEntity> newLivreurs) {
-        EquipeLivreurEntity equipeExistante = equipeLivreurRepository.findById(idEquipe)
-                .orElseThrow(() -> new EntityNotFoundException("Équipe non trouvée avec l'id " + idEquipe));
-
-        // Vérifier que la liste contient exactement 2 livreurs.
-        if (newLivreurs.size() != 2) {
-            throw new IllegalArgumentException("L'équipe doit contenir exactement 2 livreurs.");
-        }
-
-        boolean permisFound = false;
-        for (LivreurEntity livreur : newLivreurs) {
-            // Si le livreur est déjà affecté et n'appartient pas à l'équipe actuelle.
-            if (livreur.isAffecte() && (equipeExistante.getLivreurs() == null ||
-                    equipeExistante.getLivreurs().stream().noneMatch(oldLivreur -> oldLivreur.getIdEmploye().equals(livreur.getIdEmploye())))) {
-                throw new IllegalArgumentException("Le livreur avec l'ID " + livreur.getIdEmploye() + " est déjà affecté.");
-            }
-            if (livreur.isAPermis()) {
-                permisFound = true;
-            }
-        }
-        if (!permisFound) {
-            throw new IllegalArgumentException("Un des deux livreurs doit avoir le permis.");
-        }
-
-        // Désaffecter les livreurs qui ne font plus partie de l'équipe.
-        if (equipeExistante.getLivreurs() != null) {
-            equipeExistante.getLivreurs().stream()
-                    .filter(oldLivreur -> newLivreurs.stream().noneMatch(newLivreur -> newLivreur.getIdEmploye().equals(oldLivreur.getIdEmploye())))
-                    .forEach(oldLivreur -> {
-                        oldLivreur.setAffecte(false);
-                        oldLivreur.setEquipeLivreur(null);
-                    });
-        }
-
-        // Affecter les nouveaux livreurs à l'équipe.
-        newLivreurs.forEach(livreur -> {
-            livreur.setAffecte(true);
-            livreur.setEquipeLivreur(equipeExistante);
-        });
-
-        // Mettre à jour l'équipe avec la nouvelle liste de livreurs.
-        equipeExistante.setLivreurs(newLivreurs);
-        return equipeLivreurRepository.save(equipeExistante);
-    }*/
+    // La méthode modifierEquipe peut être adaptée de façon similaire si besoin...
 }

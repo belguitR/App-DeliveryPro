@@ -3,6 +3,7 @@ fr\uga\miage\l3\dummyDataSeeder\DataSeeder$1.class
 fr\uga\miage\l3\repository\TourneeRepository.class
 fr\uga\miage\l3\services\LivreurService.class
 fr\uga\miage\l3\mappers\ClientMapperImpl.class
+fr\uga\miage\l3\exceptions\GlobalExceptionHandler.class
 fr\uga\miage\l3\models\AdresseEntity.class
 fr\uga\miage\l3\mappers\CommandeMapperImpl.class
 fr\uga\miage\l3\repository\ClientRepository.class
@@ -38,6 +39,7 @@ fr\uga\miage\l3\controllers\CommandeController.class
 fr\uga\miage\l3\repository\CommandeRepository.class
 fr\uga\miage\l3\models\EmployeEntity.class
 fr\uga\miage\l3\mappers\AdresseMapperImpl.class
+fr\uga\miage\l3\exceptions\ErrorResponse.class
 fr\uga\miage\l3\models\CommandeEntity$CommandeEntityBuilder.class
 fr\uga\miage\l3\mappers\TourneeMapper.class
 fr\uga\miage\l3\repository\TypeCamionRepository.class

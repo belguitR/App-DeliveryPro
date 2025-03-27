@@ -4,6 +4,7 @@ import fr.uga.miage.l3.models.EntrepotEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.repository.EntrepotRepository;
 import fr.uga.miage.l3.repository.LivreurRepository;
+import jakarta.persistence.EntityNotFoundException; // Importer depuis jakarta.persistence
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,10 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class LivreurService {
-     // missing exceptions in exception folder
-
 
     private final LivreurRepository livreurRepository;
     private final EntrepotRepository entrepotRepository;
@@ -28,27 +26,25 @@ public class LivreurService {
      */
     public LivreurEntity createLivreur(LivreurEntity livreur) {
 
-        // check 18
+        // Vérifie l'âge
         if (!isAtLeast18(livreur.getDateNaissance())) {
             throw new IllegalArgumentException("Le livreur doit avoir au moins 18 ans");
         }
 
-        // check if livreur already exists - autogenerate sinon
+        // Vérifie s'il existe déjà
         if (livreur.getIdEmploye() != null && livreurRepository.existsById(livreur.getIdEmploye())) {
-            throw new RuntimeException("Livreur already exists with id: " + livreur.getIdEmploye());
+            throw new IllegalArgumentException(
+                    "Livreur already exists with id: " + livreur.getIdEmploye()
+            );
         }
 
-
-
-        // Handle the entrepot: if provided, check for an existing one by name
+        // Gère l'entrepôt (création si nécessaire)
         if (livreur.getEntrepot() != null) {
             String entrepotName = livreur.getEntrepot().getNom();
-            // Since 'nom' is the PK in EntrepotEntity, use findById
             EntrepotEntity existingEntrepot = entrepotRepository.findById(entrepotName).orElse(null);
             if (existingEntrepot != null) {
                 livreur.setEntrepot(existingEntrepot);
             } else {
-                // Save the new entrepot if it doesn't exist
                 EntrepotEntity newEntrepot = entrepotRepository.save(livreur.getEntrepot());
                 livreur.setEntrepot(newEntrepot);
             }
@@ -64,12 +60,15 @@ public class LivreurService {
         return livreurRepository.findAll();
     }
 
+    /**
+     * Met à jour un livreur existant.
+     */
     public LivreurEntity updateLivreur(String idLivreur, LivreurEntity updatedLivreur) {
-        // Retrieve the existing entity
+        // Vérifie si le livreur existe en base
         LivreurEntity existingLivreur = livreurRepository.findById(idLivreur)
-                .orElseThrow(() -> new RuntimeException("Livreur not found: " + idLivreur));
+                .orElseThrow(() -> new EntityNotFoundException("Livreur not found: " + idLivreur));
 
-        // Update allowed fields (excluding id)
+        // Mettre à jour les champs autorisés
         existingLivreur.setNom(updatedLivreur.getNom());
         existingLivreur.setPrenom(updatedLivreur.getPrenom());
         existingLivreur.setPhotoURL(updatedLivreur.getPhotoURL());
@@ -80,7 +79,7 @@ public class LivreurService {
         existingLivreur.setAPermis(updatedLivreur.isAPermis());
         existingLivreur.setAffecte(updatedLivreur.isAffecte());
 
-        // Validate and update dateNaissance
+        // Vérifie l'âge pour la nouvelle dateNaissance
         Date newDateNaissance = updatedLivreur.getDateNaissance();
         if (newDateNaissance != null && !isAtLeast18(newDateNaissance)) {
             throw new IllegalArgumentException("Livreur must be at least 18 years old.");
@@ -89,6 +88,7 @@ public class LivreurService {
 
         return livreurRepository.save(existingLivreur);
     }
+
     /**
      * Vérifie que la date de naissance correspond à un âge >= 18 ans.
      */
@@ -97,10 +97,20 @@ public class LivreurService {
             return false;
         }
 
-        LocalDate birthDate = dateNaissance.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        // Si c'est déjà un java.sql.Date, on cast directement
+        java.sql.Date sqlDate;
+        if (dateNaissance instanceof java.sql.Date) {
+            sqlDate = (java.sql.Date) dateNaissance;
+        } else {
+            // Si c'est un java.util.Date, on le convertit en java.sql.Date
+            sqlDate = new java.sql.Date(dateNaissance.getTime());
+        }
+
+        // Maintenant, on peut appeler toLocalDate() sans UnsupportedOperationException
+        LocalDate birthDate = sqlDate.toLocalDate();
         LocalDate today = LocalDate.now();
 
         return Period.between(birthDate, today).getYears() >= 18;
     }
-}
 
+}

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter

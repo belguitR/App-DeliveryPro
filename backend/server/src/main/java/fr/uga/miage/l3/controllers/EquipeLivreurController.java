@@ -47,14 +47,11 @@ public class EquipeLivreurController {
                 .map(livreurMapper::fromDTO)
                 .collect(Collectors.toList());
 
-        try {
+
             EquipeLivreurEntity equipe = equipeLivreurService.createEquipeLivreur(livreurs);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(equipeLivreurMapper.toDTO(equipe));
-        } catch (IllegalArgumentException ex) {
-            // -> 400 Bad Request
-            return ResponseEntity.badRequest().build();
-        }
+
     }
 
 
@@ -80,11 +77,9 @@ public class EquipeLivreurController {
 
     @DeleteMapping("/{idEquipe}")
     public ResponseEntity<Void> supprimerEquipe(@PathVariable Integer idEquipe) {
-        try {
-            equipeLivreurService.supprimerEquipe(idEquipe);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        equipeLivreurService.supprimerEquipe(idEquipe);
+        return ResponseEntity.noContent().build();
     }
+
+
 }
