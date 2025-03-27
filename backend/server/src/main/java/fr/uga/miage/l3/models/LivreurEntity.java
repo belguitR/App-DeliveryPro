@@ -2,7 +2,6 @@ package fr.uga.miage.l3.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
