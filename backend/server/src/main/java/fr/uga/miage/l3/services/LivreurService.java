@@ -52,7 +52,7 @@ public class LivreurService {
             throw new IllegalArgumentException("Le livreur doit avoir au moins 18 ans");
         }
 
-        // Vérifie s'il existe déjà
+        // Vérifie si le livreur existe déjà
         if (livreur.getIdEmploye() != null && livreurRepository.existsById(livreur.getIdEmploye())) {
             throw new IllegalArgumentException(
                     "Livreur already exists with id: " + livreur.getIdEmploye()
@@ -138,16 +138,13 @@ public class LivreurService {
             return false;
         }
 
-        // Si c'est déjà un java.sql.Date, on cast directement
         java.sql.Date sqlDate;
         if (dateNaissance instanceof java.sql.Date) {
             sqlDate = (java.sql.Date) dateNaissance;
         } else {
-            // Si c'est un java.util.Date, on le convertit en java.sql.Date
             sqlDate = new java.sql.Date(dateNaissance.getTime());
         }
 
-        // Maintenant, on peut appeler toLocalDate() sans UnsupportedOperationException
         LocalDate birthDate = sqlDate.toLocalDate();
         LocalDate today = LocalDate.now();
 

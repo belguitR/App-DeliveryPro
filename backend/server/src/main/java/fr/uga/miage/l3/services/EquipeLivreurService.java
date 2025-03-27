@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,4 +109,54 @@ public class EquipeLivreurService {
         }
         equipeLivreurRepository.delete(equipe);
     }
+
+    @Transactional
+    public EquipeLivreurEntity modifierEquipe(Integer numEquipe, List<String> livreursIds) {
+        // Vérifier que l'équipe existe
+        EquipeLivreurEntity equipe = equipeLivreurRepository.findById(numEquipe)
+                .orElseThrow(() -> new EntityNotFoundException("equipe non trouvé"));
+
+        // Vérifier que la liste contient exactement 2 identifiants
+        if (livreursIds == null || livreursIds.size() != 2) {
+            throw new IllegalArgumentException("Une équipe doit contenir exactement 2 livreurs.");
+        }
+
+        // Récupérer les livreurs depuis la base pour chaque id
+        List<LivreurEntity> newLivreurs = livreursIds.stream()
+                .map(id -> livreurRepository.findById(id)
+                        .orElseThrow(() -> new IllegalArgumentException("livreurs " + id + " non trouvé")))
+                .collect(Collectors.toList());
+
+        // Vérifier que chaque livreur n'est pas déjà affecté à une autre équipe
+        for (LivreurEntity l : newLivreurs) {
+            if (l.isAffecte() && (l.getEquipeLivreur() == null || !l.getEquipeLivreur().getNumEquipe().equals(numEquipe))) {
+                String currentEquipe = (l.getEquipeLivreur() != null) ? l.getEquipeLivreur().getNumEquipe().toString() : "inconnue";
+                throw new IllegalArgumentException("le livreur " + l.getIdEmploye() + " est deja affecte a l'equipe " + currentEquipe);
+            }
+        }
+
+        // Désaffecter les livreurs actuellement associés à l'équipe qui ne sont pas dans la nouvelle liste
+        if (equipe.getLivreurs() != null) {
+            for (LivreurEntity oldLivreur : new ArrayList<>(equipe.getLivreurs())) {
+                if (!newLivreurs.contains(oldLivreur)) {
+                    oldLivreur.setAffecte(false);
+                    oldLivreur.setEquipeLivreur(null);
+                    livreurRepository.save(oldLivreur);
+                }
+            }
+        }
+
+        // Affecter les nouveaux livreurs à l'équipe
+        for (LivreurEntity l : newLivreurs) {
+            l.setAffecte(true);
+            l.setEquipeLivreur(equipe);
+            livreurRepository.save(l);
+        }
+
+        // Mettre à jour la liste des livreurs de l'équipe
+        equipe.setLivreurs(new ArrayList<>(newLivreurs));
+
+        return equipeLivreurRepository.save(equipe);
+    }
+
 }

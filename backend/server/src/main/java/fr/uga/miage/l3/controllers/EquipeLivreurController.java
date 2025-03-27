@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,10 +43,7 @@ public class EquipeLivreurController implements EquipeLivreurEndpoints {
         }
     }
 
-    /**
-     * POST /api/equipes
-     * Ex: ["jdd5", "jdd6"]
-     */
+
     @Override
     @PostMapping
     public ResponseEntity<?> createEquipe(@RequestBody List<String> idEmployes) {
@@ -54,7 +52,6 @@ public class EquipeLivreurController implements EquipeLivreurEndpoints {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(equipeLivreurMapper.toDTO(equipe));
         } catch (IllegalArgumentException ex) {
-            // ex: "le livreur jdd5 est déjà affecté" ou "Un ou plusieurs livreurs n'existent pas dans la base."
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse("BAD_REQUEST", ex.getMessage()));
         }
@@ -75,6 +72,20 @@ public class EquipeLivreurController implements EquipeLivreurEndpoints {
         } catch (IllegalArgumentException ex) {
             // 400 Bad Request
             return ResponseEntity.badRequest().build();
+        }
+    }
+    @PutMapping("/{numEquipe}")
+    public ResponseEntity<?> modifierEquipe(@PathVariable Integer numEquipe,
+                                            @RequestBody List<String> livreursIds) {
+        try {
+            EquipeLivreurEntity updatedEquipe = equipeLivreurService.modifierEquipe(numEquipe, livreursIds);
+            return ResponseEntity.ok(updatedEquipe);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("BAD_REQUEST", ex.getMessage()));
         }
     }
 }

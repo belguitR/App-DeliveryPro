@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.hibernate.mapping.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -47,4 +48,18 @@ public interface EquipeLivreurEndpoints {
     })
     @DeleteMapping("/{idEquipe}")
     ResponseEntity<Void> supprimerEquipe(@PathVariable Integer idEquipe);
+
+    @Operation(summary = "Modifie une équipe existante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Équipe modifiée avec succès"),
+            @ApiResponse(responseCode = "404", description = "Équipe non trouvée",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Requête invalide (ex : livreur non trouvé ou déjà affecté)",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PutMapping("/{numEquipe}")
+    ResponseEntity<?> modifierEquipe(@PathVariable Integer numEquipe, @RequestBody List<String> livreursIds);
+
 }
