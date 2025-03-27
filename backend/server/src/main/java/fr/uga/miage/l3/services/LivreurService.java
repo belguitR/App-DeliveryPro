@@ -26,6 +26,27 @@ public class LivreurService {
      */
     public LivreurEntity createLivreur(LivreurEntity livreur) {
 
+        // Vérifie que nom et prénom sont renseignés
+        if (livreur.getNom() == null || livreur.getNom().trim().isEmpty() ||
+                livreur.getPrenom() == null || livreur.getPrenom().trim().isEmpty()) {
+            throw new IllegalArgumentException("nom et prenom non specifié");
+        }
+
+        // Vérifie que email est renseigné
+        if (livreur.getEmail() == null || livreur.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("email non specifié");
+        }
+
+        // Vérifie que le numéro de téléphone est renseigné
+        if (livreur.getTelephone() == null || livreur.getTelephone().trim().isEmpty()) {
+            throw new IllegalArgumentException("numero de telephone non specifié");
+        }
+
+        // Vérifie que la date de naissance est renseignée
+        if (livreur.getDateNaissance() == null) {
+            throw new IllegalArgumentException("dateNaissance non specifié");
+        }
+
         // Vérifie l'âge
         if (!isAtLeast18(livreur.getDateNaissance())) {
             throw new IllegalArgumentException("Le livreur doit avoir au moins 18 ans");
@@ -53,6 +74,7 @@ public class LivreurService {
         return livreurRepository.save(livreur);
     }
 
+
     /**
      * Récupère la liste de tous les livreurs.
      */
@@ -64,6 +86,25 @@ public class LivreurService {
      * Met à jour un livreur existant.
      */
     public LivreurEntity updateLivreur(String idLivreur, LivreurEntity updatedLivreur) {
+        // Vérifie que nom et prénom sont renseignés
+        if (updatedLivreur.getNom() == null || updatedLivreur.getNom().trim().isEmpty() ||
+                updatedLivreur.getPrenom() == null || updatedLivreur.getPrenom().trim().isEmpty()) {
+            throw new IllegalArgumentException("nom et prenom non specifié");
+        }
+
+        // Vérifie que email est renseigné
+        if (updatedLivreur.getEmail() == null || updatedLivreur.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("email non specifié");
+        }
+        // Vérifie que le numéro de téléphone est renseigné
+        if (updatedLivreur.getTelephone() == null || updatedLivreur.getTelephone().trim().isEmpty()) {
+            throw new IllegalArgumentException("numero de telephone non specifié");
+        }
+        // Vérifie que la date de naissance est renseignée
+        if (updatedLivreur.getDateNaissance() == null) {
+            throw new IllegalArgumentException("dateNaissance non specifié");
+        }
+
         // Vérifie si le livreur existe en base
         LivreurEntity existingLivreur = livreurRepository.findById(idLivreur)
                 .orElseThrow(() -> new EntityNotFoundException("Livreur not found: " + idLivreur));
@@ -79,7 +120,6 @@ public class LivreurService {
         existingLivreur.setAPermis(updatedLivreur.isAPermis());
         existingLivreur.setAffecte(updatedLivreur.isAffecte());
 
-        // Vérifie l'âge pour la nouvelle dateNaissance
         Date newDateNaissance = updatedLivreur.getDateNaissance();
         if (newDateNaissance != null && !isAtLeast18(newDateNaissance)) {
             throw new IllegalArgumentException("Livreur must be at least 18 years old.");
@@ -88,6 +128,7 @@ public class LivreurService {
 
         return livreurRepository.save(existingLivreur);
     }
+
 
     /**
      * Vérifie que la date de naissance correspond à un âge >= 18 ans.
