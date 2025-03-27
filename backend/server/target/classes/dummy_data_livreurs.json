@@ -7,8 +7,6 @@
     "photoURL": "https://randomuser.me/api/portraits/women/10.jpg",
     "email": "abr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
-
     "affecte": true,
     "apermis": true
   },
@@ -20,7 +18,6 @@
     "photoURL": "https://randomuser.me/api/portraits/men/2.jpg",
     "email": "bcl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
 
     "affecte": true,
     "apermis": true
@@ -33,7 +30,6 @@
     "photoURL": "https://randomuser.me/api/portraits/women/3.jpg",
     "email": "cmr@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
 
     "affecte": true,
     "apermis": true
@@ -46,7 +42,6 @@
     "photoURL": "https://randomuser.me/api/portraits/men/4.jpg",
     "email": "dgl@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
 
     "affecte": true,
     "apermis": true
@@ -59,7 +54,6 @@
     "photoURL": "https://randomuser.me/api/portraits/women/5.jpg",
     "email": "emt@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
 
     "affecte": false,
     "apermis": true
@@ -72,7 +66,6 @@
     "photoURL": "https://randomuser.me/api/portraits/men/6.jpg",
     "email": "fro@mobilis.fr",
     "dateNaissance": "1990-01-01T00:00:00.000Z",
-    "dateExpirationPermis": "2026-01-01T00:00:00.000Z",
 
     "affecte": false,
     "apermis": true

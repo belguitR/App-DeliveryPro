@@ -1,13 +1,13 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.responses.EquipeLivreurDTO;
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
+import fr.uga.miage.l3.models.LivreurEntity;
+import fr.uga.miage.l3.responses.EquipeLivreurDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
-@Mapper(componentModel = "spring", imports = {Collectors.class, Collections.class})
+@Mapper(componentModel = "spring", imports = {Collectors.class, LivreurEntity.class})
 public interface EquipeLivreurMapper {
 
     @Mapping(source = "numEquipe", target = "numEquipe")

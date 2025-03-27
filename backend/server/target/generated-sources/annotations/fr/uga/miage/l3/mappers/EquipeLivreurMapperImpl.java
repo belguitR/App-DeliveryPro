@@ -1,9 +1,9 @@
 package fr.uga.miage.l3.mappers;
 
 import fr.uga.miage.l3.models.EquipeLivreurEntity;
+import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.responses.EquipeLivreurDTO;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-26T20:28:54+0100",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.5 (Oracle Corporation)"
+    date = "2025-03-27T06:55:37+0100",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.6 (Oracle Corporation)"
 )
 @Component
 public class EquipeLivreurMapperImpl implements EquipeLivreurMapper {

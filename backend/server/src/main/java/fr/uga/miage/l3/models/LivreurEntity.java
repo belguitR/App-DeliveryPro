@@ -15,9 +15,7 @@ import java.util.Date;
 @Table(name = "livreur")
 public class LivreurEntity extends EmployeEntity {
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date dateExpirationPermis;
+
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "entrepot_id")

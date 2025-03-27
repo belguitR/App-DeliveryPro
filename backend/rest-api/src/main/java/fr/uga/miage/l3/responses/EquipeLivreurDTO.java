@@ -1,6 +1,5 @@
 package fr.uga.miage.l3.responses;
 
-
 import fr.uga.miage.l3.enums.StatusEquipeLivreur;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class EquipeLivreurDTO {
     @Schema(description = "Statut de l'équipe livreur")
     private StatusEquipeLivreur status;
 
-    @Schema(description = "Les dates affectés pour chaque équipe")
+    @Schema(description = "Les dates affectées pour l'équipe")
     private Set<LocalDate> datesAffectes;
 
     @Schema(description = "Liste des identifiants des livreurs de l'équipe")

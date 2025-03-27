@@ -1,9 +1,11 @@
 package fr.uga.miage.l3.responses;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -23,10 +25,9 @@ public class LivreurDTO {
 
     @NotNull
     @Schema(description = "Date de naissance du livreur", example = "1985-06-15")
-    private Date dateNaissance;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dateNaissance;
 
-    @Schema(description = "Date d'expiration du permis du livreur", example = "2025-12-31")
-    private Date dateExpirationPermis;
 
     @NotNull
     @Schema(description = "URL de la photo du livreur", example = "http://example.com/photos/dupont.jpg")

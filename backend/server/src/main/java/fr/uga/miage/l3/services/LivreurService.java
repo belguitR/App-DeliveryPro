@@ -38,10 +38,7 @@ public class LivreurService {
             throw new RuntimeException("Livreur already exists with id: " + livreur.getIdEmploye());
         }
 
-        // dateExpirationPermis (not obligatoire if aPermis = false)
-        if (livreur.isAPermis() && livreur.getDateExpirationPermis() == null) {
-            throw new IllegalArgumentException("dateExpirationPermis is required when aPermis is true");
-        }
+
 
         // Handle the entrepot: if provided, check for an existing one by name
         if (livreur.getEntrepot() != null) {
@@ -89,17 +86,6 @@ public class LivreurService {
             throw new IllegalArgumentException("Livreur must be at least 18 years old.");
         }
         existingLivreur.setDateNaissance(newDateNaissance);
-
-        // Handle permis information: if aPermis is true, we require a dateExpirationPermis;
-        // if false, we force it to be null even if provided in the payload
-        if (updatedLivreur.isAPermis()) {
-            if (updatedLivreur.getDateExpirationPermis() == null) {
-                throw new IllegalArgumentException("dateExpirationPermis is required when aPermis is true.");
-            }
-            existingLivreur.setDateExpirationPermis(updatedLivreur.getDateExpirationPermis());
-        } else {
-            existingLivreur.setDateExpirationPermis(null);
-        }
 
         return livreurRepository.save(existingLivreur);
     }

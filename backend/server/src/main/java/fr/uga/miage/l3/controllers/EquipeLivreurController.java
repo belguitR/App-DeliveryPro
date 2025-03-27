@@ -1,10 +1,12 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.repository.EquipeLivreurRepository;
-import fr.uga.miage.l3.responses.EquipeLivreurDTO;
-import fr.uga.miage.l3.models.EquipeLivreurEntity;
-import fr.uga.miage.l3.services.EquipeLivreurService;
 import fr.uga.miage.l3.mappers.EquipeLivreurMapper;
+import fr.uga.miage.l3.mappers.LivreurMapper;
+import fr.uga.miage.l3.models.EquipeLivreurEntity;
+import fr.uga.miage.l3.models.LivreurEntity;
+import fr.uga.miage.l3.responses.EquipeLivreurDTO;
+import fr.uga.miage.l3.responses.LivreurDTO;
+import fr.uga.miage.l3.services.EquipeLivreurService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -18,46 +20,63 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/equipes")
 @CrossOrigin(origins = "http://localhost:4200")
-@Tag(name = "EquipeLivreur", description = "Endpoints pour gérer les équipes de livreurs")
 @AllArgsConstructor
+@Tag(name = "Equipe Livreurs", description = "Endpoints pour gérer les Equipes des livreurs ")
 public class EquipeLivreurController {
 
     private final EquipeLivreurService equipeLivreurService;
     private final EquipeLivreurMapper equipeLivreurMapper;
-    private final EquipeLivreurRepository equipeLivreurRepository;
+    private final LivreurMapper livreurMapper;
 
-
-    // Récupère toutes les équipes de livreurs
     @GetMapping
     public ResponseEntity<List<EquipeLivreurDTO>> getAllEquipes() {
-        List<EquipeLivreurEntity> entities = equipeLivreurService.getAllEquipes();
-        List<EquipeLivreurDTO> dtos = entities.stream()
+        List<EquipeLivreurEntity> equipes = equipeLivreurService.getAllEquipes();
+        List<EquipeLivreurDTO> dtos = equipes.stream()
                 .map(equipeLivreurMapper::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 
-    // Crée une nouvelle équipe de livreurs
     @PostMapping
-    public ResponseEntity<EquipeLivreurDTO> createEquipe(@RequestBody EquipeLivreurEntity equipeLivreur) {
-        EquipeLivreurEntity saved = equipeLivreurService.createEquipeLivreur(
-                equipeLivreur.getLivreurs(),
-                equipeLivreur.getNumEquipe()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(equipeLivreurMapper.toDTO(saved));
-    }
+    public ResponseEntity<EquipeLivreurDTO> createEquipe(@RequestBody List<LivreurDTO> livreursDTO) {
+        if (livreursDTO.size() != 2) {
+            return ResponseEntity.badRequest().build();
+        }
 
-    @PutMapping("/{idEquipe}")
-    public ResponseEntity<EquipeLivreurDTO> modifierEquipe(@PathVariable Integer idEquipe,
-                                                           @RequestBody EquipeLivreurDTO equipeLivreurDTO) {
+        List<LivreurEntity> livreurs = livreursDTO.stream()
+                .map(livreurMapper::fromDTO)
+                .collect(Collectors.toList());
+
         try {
-            EquipeLivreurEntity updated = equipeLivreurService.modifierEquipe(idEquipe, equipeLivreurMapper.fromDTO(equipeLivreurDTO));
-            return ResponseEntity.ok(equipeLivreurMapper.toDTO(updated));
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build(); // 404
+            EquipeLivreurEntity equipe = equipeLivreurService.createEquipeLivreur(livreurs);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(equipeLivreurMapper.toDTO(equipe));
+        } catch (IllegalArgumentException ex) {
+            // -> 400 Bad Request
+            return ResponseEntity.badRequest().build();
         }
     }
+
+
+    /*@PutMapping("/{idEquipe}")
+    public ResponseEntity<EquipeLivreurDTO> modifierEquipe(@PathVariable Integer idEquipe,
+                                                           @RequestBody List<LivreurDTO> livreursDTO) {
+        if (livreursDTO.size() != 2) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<LivreurEntity> livreurs = livreursDTO.stream()
+                .map(livreurMapper::fromDTO)
+                .collect(Collectors.toList());
+        try {
+            EquipeLivreurEntity equipe = equipeLivreurService.modifierEquipe(idEquipe, livreurs);
+            return ResponseEntity.ok(equipeLivreurMapper.toDTO(equipe));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }*/
 
     @DeleteMapping("/{idEquipe}")
     public ResponseEntity<Void> supprimerEquipe(@PathVariable Integer idEquipe) {
@@ -65,7 +84,7 @@ public class EquipeLivreurController {
             equipeLivreurService.supprimerEquipe(idEquipe);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

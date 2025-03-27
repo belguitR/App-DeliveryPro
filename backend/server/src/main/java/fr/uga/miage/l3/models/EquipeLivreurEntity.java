@@ -22,6 +22,7 @@ import lombok.*;
 public class EquipeLivreurEntity {
     @Id
     @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer numEquipe;
 
     @Enumerated(EnumType.STRING)
@@ -29,10 +30,8 @@ public class EquipeLivreurEntity {
     private StatusEquipeLivreur status;
 
 
-
     @ElementCollection
     private Set<LocalDate> datesAffectes;
-
 
 
     @OneToMany(mappedBy = "equipeLivreur", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,17 +42,6 @@ public class EquipeLivreurEntity {
     private List<TourneeEntity> tournees;
 
 
-    public void addLivreur(LivreurEntity livreur) {
-        if (!livreurs.contains(livreur)) {
-            livreurs.add(livreur);
-            livreur.setEquipeLivreur(this);
-        }
-    }
 
-    public void removeLivreur(LivreurEntity livreur) {
-        if (livreurs.remove(livreur)) {
-            livreur.setEquipeLivreur(null);
-        }
-    }
 
 }
