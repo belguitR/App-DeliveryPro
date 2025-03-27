@@ -39,21 +39,25 @@ public class TourneeController {
     @PostMapping
     public ResponseEntity<?> createTournee(@RequestBody TourneeDTO tourneeDTO) {
         try {
-            TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
-            Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
-            List<Integer> commandesIds = tourneeDTO.getCommandesIds();
+            TourneeEntity tourneeEntity = new TourneeEntity();
+            tourneeEntity.setDate(tourneeDTO.getDate());
+            tourneeEntity.setEtat(tourneeDTO.getEtat());
 
-            TourneeEntity saved = tourneeService.createTournee(tourneeEntity, equipeLivreurId, commandesIds);
+            TourneeEntity saved = tourneeService.createTournee(
+                    tourneeEntity,
+                    tourneeDTO.getEquipeLivreurId(),
+                    tourneeDTO.getCommandesIds()
+            );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(tourneeMapper.toDTO(saved));
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la création de la tournée");
         }
     }
+
+
+
 
     @DeleteMapping("/{idTournee}")
     public ResponseEntity<?> deleteTournee(@PathVariable Integer idTournee) {
@@ -82,7 +86,11 @@ public class TourneeController {
         try {
             TourneeEntity tourneeEntity = tourneeMapper.fromDTO(tourneeDTO);
             Integer equipeLivreurId = tourneeDTO.getEquipeLivreurId();
-            List<Integer> commandesIds = tourneeDTO.getCommandesIds();
+            List<Integer> commandesIds = tourneeDTO.getCommandes()
+                    .stream()
+                    .map(c -> c.getReference())
+                    .collect(Collectors.toList());
+
 
             TourneeEntity updated = tourneeService.updateTournee(tourneeEntity, equipeLivreurId, commandesIds);
             System.out.println("PUT: TourneeDTO ID = " + tourneeDTO.getNumTournee());

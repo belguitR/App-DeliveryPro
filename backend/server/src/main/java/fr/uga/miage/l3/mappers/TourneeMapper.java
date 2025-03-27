@@ -2,13 +2,15 @@ package fr.uga.miage.l3.mappers;
 
 import fr.uga.miage.l3.responses.TourneeDTO;
 import fr.uga.miage.l3.models.TourneeEntity;
+import fr.uga.miage.l3.mappers.CommandeMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", imports = {Collectors.class})
+@Mapper(componentModel = "spring", uses = CommandeMapper.class)
 public interface TourneeMapper {
 
     @Mapping(source = "numTournee", target = "numTournee")
@@ -18,8 +20,8 @@ public interface TourneeMapper {
     @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
     @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
     @Mapping(source = "etat", target = "etat")
-    @Mapping(expression = "java(entity.getEquipeLivreur() == null ? null : entity.getEquipeLivreur().getNumEquipe())", target = "equipeLivreurId")
-    @Mapping(expression = "java(entity.getCommandes() == null ? null : entity.getCommandes().stream().map(c -> c.getReference()).collect(Collectors.toList()))", target = "commandesIds")
+    @Mapping(source = "equipeLivreur.numEquipe", target = "equipeLivreurId")
+    @Mapping(source = "commandes", target = "commandes")
     TourneeDTO toDTO(TourneeEntity entity);
 
     @Mapping(source = "numTournee", target = "numTournee")

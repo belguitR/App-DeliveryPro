@@ -49,17 +49,14 @@ public class TourneeService {
 
     @Transactional
     public TourneeEntity createTournee(TourneeEntity tourneeEntity, Integer equipeLivreurId, List<Integer> commandesIds) {
-        // Generate a unique ID for the new Tournee
         int newId = tourneeRepository.findAll().stream()
                 .map(TourneeEntity::getNumTournee)
                 .max(Integer::compareTo)
                 .orElse(0) + 1;
         tourneeEntity.setNumTournee(newId);
 
-        // Retrieve the EquipeLivreur entity
         EquipeLivreurEntity equipe = equipeLivreurRepository.findByNumEquipe(equipeLivreurId)
                 .orElseThrow(() -> new RuntimeException("EquipeLivreur not found with id: " + equipeLivreurId));
-
 
         if (equipe.getStatus() != StatusEquipeLivreur.PRET) {
             throw new IllegalStateException("L'équipe n'est pas prête");
@@ -72,7 +69,6 @@ public class TourneeService {
             throw new IllegalStateException("L'équipe est déjà affectée à cette date");
         }
 
-
         Map<Integer, CommandeEntity> commandesMap = commandeRepository.findAllById(commandesIds).stream()
                 .collect(Collectors.toMap(CommandeEntity::getReference, Function.identity()));
 
@@ -80,7 +76,6 @@ public class TourneeService {
             throw new EntityNotFoundException("One or more Commande entities not found");
         }
 
-        // garder l'ordre
         List<CommandeEntity> orderedCommandes = commandesIds.stream()
                 .map(id -> {
                     CommandeEntity cmd = commandesMap.get(id);
@@ -93,15 +88,21 @@ public class TourneeService {
                 })
                 .collect(Collectors.toList());
 
+        // Save commandes BEFORE saving tournee
+        commandeRepository.saveAll(orderedCommandes);
+
         tourneeEntity.setCommandes(orderedCommandes);
-
-
         tourneeEntity.setEquipeLivreur(equipe);
+
         equipe.getDatesAffectes().add(tourneeDate);
         equipe.setStatus(StatusEquipeLivreur.EN_LIVRAISON);
 
-        return tourneeRepository.save(tourneeEntity);
+        TourneeEntity saved = tourneeRepository.save(tourneeEntity);
+        return getTourneeWithCommandes(saved.getNumTournee());
     }
+
+
+
 
 
     @Transactional
@@ -142,8 +143,10 @@ public class TourneeService {
         return tourneeRepository.findAll().stream()
                 .filter(t -> t.getEquipeLivreur() != null &&
                         t.getEquipeLivreur().getNumEquipe().equals(livreur.getEquipeLivreur().getNumEquipe()))
+                .map(t -> getTourneeWithCommandes(t.getNumTournee()))
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public TourneeEntity updateTournee(TourneeEntity updatedTournee, Integer equipeLivreurId, List<Integer> newCommandeIds) {
