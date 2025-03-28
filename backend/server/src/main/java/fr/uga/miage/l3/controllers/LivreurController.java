@@ -8,12 +8,14 @@ import fr.uga.miage.l3.services.LivreurService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300"})
 @RequiredArgsConstructor
 public class LivreurController implements LivreurEndpoints {
 

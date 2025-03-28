@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/commandes")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300"})
 @Tag(name = "Commande", description = "Endpoints pour gérer les commandes")
 public class CommandeController {
 
