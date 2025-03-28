@@ -1,39 +1,45 @@
-# Complete list of all available properties: https://docs.upsun.com/create-apps/app-reference.html
 applications:
-  api:
-    # Application source code directory
+  deliverypro:
+    # Points to the directory containing your Spring Boot app
     source:
-      root: "/backend"
-      
-    type: "java:21"
-    
-    variables:
-      env:
-        MAVEN_VERSION: 4.0.0
-
+      root: "./backend"
+    # Use the desired Java runtime version
+    type: "java:19"
+    # The relationship key here tells Upsun to inject PostgreSQL connection info
+    relationships:
+      postgresql: "postgresql:default"
     web:
       commands:
-        start: java -jar $JAVA_OPTS server/target/server-1.0-SNAPSHOT.jar --server.port=$PORT
-
+        # Replace 'backend.jar' with your actual built jar filename.
+        start: "java -jar backend/server/target/server-1.0-SNAPSHOT.jar"
+      upstream:
+        socket_family: tcp
+      locations:
+        "/":
+          passthru: true
+    build:
+      flavor: none
     hooks:
       build: |
         set -eux
-        mvn clean package
-          
-    relationships:
-      postgresql:
+        # Add any build steps here if needed (for example, compiling assets)
+      deploy: |
+        set -eux
+        # Add any deploy-time commands here if needed
 
 services:
-  # The name of the service container. Must be unique within a project.
   postgresql:
-    type: postgresql:16
+    type: postgresql:15
+    # These variables set up your PostgreSQL instance like in your docker-compose
+    variables:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: local
 
 routes:
   "https://{default}/":
     type: upstream
-    upstream: "api:http"
-  # A basic redirect definition
-  # More information: https://docs.upsun.com/define-routes.html#basic-redirect-definition
+    upstream: "deliverypro:http"
   "https://www.{default}":
     type: redirect
     to: "https://{default}/"
