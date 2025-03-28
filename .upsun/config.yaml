@@ -1,41 +1,39 @@
+# Complete list of all available properties: https://docs.upsun.com/create-apps/app-reference.html
 applications:
-  deliverypro:
+  api:
+    # Application source code directory
     source:
-      root: "./backend" # <-- Make sure this is correct relative to config.yaml
-    type: "java:19"
-    relationships:
-      postgresql: "postgresql:default"
+      root: "/backend"
+
+    type: "java:21"
+
+    variables:
+      env:
+        MAVEN_VERSION: 4.0.0
+
     web:
       commands:
-        start: "java -jar backend/server/target/server-1.0-SNAPSHOT.jar"
-      upstream:
-        socket_family: tcp
-      locations:
-        "/":
-          passthru: true
-    build:
-      flavor: none
+        start: java -jar $JAVA_OPTS server/target/server-1.0-SNAPSHOT.jar --server.port=$PORT
+
     hooks:
       build: |
         set -eux
-        echo "== Project root listing =="
-        ls -al /
-        echo "== App source folder listing =="
-        ls -al ./backend
-        # Add any build steps here if needed
-      deploy: |
-        set -eux
-        echo "== Deploy hook running =="
-        # Add any deploy-time commands here if needed
+        mvn clean package
+
+    relationships:
+      postgresql:
 
 services:
+  # The name of the service container. Must be unique within a project.
   postgresql:
-    type: postgresql:15
+    type: postgresql:16
 
 routes:
   "https://{default}/":
     type: upstream
-    upstream: "deliverypro:http"
+    upstream: "api:http"
+  # A basic redirect definition
+  # More information: https://docs.upsun.com/define-routes.html#basic-redirect-definition
   "https://www.{default}":
     type: redirect
     to: "https://{default}/"
