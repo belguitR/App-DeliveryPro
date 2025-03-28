@@ -1,0 +1,91 @@
+<table class="table custom-table">
+	<thead>
+	  <tr>
+		<th scope="col" (click)="sortBy('idTournee')">
+		  ID Tournée
+		  @if (sortColumn() === 'idTournee') {
+			<span class="sort-indicator">
+			  {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+			</span>
+		  }
+		</th>
+		<th scope="col" (click)="sortBy('date')">
+			Date
+			@if (sortColumn() === 'date') {
+			  <span class="sort-indicator">
+				{{ sortDirection() === 'asc' ? '▲' : '▼' }}
+			  </span>
+			}
+		  </th>
+		  <th scope="col" (click)="sortBy('etat')">
+			État
+			@if (sortColumn() === 'etat') {
+			  <span class="sort-indicator">
+				{{ sortDirection() === 'asc' ? '▲' : '▼' }}
+			  </span>
+			}
+		  </th>
+		  <th scope="col" (click)="sortBy('equipeLivreurId')">
+			Équipe
+			@if (sortColumn() === 'equipeLivreurId') {
+			  <span class="sort-indicator">
+				{{ sortDirection() === 'asc' ? '▲' : '▼' }}
+			  </span>
+			}
+		  </th>
+		  <th scope="col" (click)="sortBy('camion')">
+            Camion
+            @if (sortColumn() === 'camion') {
+              <span class="sort-indicator">
+                {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+              </span>
+            }
+        </th>
+		  <th scope="col" (click)="sortBy('distanceAParcourir')">
+			Distance (km)
+			@if (sortColumn() === 'distanceAParcourir') {
+			  <span class="sort-indicator">
+				{{ sortDirection() === 'asc' ? '▲' : '▼' }}
+			  </span>
+			}
+		  </th>
+		<th scope="col">
+		  commandes
+		</th>
+		<th scope="col">Actions</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  @for (item of sortedTournees(); track item.numTournee) {
+		<tr>
+		  <td scope="row">{{ item.numTournee }}</td>
+		  <td>{{ item.date | date:'shortDate' }}</td>
+		  <td>{{ item.etat }}</td>
+		  <td><b>Equipe {{ item.equipeLivreur.numEquipe }}:</b>
+			<ul>
+				@if(item.equipeLivreur) {
+				  @for (livreur of item.equipeLivreur.livreurs; track livreur.idEmploye) {
+					<li>{{ livreur.prenom }} {{ livreur.nom }}</li>
+				  }
+				}
+			  </ul>
+		  </td>
+		  <td>{{ item.camion }}</td>
+		  <td>{{ item.distanceAParcourir }}</td>
+		  <td>
+			<ul>
+				@if (item.commandes && item.commandes.length > 0) {
+					@for (commande of item.commandes; track commande.reference) {
+					  <li>{{ commande.client.prenom }} {{ commande.client.nom }} - {{ adressGouvService.createAddressString(commande.client.adresse) }}</li>
+					}
+				  }
+			</ul>
+		  </td>
+		  <td>
+			<button class="custom-action-btn modify" (click)="onClickModifier()">Modifier</button>
+			<button class="custom-action-btn delete" (click)="deleteTournee(item.numTournee)">Supprimer</button>
+		  </td>
+		</tr>
+	  }
+	</tbody>
+  </table>
