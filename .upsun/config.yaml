@@ -1,16 +1,12 @@
 applications:
   deliverypro:
-    # Points to the directory containing your Spring Boot app
     source:
       root: "./backend"
-    # Use the desired Java runtime version
     type: "java:19"
-    # The relationship key here tells Upsun to inject PostgreSQL connection info
     relationships:
       postgresql: "postgresql:default"
     web:
       commands:
-        # Replace 'backend.jar' with your actual built jar filename.
         start: "java -jar backend/server/target/server-1.0-SNAPSHOT.jar"
       upstream:
         socket_family: tcp
@@ -22,7 +18,7 @@ applications:
     hooks:
       build: |
         set -eux
-        # Add any build steps here if needed (for example, compiling assets)
+        # Add any build steps here if needed
       deploy: |
         set -eux
         # Add any deploy-time commands here if needed
@@ -30,11 +26,6 @@ applications:
 services:
   postgresql:
     type: postgresql:15
-    # These variables set up your PostgreSQL instance like in your docker-compose
-    variables:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: local
 
 routes:
   "https://{default}/":
