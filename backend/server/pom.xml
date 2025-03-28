@@ -16,6 +16,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
+    
         <!-- MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -51,6 +52,17 @@
         </dependency>
 
         <!-- Spring Boot Starters -->
+        <!-- ✅ Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- ✅ Web (needed for CORS, REST) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -68,6 +80,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        
 
         <!-- Dépendance vers le module rest-api -->
         <dependency>
