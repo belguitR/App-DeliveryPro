@@ -98,54 +98,40 @@ public class DataSeeder implements CommandLineRunner {
         }
 
 
-        // --- Seed CommandeEntities ---
-        // --- Seed CommandeEntities ---
         if (commandeRepository.count() == 0) {
-            // Configure the ObjectMapper to use ISO 8601 date format
             mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
             ClassPathResource resourceCommandes = new ClassPathResource("dummy_data_commandes.json");
             try (InputStream inputStream = resourceCommandes.getInputStream()) {
                 List<CommandeEntity> commandes = mapper.readValue(inputStream, new TypeReference<List<CommandeEntity>>() {});
 
-                // Extract distinct clients from commandes
+                // Get distinct clients from commandes
                 List<ClientEntity> clientsToSave = commandes.stream()
                         .filter(cmd -> cmd.getClient() != null)
                         .map(CommandeEntity::getClient)
-                        .distinct()  // Ensure proper equals() and hashCode() on ClientEntity
+                        .distinct()
                         .collect(Collectors.toList());
 
-                // For each client, check if its address exists; if not, persist the address first.
+                // Persist each client and its Adresse
                 for (ClientEntity client : clientsToSave) {
                     if (client.getAdresse() != null) {
-                        // Assuming the identifier is the postal code (an Integer)
-                        Integer adresseId = client.getAdresse().getCodePostal();
-                        if (!adresseRepository.existsById(adresseId)) {
-                            adresseRepository.save(client.getAdresse());
-                            System.out.println("Persisted Adresse with codePostal " + adresseId);
-                        }
+                        adresseRepository.save(client.getAdresse());
+                        System.out.println("Persisted Adresse for client code: " + client.getCode());
                     }
                 }
 
-                // Save all clients so that they become managed
+                // Save clients and update commandes with managed client
                 List<ClientEntity> savedClients = clientRepository.saveAll(clientsToSave);
                 clientRepository.flush();
-
-                // Build a lookup map by client code with a merge function for duplicates
                 Map<String, ClientEntity> clientMap = savedClients.stream()
                         .collect(Collectors.toMap(ClientEntity::getCode, Function.identity(), (existing, replacement) -> existing));
-
-                // Update each commande with the managed client instance
                 commandes.forEach(cmd -> {
                     if (cmd.getClient() != null) {
                         ClientEntity managedClient = clientMap.get(cmd.getClient().getCode());
                         if (managedClient != null) {
                             cmd.setClient(managedClient);
-                        } else {
-                            System.out.println("Warning: Managed client for code " + cmd.getClient().getCode() + " not found.");
                         }
                     }
                 });
-
                 commandeRepository.saveAll(commandes);
                 System.out.println("Commandes dummy data seeded!");
             }
