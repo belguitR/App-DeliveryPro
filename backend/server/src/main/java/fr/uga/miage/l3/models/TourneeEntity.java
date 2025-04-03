@@ -56,5 +56,4 @@ public class TourneeEntity {
     @Column(nullable = false)
     private EtatTournee etat;
 
-
 }
