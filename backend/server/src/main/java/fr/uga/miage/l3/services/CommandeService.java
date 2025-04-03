@@ -31,6 +31,10 @@ public class CommandeService {
     public List<CommandeEntity> getCommandesByTournee(Integer idTournee) {
         return tourneeRepository.findByNumTourneeWithCommandes(idTournee).getCommandes();
     }
+    public List<CommandeEntity> getCommandesNonLivrees() {
+        return commandeRepository.findByEtatNotOrderByDateAsc(EtatCommande.LIVREE);
+    }
+
 
     @Transactional
     public CommandeEntity updateCommande(Integer reference, CommandeEntity commandeDetails) {

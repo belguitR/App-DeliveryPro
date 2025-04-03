@@ -1,5 +1,6 @@
 package fr.uga.miage.l3.repository;
 
+import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.models.CommandeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,6 @@ public interface CommandeRepository extends JpaRepository<CommandeEntity, Intege
     List<CommandeEntity> findAllById(@Param("ids") List<Integer> ids);
 
     List<CommandeEntity> findByTourneeNumTournee(Integer numTournee);
+    List<CommandeEntity> findByEtatNotOrderByDateAsc(EtatCommande etat);
+
 }
