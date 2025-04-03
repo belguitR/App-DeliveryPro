@@ -13,7 +13,7 @@ import java.util.List;
 
 @Tag(name = "EquipeLivreur", description = "Endpoints pour gérer les équipes de livreurs")
 @RequestMapping("/api/equipes")
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300"})
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300","https://main-bvxea6i-cblr3dirpybii.eu-5.platformsh.site"})
 public interface EquipeLivreurEndpoints {
 
     @Operation(summary = "Récupère toutes les équipes de livreurs")

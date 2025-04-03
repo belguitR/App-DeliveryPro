@@ -12,7 +12,7 @@ import java.util.List;
 
 @Tag(name = "Tournee", description = "Endpoints pour gérer les tournées")
 @RequestMapping("/api/tournee")
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300"})
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300","https://main-bvxea6i-cblr3dirpybii.eu-5.platformsh.site"})
 public interface TourneeEndpoints {
 
     @Operation(summary = "Récupère toutes les tournées")

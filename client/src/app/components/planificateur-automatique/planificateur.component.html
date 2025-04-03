@@ -1,0 +1,43 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- Left column -->
+    <div class="col-12 col-lg-5 mb-3">
+      <div class="date-picker-container">
+        <mat-form-field appearance="fill" class="date-picker w-100">
+          <mat-label>Date de la tournée</mat-label>
+
+        <input matInput [matDatepicker]="picker" 
+       [value]="selectedDate()"
+       (dateChange)="onDateChange($event)">
+          <mat-hint>JJ/MM/AAAA</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <app-drag-drop-selector
+      [availableLivreurs]="availableEquipeLivreurs()"
+      [availableCommandes]="commandesOuvertes()"
+      (selectionChange)="handleSelectionChange($event)">
+    </app-drag-drop-selector>
+    </div>
+
+    <!-- Right column -->
+    <div class="col-12 col-lg-7">
+      <div class="map-container">
+        <app-map 
+          [commandes]="commandesOuvertes()" 
+          [destinationsGeoCode]="destinationsGeoCode()" 
+          [createdTournees]="createdTourneesSignal()">
+        </app-map>
+      </div>
+      <div class="button-container mt-3">
+        <button class="btn btn-primary optimiser-button w-100" 
+                type="button" 
+                (click)="creerTournees()">
+          Créer Tournées
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

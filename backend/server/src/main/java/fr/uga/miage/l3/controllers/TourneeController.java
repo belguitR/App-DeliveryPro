@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tournee")
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300"})
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300","https://main-bvxea6i-cblr3dirpybii.eu-5.platformsh.site"})
 @Tag(name = "Tournée", description = "Endpoints pour gérer les Tournées")
 public class TourneeController {
 

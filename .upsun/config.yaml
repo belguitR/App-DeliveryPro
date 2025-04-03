@@ -4,9 +4,9 @@ applications:
     # Application source code directory
     source:
       root: "/backend"
-      
+
     type: "java:21"
-    
+
     variables:
       env:
         MAVEN_VERSION: 4.0.0
@@ -19,7 +19,7 @@ applications:
       build: |
         set -eux
         mvn clean package
-          
+
     relationships:
       postgresql:
 
