@@ -27,26 +27,24 @@ export class BackendCommunicationService {
 
   constructor(private http: HttpClient) { }
 
-  webLink = "https://main-bvxea6i-jenwo4in7lt44.fr-3.platformsh.site/";
-
   // Livreur
   getLivreurs() : Observable<any> {
-    return this.http.get(`${this.webLink}api/livreur`)
+    return this.http.get(`/api/livreur`)
   }
 
   postLivreur(livreur : Livreur) : Observable<any> {
     console.log("Livreur to post: ", livreur);
-    return this.http.post<Livreur>(`${this.webLink}api/livreur`, livreur)
+    return this.http.post<Livreur>(`/api/livreur`, livreur)
   }
 
   putLivreur(livreur : Livreur) : Observable<any> {
-    return this.http.put<Livreur>(`${this.webLink}api/livreur/${livreur.idEmploye}`, livreur)
+    return this.http.put<Livreur>(`/api/livreur/${livreur.idEmploye}`, livreur)
   }
 
   // EquipeLivreur
   
   getEquipeLivreur(): Observable<EquipeLivreursDTO[]> {
-    return this.http.get<EquipeLivreursDTO[]>(`${this.webLink}api/equipes`);
+    return this.http.get<EquipeLivreursDTO[]>(`/api/equipes`);
   }
 
   equipesLivreursFromDTO(dto: EquipeLivreursDTO[], allLivreurs: Livreur[]): EquipeLivreurs[] {
@@ -70,12 +68,12 @@ export class BackendCommunicationService {
   }
 
   postEquipeLivreur(dto: CreateEquipeLivreursDTO): Observable<any> {
-    return this.http.post<any>(`${this.webLink}api/equipes`, dto)
+    return this.http.post<any>(`/api/equipes`, dto)
       .pipe(catchError(this.handleError));
   }
 
   postEquipeLivreurN(s:any): Observable<any> {
-    return this.http.post<any>(`${this.webLink}api/equipes`, s)
+    return this.http.post<any>(`/api/equipes`, s)
       .pipe(catchError(this.handleError));
   }
   
@@ -86,30 +84,30 @@ export class BackendCommunicationService {
       livreurs: livreurs,
     };
     return this.http.put<EquipeLivreursDTO>(
-      `${this.webLink}api/equipes/${numEquipe}`, 
+      `/api/equipes/${numEquipe}`, 
       dto
     ).pipe(catchError(this.handleError));
   }
   
   deleteEquipeLivreur(id: number): Observable<any> {
-    return this.http.delete(`${this.webLink}api/equipes/${id}`)
+    return this.http.delete(`/api/equipes/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   // Commande
 
   getCommandes() : Observable<any> {
-    return this.http.get(`${this.webLink}api/commandes`).pipe(catchError(this.handleError))
+    return this.http.get(`/api/commandes`).pipe(catchError(this.handleError))
   }
 
   putCommande(commande : Commande) : Observable<any> {
-    return this.http.put<Commande>(`${this.webLink}api/commandes/${commande.reference}`, commande).pipe(catchError(this.handleError))
+    return this.http.put<Commande>(`/api/commandes/${commande.reference}`, commande).pipe(catchError(this.handleError))
   }
 
   // Tournee
 
   getTournees() : Observable<any> {
-    return this.http.get<TourneeDTO>(`${this.webLink}api/tournee`).pipe(catchError(this.handleError))
+    return this.http.get<TourneeDTO>(`/api/tournee`).pipe(catchError(this.handleError))
   }
 
   tourneefromDTO(dto: TourneeDTO, allCommandes: Commande[], equipes: EquipeLivreurs[]): Tournee {
@@ -130,23 +128,22 @@ export class BackendCommunicationService {
     };
     return tournee;
   }
-  tourneesfromDTO(dto: TourneeDTO[], allCommandes: Commande[],equipeLivreur: EquipeLivreurs[]): Tournee[] {
-    return dto.map(t => this.tourneefromDTO(t, allCommandes,equipeLivreur));
+  tourneesfromDTO(dto: TourneeDTO[], allCommandes: Commande[], equipeLivreur: EquipeLivreurs[]): Tournee[] {
+    return dto.map(t => this.tourneefromDTO(t, allCommandes, equipeLivreur));
   }
 
   postTournee(tournee : any) : Observable<any> {
-    return this.http.post<any>(`${this.webLink}api/tournee`, tournee).pipe(catchError(this.handleError))
+    return this.http.post<any>(`/api/tournee`, tournee).pipe(catchError(this.handleError))
   }
 
   postTourneeN(tourneeNDTO : any) : Observable<any> {
-    return this.http.post<any>(`${this.webLink}api/tournee`, tourneeNDTO).pipe(catchError(this.handleError))
+    return this.http.post<any>(`/api/tournee`, tourneeNDTO).pipe(catchError(this.handleError))
   }
 
   deleteTournee(numTournee: number): Observable<any> {
-    return this.http.delete(`${this.webLink}api/tournee/${numTournee}`)
+    return this.http.delete(`/api/tournee/${numTournee}`)
       .pipe(catchError(this.handleError));
   }
-
 
   private handleError(error: HttpErrorResponse) {
     let errorMsg = "⚠️ Impossible de récupérer les données. Vérifiez l’URL et réessayez.";
