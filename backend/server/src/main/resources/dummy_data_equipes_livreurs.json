@@ -8,5 +8,15 @@
     "numEquipe": 2,
     "status": "PRET",
     "livreursIds": ["jdd3", "jdd4"]
+  },
+  {
+    "numEquipe": 3,
+    "status": "PRET",
+    "livreursIds": ["jdd5", "jdd6"]
+  },
+  {
+    "numEquipe": 4,
+    "status": "PRET",
+    "livreursIds": ["jdd7", "jdd8"]
   }
 ]
