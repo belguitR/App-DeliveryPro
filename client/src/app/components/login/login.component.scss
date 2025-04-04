@@ -57,3 +57,21 @@ body {
   button:focus {
 	outline: none;
   }
+
+  .test-credentials {
+	margin-top: 20px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	background-color: #f9f9f9;
+	font-size: 0.9em;
+	border-radius: 4px;
+  }
+  
+  .test-credentials h2 {
+	margin-bottom: 10px;
+	font-size: 1.2em;
+  }
+  
+  .test-credentials p {
+	margin: 5px 0;
+  }
