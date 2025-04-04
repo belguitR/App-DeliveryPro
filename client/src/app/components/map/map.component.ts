@@ -151,12 +151,18 @@ export class MapComponent implements OnInit, OnChanges {
       latLng(this.latitude(), this.longitude()),
       'entrepot'
     );
-  
+    const flatTournee = tournees.flat();
+    
+      // afficher que les latlngs uniques pour les preserved and used 
+      const uniqueMarkers = new Map<string, L.Layer>();
+      for (const marker of [...preservedMarkers, ...newTourneeMarkers]) {
+        const key = (marker as L.Marker).getLatLng().toString();
+        uniqueMarkers.set(key, marker);
+      }
 
     this.layers.set([
       entrepotMarker,
-      ...preservedMarkers,
-      ...newTourneeMarkers,
+      ...Array.from(uniqueMarkers.values()),
       ...newPolylines
     ]);
   }
