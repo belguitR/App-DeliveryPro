@@ -14,6 +14,16 @@ export class LeafletService {
 
   adresseGouvService = inject(AdresseGouvService);
   openRouteService = inject(OpenRouteServiceService);
+  private teamColorMap = new Map<number, string>();
+
+  
+  getColorForTeam(teamId: number): string {
+    if (!this.teamColorMap.has(teamId)) {
+      this.teamColorMap.set(teamId, this.getRandomColor());
+    }
+    return this.teamColorMap.get(teamId)!;
+  }
+
   
   latLngToMarker(latLng: LatLng, entrDest: 'entrepot' | 'destination',color?: "red"|"blue"): Marker {
     let iconUrl = entrDest === 'entrepot'
@@ -39,31 +49,29 @@ export class LeafletService {
     });
   }
 
-  latLngToPolyline(data: LatLng[]): Polyline {
-
-
-
-    const randomColor = this.getRandomColor();
-    // const randomColor = 'red';
-    console.log("polyline:" ,polyline(data, {
-      color: randomColor
-    }));
-    return polyline(data, {
-      color: randomColor
+  latLngToPolyline(data: LatLng[], color?: string): Polyline {
+    const chosenColor = color || this.getRandomColor();
+    const poly = polyline(data, {
+      color: chosenColor,
+      weight: 4,
+      opacity: 0.8
     });
+    console.log("polyline:", poly);
+    return poly;
   }
+  
 
-  private getRandomColor(): string {
+  public  getRandomColor(): string {
     return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
   }
 
   private async getLatLngsFromCommandes(commandes: Commande[]): Promise<LatLng[]> {
     const latLngs: LatLng[] = [];
     for (const commande of commandes) {
-      const result = await this.adresseGouvService.geocode(commande.client.adresse);
-      if (result?.length) {
-        latLngs.push(result[0]);
-      }
+      const result = latLng(commande.client.adresse.latitude!, commande.client.adresse.longitude!)
+      
+        latLngs.push(result);
+      
     }
     return latLngs;
   }
@@ -72,24 +80,39 @@ export class LeafletService {
   async createMarkersForAvailableCommandes(commandes: Commande[]): Promise<Marker[]> {
     const latLngs = await this.getLatLngsFromCommandes(commandes);
     return latLngs.map(lat => this.latLngToMarker(lat, 'destination'));
-  }
+  } 
 
 
   async commandesAddressesToLatLngs(commandes: Commande[]): Promise<LatLng[]> {
     return await this.getLatLngsFromCommandes(commandes);
   }
 
-  async createPolylineForTournee(tournee: LatLng[]): Promise<Polyline | null> {
+  async createPolylineForTournee(tournee: LatLng[], color: string = '#3388ff'): Promise<Polyline | null> {
+    if (tournee.length < 2) {
+      return null;
+    }
+  
     try {
       const data = await this.openRouteService.getItinerary(tournee);
+  
+      if (!data || !data.features || data.features.length === 0) {
+        console.error(' Invalid itinerary response:', data);
+        return null;
+      }
+  
       const coordinates = data.features[0].geometry.coordinates;
-      const itineraryLatLng = coordinates.map((coord: number[]) => latLng(coord[1], coord[0]));
-      return this.latLngToPolyline(itineraryLatLng);
+      const itineraryLatLng = coordinates.map(
+        ([lng, lat]: number[]) => new LatLng(lat, lng)
+      );
+  
+      return polyline(itineraryLatLng, { color }); 
     } catch (error) {
-      console.error('Error', error);
+      
       return null;
     }
   }
+  
+  
 
 
 }

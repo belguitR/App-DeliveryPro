@@ -3,11 +3,8 @@ package fr.uga.miage.l3.models;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
@@ -19,7 +16,11 @@ import lombok.*;
 @EqualsAndHashCode
 @Table(name = "adresse")
 public class AdresseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     @Column(nullable = false)
     private String adressePostal;
 

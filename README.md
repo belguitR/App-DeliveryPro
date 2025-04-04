@@ -1,62 +1,36 @@
-# Test-projet-integrateur-2024-2025
+# DeliveryPro Platform
 
-## Backend
+Access the live application here:  
+👉 [DeliveryPro Platform](https://main-bvxea6i-jenwo4in7lt44.fr-3.platformsh.site/)
 
-### Base de donnée local
+## 🔐 Authentification
 
-* Vous pouvez créer une base de données local via le fichier [docker/docker-compose-local.yml](./docker/docker-compose-local.yml)
+### Planificateur (Claudia Tessier)
+- **Email:** ctr@mobilis.fr
+- **Mot de passe:** 147258
 
-#### Prérequis
+### Livreur (Malik Kristophe)
+⚠️ Application Livreur **pas encore ajoutée**
 
-1. Avoir installé sur votre machine
-    * pour [windows](https://docs.docker.com/desktop/setup/install/windows-install/) 
-    * pour les [autres](https://docs.docker.com/engine/install/)
-2. Avoir [docker-compose](https://docs.docker.com/compose/install/)
+- **Email:** mkr@mobilis.fr
+- **Mot de passe:** 123456
 
-#### Commande de démarrage
-```shell
-sudo docker compose -f docker/docker-compose-local.yml up --detach
-```
+---
 
-#### Commande d'arrêt
-```shell
-docker compose -f docker/docker-compose-local.yml down
-```
+## 📁 Structure du Projet
 
-#### Voir les données
+- `Client/` – Application Angular (non compilée)
+- `backend/` – Application Spring Boot
 
-* Pour voir les données de la base de données, ajoutez une data-source dans inttelij de cette manière
-    1. Demande de création d'une data-source
-        ![create-data-source](./resources/create-data-source.png)
-    2. configuration de la data source  
-        ![config-data-source](./resources/config-data-source.png)
-        avec comme mot de passe`postgres`
+---
 
+## 🚀 Lancer l'application en local
 
-### Variable d'environnements
+### 1. Avec Docker Compose
 
-* Les variables d'environnement à mettre dans le `.env`
-
-```dotenv
-DB_USERNAME=<username>
-DB_PASSWORD=<password>
-DB_URL=jdbc:postgres/<server>:<port>/<database>
-DB_JPA_DDL_AUTO=<create-drop | create | update | validate | none>
-```
-Référez-vous au fichier `docker/docker-compose-local.yml` pour connaitre a configuration locale.
-
-### Compiler le serveur
-
-```shell
+```bash
+docker compose -f docker/docker-compose-local.yml up --detach
 cd backend
 mvn clean install
-```
-
-### Démarrer spring 
-```shell
-cd backend
 mvn spring-boot:run -f server
 ```
-
-à voir Alex et éventuellement Florent :
-* Configuration du service de BD (voir [configuration Platform.sh](https://github.com/platformsh-templates/?q=&type=all&language=java&sort=) qui est proche de celle de Upsun). **Attention** : « disk » ne fait plus partie des clefs Yaml pour Upsun.

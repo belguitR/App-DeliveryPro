@@ -36,5 +36,8 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:6.1.13" level="project" />
     <orderEntry type="library" name="Maven: jakarta.transaction:jakarta.transaction-api:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.swagger.core.v3:swagger-annotations-jakarta:2.2.9" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:6.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:6.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:6.1.13" level="project" />
   </component>
 </module>

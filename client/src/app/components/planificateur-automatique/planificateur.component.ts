@@ -8,210 +8,191 @@ import { OpenRouteServiceService } from '../../services/open-route-service.servi
 import { AdresseGouvService } from '../../services/adresse-gouv.service';
 import { LeafletService } from '../../services/leaflet.service';
 import { LatLng, latLng } from 'leaflet';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DataService } from '../../services/data.service';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
-import { DragDropSelectorComponent } from './drag-drop-selector/drag-drop-selector.component';
 import { BackendCommunicationService } from '../../services/backendCommunication.service';
-import { Tournee, TourneeDTO } from '../../../models/interfaces/tournee.model';
+import { Tournee } from '../../../models/interfaces/tournee.model';
 import { EtatTournee } from '../../../models/enums/etat-tournee.enum';
 import { from } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-
+import { KMeansService } from '../../services/kmeans.service';
 
 @Component({
   selector: 'app-planificateur-automatique',
   standalone: true,
-  imports: [CommonModule, MapComponent, FormsModule, DragDropModule, MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    DragDropSelectorComponent
+  imports: [
+    CommonModule, MapComponent, FormsModule,
+    MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule
   ],
   templateUrl: './planificateur.component.html',
   styleUrls: ['./planificateur.component.scss']
 })
 export class PlanificateurAutomatiqueComponent {
+  Math = Math;
 
-
-  entrepot = signal<LatLng>(latLng(45.1485200, 5.7369725));
-  destinationsGeoCode = signal<LatLng[]>([]);
-  itenairaire = signal<any[]>([]);
-  cheminOptimiseSignal = signal<LatLng[]>([]);
+  entrepot = signal<LatLng>(latLng(45.14852, 5.7369725));
   createdTourneesSignal = signal<LatLng[][]>([]);
-
   selectedEquipes = signal<EquipeLivreurs[]>([]);
   selectedCommandes = signal<Commande[]>([]);
   commandesOuvertes = signal<Commande[]>([]);
-
   selectedDate = signal<Date | null>(null);
   createdTournees = signal<Tournee[]>([]);
-
-
+  nombreCommandesUtilisees = signal<number>(0);
+  polylineTeamIds = signal<number[]>([]);
+  polylineColorMap = signal<string[]>([]);
+  teamColorMap = new Map<number, string>();
+  displayedCommandes = signal<Commande[]>([]);
 
   openRouteService = inject(OpenRouteServiceService);
   adresseGouvService = inject(AdresseGouvService);
   leafletService = inject(LeafletService);
   backendService = inject(BackendCommunicationService);
   dataService = inject(DataService);
+  kmeansService = inject(KMeansService);
 
   constructor() {
     this.dataService.isDataLoaded().subscribe(loaded => {
       if (loaded) {
-    this.commandesOuvertes.set(this.dataService.commandes().filter(commande => commande.etat === 'OUVERTE'));
-    }
-  });
+        const opened = this.dataService.commandes().filter(c => c.etat === 'OUVERTE');
+        this.commandesOuvertes.set(opened);
+        this.nombreCommandesUtilisees.set(opened.length);
+        this.displayedCommandes.set(this.selectedCommandesAuto());
+      }
+    });
   }
 
-  
+  selectedCommandesAuto = computed(() =>
+    this.commandesOuvertes().slice(0, this.nombreCommandesUtilisees())
+  );
+
+  getEquipeColor(equipeId: number): string {
+    if (!this.teamColorMap.has(equipeId)) {
+      const color = this.leafletService.getRandomColor();
+      this.teamColorMap.set(equipeId, color);
+    }
+    return this.teamColorMap.get(equipeId)!;
+  }
+
   private isSameDay(d1: Date, d2: Date): boolean {
     return d1.getFullYear() === d2.getFullYear() &&
            d1.getMonth() === d2.getMonth() &&
            d1.getDate() === d2.getDate();
   }
+
   availableEquipeLivreurs = computed(() => {
     const selectedDay = this.selectedDate();
     if (!selectedDay) return [];
-    
+
     return this.dataService.equipeLivreurs().filter(equipe => {
-      if (!equipe.dateAffecte) return true;
-      const booked = equipe.dateAffecte.find(date => this.isSameDay(date, selectedDay));
-      return booked === undefined;
+      return !equipe.dateAffecte || !equipe.dateAffecte.find(date => this.isSameDay(date, selectedDay));
     });
-});
+  });
 
+  toggleEquipe(equipe: EquipeLivreurs) {
+    const current = this.selectedEquipes();
+    const index = current.findIndex(e => e.numEquipe === equipe.numEquipe);
+    if (index > -1) {
+      this.selectedEquipes.set(current.filter((_, i) => i !== index));
+    } else {
+      this.selectedEquipes.set([...current, equipe]);
+    }
+  }
 
-      
-
-  handleSelectionChange(selection: { livreurs: EquipeLivreurs[], commandes: Commande[] }) {
-
-    this.selectedEquipes.set(selection.livreurs);
-    this.selectedCommandes.set(selection.commandes);
+  isEquipeSelected(equipe: EquipeLivreurs): boolean {
+    return this.selectedEquipes().some(e => e.numEquipe === equipe.numEquipe);
   }
 
   async creerTournees(): Promise<void> {
+    const commandes = this.selectedCommandesAuto();
+    const equipes = this.selectedEquipes();
+    const entrepot = this.entrepot();
+    const maxPerTeam = 50;
 
-    let tournees: Partial<Tournee>[] = [];
-
-    const optimizationResponse = await this.openRouteService.getOptimizationAutmatique(this.selectedCommandes(),this.selectedEquipes(),this.entrepot());
-    console.log('optimizationResponse', optimizationResponse);
-
-    const optimizedRoutes = optimizationResponse.routes;  
-  
-    let cheminsOptimise: LatLng[][] = [];
-    let numTournee = 20;
-    let j = 0;
-    for(let route of optimizedRoutes){
-      let cheminOptimise: LatLng[] = [];
-
-      let commandesOrderById: number[] = [];
-
-      for (let i = 0; i < route.steps.length; i++) {
-      const location = route.steps[i].location;
-      let commandeId = 0;
-      if (route.steps[i].id !== undefined){
-        commandeId = route.steps[i].id;
-        commandesOrderById.push(commandeId);
-
-      }
-      cheminOptimise.push(new LatLng(location[1], location[0]));
-
-
-      
+    if (commandes.length > equipes.length * maxPerTeam) {
+      alert(`Vous avez sélectionné ${equipes.length} équipes, mais il en faut au moins ${Math.ceil(commandes.length / maxPerTeam)} pour cette distribution.`);
+      return;
     }
-    console.log('commandesOrderById',j,commandesOrderById);
-    const tournee: Partial<Tournee> = {
-      date: this.selectedDate() || new Date(),
-      equipeLivreur: this.selectedEquipes()[j],
-      commandes: commandesOrderById.map(commandeId =>
-        this.selectedCommandes().find(commande => commande.reference === commandeId)
-      ).filter((commande): commande is Commande => commande !== undefined),
-      etat: EtatTournee.EN_ATTENTE
-    };
-    tournees.push(tournee);
-    cheminsOptimise.push(cheminOptimise);
-    console.log('selected equipe',j, this.selectedEquipes()[j]);
 
-    if (tournee.equipeLivreur) {
-      if (!tournee.equipeLivreur.dateAffecte) {
-        tournee.equipeLivreur.dateAffecte = [];
+    const coords = commandes.map(cmd => [cmd.client.adresse.latitude!, cmd.client.adresse.longitude!]);
+    const clustering = this.kmeansService.kmeans(coords, equipes.length);
+    const rawClusters: Commande[][] = Array.from({ length: equipes.length }, () => []);
+
+    commandes.forEach((cmd, idx) => {
+      const clusterId = clustering.clusters[idx];
+      rawClusters[clusterId].push(cmd);
+    });
+
+    const tournees: Partial<Tournee>[] = [];
+    const cheminsOptimise: LatLng[][] = [];
+    const teamIds: number[] = [];
+
+    for (let i = 0; i < rawClusters.length; i++) {
+      const clusterCommandes = rawClusters[i];
+      const equipe = equipes[i];
+      if (clusterCommandes.length === 0) continue;
+
+      const response = await this.openRouteService.getOptimizationAutmatique(clusterCommandes, [equipe], entrepot);
+      if (!response?.routes?.length) continue;
+
+      const route = response.routes[0];
+      const cheminOptimise: LatLng[] = [];
+      const commandesOrderById: number[] = [];
+
+      for (let step of route.steps) {
+        if (step.id !== undefined) commandesOrderById.push(step.id);
+        cheminOptimise.push(new LatLng(step.location[1], step.location[0]));
       }
-      tournee.equipeLivreur.dateAffecte.push(this.selectedDate() || new Date());
+
+      tournees.push({
+        date: this.selectedDate() || new Date(),
+        equipeLivreur: equipe,
+        commandes: commandesOrderById.map(id => commandes.find(c => c.reference === id)).filter((c): c is Commande => !!c),
+        etat: EtatTournee.EN_ATTENTE
+      });
+
+      cheminsOptimise.push(cheminOptimise);
+      teamIds.push(equipe.numEquipe);
+      this.polylineColorMap.set([...this.polylineColorMap(), this.getEquipeColor(equipe.numEquipe)]);
+
+      if (!equipe.dateAffecte) equipe.dateAffecte = [];
+      equipe.dateAffecte.push(this.selectedDate() || new Date());
     }
-    j++;
+
+    this.createdTourneesSignal.set(cheminsOptimise);
+    this.polylineTeamIds.set(teamIds);
+    this.createdTournees.set([...this.createdTournees(), ...tournees as Tournee[]]);
+
+    const usedCommandeIds = new Set<number>();
+    tournees.forEach(t => t.commandes?.forEach(c => usedCommandeIds.add(c.reference)));
+    this.commandesOuvertes.set(this.commandesOuvertes().filter(c => !usedCommandeIds.has(c.reference)));
+
+    from(tournees).pipe(
+      concatMap(tournee => {
+        const tourneeDTO = {
+          date: tournee.date instanceof Date ? tournee.date.toISOString() : tournee.date,
+          etat: tournee.etat!,
+          equipeLivreurId: tournee.equipeLivreur?.numEquipe || 0,
+          commandesIds: tournee.commandes!.map(c => c.reference)
+        };
+        return this.backendService.postTourneeN(tourneeDTO);
+      })
+    ).subscribe();
+
+    this.dataService.updateTournees();
+    this.displayedCommandes.set(this.selectedCommandesAuto());
   }
-  this.createdTourneesSignal.set(cheminsOptimise);
-  this.createdTournees.set([
-    ...this.createdTournees(),
-    ...tournees as Tournee[]
-  ]);
-  console.log('tournees', tournees);
 
-//   for (let tournee of tournees) {
-//     const tourneeDTO: Omit<TourneeDTO, 'numTournee'> = {
-//     date: tournee.date!,
-//     etat: tournee.etat!,
-//     equipeLivreurId: tournee.equipeLivreur?.numEquipe || 0,
-//     commandesIds: tournee.commandes!.map(commande => commande.reference),
-// };
-//     this.backendService.postTournee(tourneeDTO).subscribe({
-//       next: (response: any) => {
-//         const newTournee = {
-//           numTournee: response.numTournee,
-//           date: tournee.date!,
-//           etat: tournee.etat!,
-//           equipeLivreur: tournee.equipeLivreur!,
-//           commandes: tournee.commandes!,
-//           distanceAParcourir: response.distanceAParcourir,
-//           montant: response.montant,
-//           tempsDeMontageTheorique: response.tempsDeMontageTheorique,
-//           tempsDeMontageEffectif: response.tempsDeMontageEffectif,
-//           camion: response.camion,
-//           planificateur: response.planificateur
-//         };
-//         this.dataService.tournees.update(current => [...current, newTournee]);
-//         console.log('Tournee created and signal updated:', newTournee);
-//       },
-//       error: (err) => {
-//         console.error('Error creating tournee:', err);
-//       }
-//     });
-//   }
-
-from(tournees).pipe(
-  concatMap(tournee => {
-    const tourneeNDTO = {
-      date: (tournee.date instanceof Date ? tournee.date.toISOString() : tournee.date),
-      etat: tournee.etat!,
-      equipeLivreurId: tournee.equipeLivreur ? tournee.equipeLivreur.numEquipe : 0,
-      commandesIds: tournee.commandes!.map(commande => commande.reference),
-    };
-    console.log('Posting tourneeNDTO', tourneeNDTO);
-    return this.backendService.postTourneeN(tourneeNDTO);
-  })
-).subscribe({
-  next: (response: any) => {
-    console.log('TourneeN response', response);
-  },
-  error: (err) => {
-    console.error('Error creating tournee:', err);
+  actualiserCommandes() {
+    this.displayedCommandes.set(this.selectedCommandesAuto());
   }
-});
 
-  this.dataService.updateTournees();
+  onDateChange(event: MatDatepickerInputEvent<Date>) {
+    this.selectedDate.set(event.value);
+    this.selectedCommandes.set([]);
+  }
 
-}
-onDateChange(event: MatDatepickerInputEvent<Date>) {
-  this.selectedDate.set(event.value);
-  this.selectedEquipes.set([]);
-  this.selectedCommandes.set([]);
-}
-
-
-  
-  
-
+  latLngTable = signal<LatLng[]>([]);
 }
