@@ -12,7 +12,7 @@ import java.util.List;
 
 @Tag(name = "Commande", description = "Endpoints pour gérer les commandes")
 @RequestMapping("/api/commandes")
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:4300","https://main-bvxea6i-cblr3dirpybii.eu-5.platformsh.site"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300", "https://main-bvxea6i-cblr3dirpybii.eu-5.platformsh.site"})
 public interface CommandeEndpoints {
 
     /**
@@ -47,4 +47,15 @@ public interface CommandeEndpoints {
     })
     @PutMapping("/{reference}")
     ResponseEntity<CommandeDTO> updateCommande(@PathVariable String reference, @RequestBody CommandeDTO commande);
+
+    /**
+     * Récupère la liste des commandes non livrées, triées par date de création croissante.
+     */
+    @Operation(summary = "Récupère la liste des commandes non livrées triées par date croissante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Les commandes non livrées ont été récupérées"),
+            @ApiResponse(responseCode = "404", description = "Aucune commande non livrée trouvée")
+    })
+    @GetMapping("/non-livrees")
+    ResponseEntity<List<CommandeDTO>> getCommandesNonLivrees();
 }

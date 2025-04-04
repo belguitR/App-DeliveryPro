@@ -27,6 +27,17 @@ public class CommandeController {
         this.commandeMapper = commandeMapper;
     }
 
+
+    @GetMapping("/non-livrees")
+    public ResponseEntity<List<CommandeDTO>> getCommandesNonLivrees() {
+        List<CommandeEntity> commandes = commandeService.getCommandesNonLivrees();
+        List<CommandeDTO> dtos = commandes.stream()
+                .map(commandeMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+
     @GetMapping
     public ResponseEntity<List<CommandeDTO>> getAllCommandes() {
         List<CommandeEntity> commandes = commandeService.getAllCommandes();
