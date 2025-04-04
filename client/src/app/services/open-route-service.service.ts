@@ -8,7 +8,7 @@ import { Commande } from '../../models/interfaces/commande.model';
 })
 export class OpenRouteServiceService {
 
-  private readonly apiKey = '5b3ce3597851110001cf62480a524d13a48045e0953e36294d6efc16';
+  private readonly apiKey = '5b3ce3597851110001cf6248bcf05f5c9e6943378190c10a202f8b08';
 
   constructor() { }
 
@@ -45,7 +45,6 @@ export class OpenRouteServiceService {
   }
 
 
-  ////
   async getOptimization(latlngTable: LatLng[]): Promise<any> {
 
     const depot = latlngTable[0];

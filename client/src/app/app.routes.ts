@@ -17,5 +17,4 @@ export const routes: Routes = [
   { path: 'tournees', component: TourneesComponent, canActivate: [authGuard] }, 
   { path: 'planificateur-automatique', component: PlanificateurAutomatiqueComponent, canActivate: [authGuard] }, 
   { path: '', redirectTo: '/tableau-de-bord', pathMatch: 'full' }, 
-  { path: '**', component: TableauDeBordComponent }
 ];
