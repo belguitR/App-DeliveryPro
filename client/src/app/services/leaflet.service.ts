@@ -1,6 +1,6 @@
 import { Injectable,inject } from '@angular/core';
 import { GeoJSON } from 'leaflet';
-import { latLng, LatLng, Marker,marker,icon,Icon,Layer,Polyline,polyline } from 'leaflet';
+import { latLng, LatLng, Marker,marker,icon,Icon,Layer,Polyline,polyline ,circleMarker,CircleMarker} from 'leaflet';
 import { Commande } from '../../models/interfaces/commande.model';
 import { AdresseGouvService } from './adresse-gouv.service';
 import { OpenRouteServiceService } from './open-route-service.service';
@@ -48,6 +48,19 @@ export class LeafletService {
       })
     });
   }
+
+  // ( ai dzaer ) form mte3 lmarkr ig idfkk 
+  circleMarkerForTeam(latlng: LatLng, color: string): CircleMarker {
+    return circleMarker(latlng, {
+      radius: 6,
+      color: color,
+      fillColor: color,
+      fillOpacity: 1,
+      weight: 1
+    });
+  }
+  
+  
 
   latLngToPolyline(data: LatLng[], color?: string): Polyline {
     const chosenColor = color || this.getRandomColor();

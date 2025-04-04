@@ -109,21 +109,57 @@ export class MapComponent implements OnInit, OnChanges {
   async ngOnChanges() {
     const tournees = this.createdTournees();
     const colors = this.polylineColors?.();
+  
+    if (!tournees || tournees.length === 0) return;
+  
+    // (ai dzayer ) track les   markers des tournees , yekhou les markers mte3 li tournees y7othom f liste w y5ali default f list okhra 
+    const usedLatLngs = tournees.flat();
 
-    if (tournees && tournees.length > 0) {
-      for (let i = 0; i < tournees.length; i++) {
-        const tournee = tournees[i];
-        const color = colors?.[i] || this.leafletService.getRandomColor();
-
-        try {
-          const routePolyline = await this.leafletService.createPolylineForTournee(tournee, color);
-          if (routePolyline) {
-            this.layers.set([...this.layers(), routePolyline]);
-          }
-        } catch (error) {
-          console.log('Error creating polyline for tournee', error);
+    const preservedMarkers = this.commandesMarkers.filter(marker => {
+      const markerLatLng = (marker as L.Marker).getLatLng();
+      return !usedLatLngs.some(used =>
+        used.lat === markerLatLng.lat && used.lng === markerLatLng.lng
+      );
+    });
+  
+    const newTourneeMarkers: Layer[] = [];
+    const newPolylines: Layer[] = [];
+  
+    
+    for (let i = 0; i < tournees.length; i++) {
+      const tournee = tournees[i];
+      const color = colors?.[i] || this.leafletService.getRandomColor();
+  
+      try {
+        
+        const routePolyline = await this.leafletService.createPolylineForTournee(tournee, color);
+        if (routePolyline) {
+          newPolylines.push(routePolyline);
         }
+  
+        const coloredMarkers = tournee.map(point =>
+          this.leafletService.circleMarkerForTeam(point, color)
+        );
+        newTourneeMarkers.push(...coloredMarkers);
+  
+      } catch (error) {
+        console.log('Error creating polyline or markers:', error);
       }
     }
+  
+    const entrepotMarker = this.leafletService.latLngToMarker(
+      latLng(this.latitude(), this.longitude()),
+      'entrepot'
+    );
+  
+
+    this.layers.set([
+      entrepotMarker,
+      ...preservedMarkers,
+      ...newTourneeMarkers,
+      ...newPolylines
+    ]);
   }
+  
+  
 }
