@@ -54,13 +54,20 @@ export class PlanificateurAutomatiqueComponent {
   kmeansService = inject(KMeansService);
 
   constructor() {
+    const today = new Date();
+    this.selectedDate.set(today);
     this.dataService.isDataLoaded().subscribe(loaded => {
       if (loaded) {
         const opened = this.dataService.commandes().filter(c => c.etat === 'OUVERTE');
         this.commandesOuvertes.set(opened);
         this.nombreCommandesUtilisees.set(opened.length);
         this.displayedCommandes.set(this.selectedCommandesAuto());
+        const available = this.dataService.equipeLivreurs().filter(equipe => {
+          return !equipe.dateAffecte || !equipe.dateAffecte.find(date => this.isSameDay(date, today));
+        });
+        this.selectedEquipes.set(available);
       }
+      
     });
   }
 
