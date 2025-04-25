@@ -8,6 +8,7 @@ public class CamionMapper {
         if (entity == null) return null;
         return CamionResponse.builder()
                 .code(entity.getCode())
+                .kilometrage(entity.getKilometrage())
                 .immatriculation(entity.getImmatriculation())
                 .entrepotNom(entity.getEntrepot() != null ? entity.getEntrepot().getNom() : null)
                 .typeCamion(TypeCamionMapper.toResponse(entity.getTypeCamion()))

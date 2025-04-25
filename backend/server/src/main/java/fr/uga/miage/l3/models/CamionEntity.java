@@ -18,6 +18,8 @@ public class CamionEntity {
 
     private String immatriculation;
 
+    private Long kilometrage;
+
     @ManyToOne
     @JoinColumn(name = "entrepot")
     private EntrepotEntity entrepot;

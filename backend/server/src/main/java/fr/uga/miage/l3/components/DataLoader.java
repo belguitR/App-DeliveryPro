@@ -61,6 +61,7 @@ public class DataLoader {
 
                 typeCamionRepository.save(typeCamion);
 
+                // Link camions if present
                 if (tokens.length > 4 && tokens[4] != null && !tokens[4].isEmpty()) {
                     String camionsStr = tokens[4].replace("\"", "");
                     String[] camionCodes = camionsStr.split(",");
@@ -95,7 +96,19 @@ public class DataLoader {
                 camion.setCode(tokens[0].trim());
                 camion.setImmatriculation(tokens[1].trim());
 
-                String entrepotNom = tokens[4].trim();
+
+                String kilometrageStr = tokens[4].replace(" ", "").replace(",", "").trim();
+                if (!kilometrageStr.isEmpty()) {
+                    try {
+                        camion.setKilometrage(Long.valueOf(kilometrageStr));
+                    } catch (NumberFormatException e) {
+                        camion.setKilometrage(null);
+                    }
+                } else {
+                    camion.setKilometrage(null);
+                }
+
+                String entrepotNom = tokens[5].trim();
                 EntrepotEntity entrepot = entrepotMap.get(entrepotNom);
                 camion.setEntrepot(entrepot);
 
@@ -111,7 +124,7 @@ public class DataLoader {
         ClassPathResource resource = new ClassPathResource("data/lignes.csv");
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            br.readLine();
+            br.readLine(); // skip header
             String line;
             while ((line = br.readLine()) != null) {
                 String[] d = line.split(",", -1);
@@ -209,6 +222,7 @@ public class DataLoader {
 
 
 
+
                 commandeRepository.save(commande);
                 commandeMap.put(commande.getReference(), commande);
             }
@@ -221,7 +235,7 @@ public class DataLoader {
         ClassPathResource resource = new ClassPathResource("data/produits.csv");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            String line = reader.readLine();
+            String line = reader.readLine(); // skip header
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 System.out.println("Loading produit: " + Arrays.toString(tokens));
@@ -259,7 +273,6 @@ public class DataLoader {
                     produit.setTdmTheorique(null);
                 }
 
-
                 try {
                     produitRepository.save(produit);
                     produitMap.put(produit.getReference(), produit);
@@ -287,12 +300,14 @@ public class DataLoader {
                 client.setNom(tokens[2]);
                 client.setPrenom(tokens[3]);
 
+                // Adresse
                 fr.uga.miage.l3.dataTypes.Adresse adr = new fr.uga.miage.l3.dataTypes.Adresse();
                 adr.setAdresse(tokens[4]);
                 adr.setVille(tokens[5]);
                 adr.setCodePostal(tokens[6]);
                 client.setAdresse(adr);
 
+                // Coords
                 fr.uga.miage.l3.dataTypes.GeoPosition coords = new fr.uga.miage.l3.dataTypes.GeoPosition();
                 try {
                     coords.setLat(Double.parseDouble(tokens[7]));
@@ -328,6 +343,7 @@ public class DataLoader {
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
             String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
+
                 String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 if (tokens.length < 8) continue;
 
