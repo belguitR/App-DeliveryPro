@@ -1,10 +1,8 @@
 package fr.uga.miage.l3.models;
 
-
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
-
 import lombok.*;
+import java.util.List;
 
 @Entity
 @Setter
@@ -12,23 +10,23 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "camion")
 public class CamionEntity {
+
     @Id
-    @Column(nullable = false)
     private String code;
 
-    @Column(nullable = false)
     private String immatriculation;
 
     @ManyToOne
-    @JoinColumn(name = "entrepot_id")
+    @JoinColumn(name = "entrepot")
     private EntrepotEntity entrepot;
+
+    @OneToMany(mappedBy = "camion")
+    private List<TourneeEntity> tournees;
+
 
     @ManyToOne
     @JoinColumn(name = "type_camion_id")
     private TypeCamionEntity typeCamion;
-
 }
-

@@ -1,0 +1,589 @@
+reference,état,date_de_création,note,commentaire,client,ligne
+c001,OUVERTE,"04/01/2024, 16:00",,,amartin@wan.fr,"l001-01,l001-02,l001-04,l001-05"
+c002,LIVREE,"05/01/2024, 00:00",,,azainab@m6.com,l002-07
+c003,NOTE,"09/01/2024, 00:00",5,,lsaleh@brt.fr,"l003-06,l003-01,l003-09,l003-07"
+c004,LIVREE,"09/01/2024, 00:00",,,lsaleh@brt.fr,"l004-06,l004-07"
+c005,LIVREE,"11/01/2024, 00:00",,,apascal@or.fr,"l005-04,l005-01,l005-08,l005-02"
+c006,LIVREE,"02/02/2024, 00:00",,,ssharma@but.org,"l006-14,l006-02,l006-07"
+c007,LIVREE,"02/02/2024, 00:00",,,ssharma@but.org,l007-04
+c008,LIVREE,"02/02/2024, 00:00",,,ykim@but.org,"l008-20,l008-15,l008-12"
+c009,LIVREE,"02/02/2024, 00:00",,,agilles@sfr.fr,"l009-12,l009-07,l009-06"
+c010,NOTE,"02/02/2024, 00:00",4,,rlambert@lp.net,"l010-11,l010-12"
+c011,NOTE,"02/02/2024, 00:00",3,,cmercier@hot.fr,l011-02
+c012,NOTE,"02/02/2024, 00:00",3,,lblanc@gm.fr,"l012-13,l012-02,l012-07,l012-17"
+c013,NOTE,"02/02/2024, 00:00",5,,lsaleh@brt.fr,l013-15
+c014,NOTE,"03/02/2024, 11:30",3,,vmartino@lp.net,l014-22
+c015,NOTE,"03/02/2024, 11:30",2,,ldubois@wel.fr,l015-02
+c016,LIVREE,"03/02/2024, 11:30",,,egiraud@lp.net,l016-04
+c017,LIVREE,"03/02/2024, 11:30",,,ebernard@lp.net,l017-20
+c018,LIVREE,"03/02/2024, 11:30",,,lblanc@gm.fr,"l018-07,l018-06"
+c019,LIVREE,"03/02/2024, 11:30",,,sshin@but.org,"l019-17,l019-21,l019-02,l019-16,l019-03,l019-01,l019-20"
+c020,OUVERTE,"05/02/2024, 03:30",,,lguyot@lp.net,"l020-16,l020-12,l020-08"
+c021,OUVERTE,"05/02/2024, 03:30",,,emarchand@ok.fr,"l021-19,l021-04"
+c022,OUVERTE,"05/02/2024, 03:30",,,amohed@brt.fr,"l022-20,l022-07"
+c023,LIVREE,"05/02/2024, 03:30",,,ssharma@but.org,"l023-06,l023-19,l023-09"
+c024,LIVREE,"05/02/2024, 03:30",,,lgarnier@lp.net,"l024-06,l024-15"
+c025,LIVREE,"05/02/2024, 03:30",,,mmoh@m6.com,l025-11
+c026,NOTE,"05/02/2024, 03:30",4,,rbonnet@gm.fr,l026-10
+c027,NOTE,"05/02/2024, 03:30",5,,lmartin@or.fr,"l027-14,l027-15,l027-18"
+c028,NOTE,"05/02/2024, 03:30",3,,vmartin@lp.net,l028-09
+c029,NOTE,"05/02/2024, 03:30",4,,tdufour@sfr.fr,l029-14
+c030,NOTE,"05/02/2024, 03:30",3,,aduval@wan.fr,"l030-02,l030-06,l030-19"
+c031,LIVREE,"06/02/2024, 03:30",,,sabbasi@m6.com,"l031-10,l031-04,l031-01,l031-15"
+c032,LIVREE,"06/02/2024, 03:30",,,ykim@but.org,"l032-05,l032-01"
+c033,NOTE,"06/02/2024, 03:30",1,,tguerin@or.fr,l033-07
+c034,NOTE,"06/02/2024, 03:30",2,,aandre@sfr.fr,l034-11
+c035,NOTE,"06/02/2024, 03:30",2,,tlouis@gm.fr,"l035-15,l035-05,l035-11"
+c036,NOTE,"06/02/2024, 03:30",4,,tguerin@or.fr,l036-21
+c037,NOTE,"08/02/2024, 03:30",2,,emeyer@or.fr,l037-02
+c038,LIVREE,"08/02/2024, 03:30",,,mlucas@sfr.fr,l038-18
+c039,LIVREE,"08/02/2024, 03:30",,,ldupuis2@hot.fr,l039-07
+c040,OUVERTE,"12/02/2024, 03:30",,,mkhalid@m6.com,"l040-16,l040-21"
+c041,LIVREE,"12/02/2024, 03:30",,,hcho@brt.fr,l041-07
+c042,LIVREE,"12/02/2024, 03:30",,,alemoine1@sfr.fr,l042-08
+c043,NOTE,"14/02/2024, 01:30",5,,lfournier@sfr.fr,l043-19
+c044,LIVREE,"14/02/2024, 13:30",,,tguillaume@gm.fr,"l044-17,l044-01"
+c045,LIVREE,"14/02/2024, 13:30",,,njabari@brt.fr,l045-12
+c046,LIVREE,"14/02/2024, 15:00",,,lmercier@or.fr,l046-22
+c047,LIVREE,"14/02/2024, 15:00",,,ljuma@but.org,"l047-05,l047-06"
+c048,LIVREE,"15/02/2024, 13:30",,,tdupont@wan.fr,l048-05
+c049,LIVREE,"15/02/2024, 13:30",,,tlouis@gm.fr,"l049-18,l049-10,l049-13"
+c050,LIVREE,"15/02/2024, 13:30",,,llegrand1@or.fr,"l050-22,l050-15"
+c051,LIVREE,"16/02/2024, 14:00",,,lblanc@gm.fr,"l051-17,l051-03"
+c052,OUVERTE,"16/02/2024, 14:00",,,lfaure@faure.com,l052-04
+c053,LIVREE,"16/02/2024, 14:00",,,ssharma@but.org,l053-13
+c054,LIVREE,"16/02/2024, 14:00",,,rali@m6.com,"l054-04,l054-21"
+c055,LIVREE,"16/02/2024, 14:00",,,ysaito@brt.fr,l055-19
+c056,LIVREE,"16/02/2024, 14:00",,,emoulin@or.fr,l056-13
+c057,NOTE,"19/02/2024, 12:30",4,,chong@m6.com,l057-18
+c058,NOTE,"19/02/2024, 12:30",2,,edenis@gm.fr,l058-04
+c059,NOTE,"19/02/2024, 12:30",4,,rmercier@gm.fr,l059-01
+c060,NOTE,"19/02/2024, 14:00",4,,hcho@brt.fr,l060-21
+c061,NOTE,"19/02/2024, 14:00",4,,bpetit@hot.fr,l061-01
+c062,NOTE,"19/02/2024, 15:30",4,,ykim@but.org,l062-02
+c063,NOTE,"19/02/2024, 15:30",2,,ysaito@brt.fr,l063-03
+c064,NOTE,"19/02/2024, 15:30",4,,mlucas@sfr.fr,l064-06
+c065,NOTE,"21/02/2024, 15:30",4,,mlaurent@yahoo.fr,l065-05
+c066,NOTE,"21/02/2024, 15:30",2,,mgauthier@sfr.fr,l066-18
+c067,NOTE,"21/02/2024, 16:00",3,,aandre@sfr.fr,"l067-09,l067-10,l067-01"
+c068,NOTE,"21/02/2024, 16:00",3,,lpetit@gm.fr,l068-14
+c069,NOTE,"26/02/2024, 16:30",3,,rdavid@or.fr,l069-17
+c070,NOTE,"26/02/2024, 16:30",4,,rleclerc@wan.fr,l070-10
+c071,NOTE,"26/02/2024, 16:30",3,,mbonnet@or.fr,l071-16
+c072,LIVREE,"27/02/2024, 09:00",,,cleclerc@wan.fr,"l072-08,l072-18"
+c073,LIVREE,"27/02/2024, 10:00",,,tbrun@or.fr,l073-21
+c074,LIVREE,"27/02/2024, 10:00",,,ldupuis3@gm.fr,"l074-05,l074-03"
+c075,LIVREE,"01/03/2024, 10:00",,,lblanc@gm.fr,"l075-06,l075-19"
+c076,LIVREE,"01/03/2024, 10:00",,,cbonnet@wan.fr,"l076-11,l076-20"
+c077,NOTE,"01/03/2024, 09:30",3,,lfaure@faure.com,l077-21
+c078,NOTE,"01/03/2024, 09:30",1,,lmoreau@wan.fr,l078-20
+c079,NOTE,"04/03/2024, 11:30",2,,tgarnier@sfr.fr,l079-09
+c080,LIVREE,"04/03/2024, 11:30",,,tbrun@or.fr,"l080-12,l080-13,l080-13"
+c081,OUVERTE,"04/03/2024, 13:00",,,mbonnet@or.fr,"l081-21,l081-19,l081-14,l081-22,l081-04,l081-08,l081-10"
+c082,LIVREE,"04/03/2024, 13:00",,,chenry@hot.fr,l082-16
+c083,LIVREE,"05/03/2024, 13:00",,,tblanc@hot.fr,"l083-19,l083-02"
+c084,LIVREE,"05/03/2024, 15:30",,,aalves@brt.fr,l084-14
+c085,LIVREE,"05/03/2024, 16:30",,,maziz@m6.com,l085-10
+c086,OUVERTE,"05/03/2024, 17:00",,,lmartinez@or.fr,l086-20
+c087,LIVREE,"06/03/2024, 15:30",,,hnguyen@brt.fr,"l087-03,l087-22,l087-16"
+c088,LIVREE,"06/03/2024, 15:30",,,nblanc@hot.fr,l088-07
+c089,LIVREE,"06/03/2024, 15:30",,,aleme@msn.com,l089-12
+c090,LIVREE,"07/03/2024, 15:30",,,llegrand1@or.fr,l090-06
+c091,LIVREE,"07/03/2024, 15:30",,,cleclerc@wan.fr,l091-07
+c092,LIVREE,"07/03/2024, 15:30",,,zmartinez@bbox.fr,l092-02
+c093,OUVERTE,"08/03/2024, 15:30",,,rdubois@gm.fr,l093-21
+c094,LIVREE,"08/03/2024, 15:30",,,sdufour@or.fr,l094-06
+c095,LIVREE,"08/03/2024, 15:30",,,lblanc1@lp.net,l095-02
+c096,NOTE,"08/03/2024, 15:30",4,,mperrin@lp.net,"l096-02,l096-11,l096-12"
+c097,LIVREE,"11/03/2024, 12:30",,,rbonnet@gm.fr,l097-17
+c098,LIVREE,"11/03/2024, 12:30",,,bleroux@sfr.fr,l098-09
+c099,LIVREE,"11/03/2024, 13:30",,,ldupuis2@hot.fr,"l099-18,l099-08"
+c100,LIVREE,"11/03/2024, 13:30",,,nali@m6.com,l100-09
+c101,OUVERTE,2024-01-04T16:01:00,,,alice1@brt.fr,"l305-13,l111-15,l098-09"
+c102,OUVERTE,2024-01-04T16:02:00,4,,mohamed2@sfr.fr,"l367-21,l320-11,l305-17,l294-19"
+c103,OUVERTE,2024-01-04T16:03:00,,,fatou3@hot.fr,"l322-15,l005-04"
+c104,OUVERTE,2024-01-04T16:04:00,,,lucas4@but.org,"l300-10,l335-15"
+c105,OUVERTE,2024-01-04T16:05:00,,,jean5@msn.com,l246-08
+c106,OUVERTE,2024-01-04T16:06:00,,,jean6@hot.fr,"l143-04,l372-14,l322-15,l222-09,l335-15"
+c107,OUVERTE,2024-01-04T16:07:00,,,chloe7@brt.fr,"l159-17,l019-02"
+c108,OUVERTE,2024-01-04T16:08:00,5,,léa8@sfr.fr,"l292-02,l210-09"
+c109,OUVERTE,2024-01-04T16:09:00,,,noah9@hot.fr,"l410-20,l118-20,l179-17,l067-10"
+c110,OUVERTE,2024-01-04T16:10:00,,,mehdi10@but.org,"l334-12,l195-11,l037-02"
+c111,OUVERTE,2024-01-04T16:11:00,,,mohamed11@msn.com,l019-16
+c112,OUVERTE,2024-01-04T16:12:00,,,noah12@hot.fr,"l385-09,l211-09"
+c113,OUVERTE,2024-01-04T16:13:00,,,zineb13@brt.fr,l123-14
+c114,LIVREE,"15/03/2024, 09:30",,,lcharles@sfr.fr,l114-07
+c115,OUVERTE,2024-01-04T16:15:00,,,alice15@sfr.fr,"l012-13,l233-19,l344-19"
+c116,LIVREE,"15/03/2024, 10:30",,,aandre@sfr.fr,l116-05
+c117,OUVERTE,2024-01-04T16:17:00,,,léa17@hot.fr,l327-01
+c118,OUVERTE,2024-01-04T16:18:00,,,léa18@but.org,"l326-06,l245-21,l022-07,l372-14,l285-12"
+c119,OUVERTE,2024-01-04T16:19:00,,,zineb19@msn.com,"l125-16,l379-21,l405-16"
+c120,OUVERTE,2024-01-04T16:20:00,,,léa20@hot.fr,"l121-21,l393-13,l062-02"
+c121,OUVERTE,2024-01-04T16:21:00,,,noah21@brt.fr,l004-07
+c122,OUVERTE,2024-01-04T16:22:00,,,fatou22@sfr.fr,"l203-11,l362-18"
+c123,OUVERTE,2024-01-04T16:23:00,,,zineb23@hot.fr,"l322-20,l305-15,l223-09,l059-01,l276-17"
+c124,OUVERTE,2024-01-04T16:24:00,,,fatou24@but.org,"l352-11,l408-01,l401-17,l018-07"
+c125,OUVERTE,2024-01-04T16:25:00,,,lucas25@msn.com,l031-15
+c126,OUVERTE,2024-01-04T16:26:00,,,chloe26@hot.fr,l367-21
+c127,OUVERTE,2024-01-04T16:27:00,4,,chloe27@brt.fr,"l331-04,l380-01,l299-11"
+c128,OUVERTE,2024-01-04T16:28:00,,,mehdi28@sfr.fr,l082-16
+c129,OUVERTE,2024-01-04T16:29:00,,,fatou29@hot.fr,l400-02
+c130,OUVERTE,2024-01-04T16:30:00,,,mehdi30@but.org,l393-17
+c131,OUVERTE,2024-01-04T16:31:00,,,alice31@msn.com,"l081-21,l181-12,l226-14"
+c132,OUVERTE,2024-01-04T16:32:00,,,zineb32@hot.fr,l281-14
+c133,OUVERTE,2024-01-04T16:33:00,,,alice33@brt.fr,"l187-07,l266-05,l021-19,l128-05,l344-19"
+c134,OUVERTE,2024-01-04T16:34:00,,,zineb34@sfr.fr,"l259-01,l111-14"
+c135,OUVERTE,2024-01-04T16:35:00,,,jean35@hot.fr,"l028-09,l191-16"
+c136,OUVERTE,2024-01-04T16:36:00,,,fatou36@but.org,"l123-14,l076-11,l051-03,l400-02,l103-16"
+c137,OUVERTE,2024-01-04T16:37:00,,,zineb37@msn.com,"l289-12,l305-18,l087-22,l051-17"
+c138,OUVERTE,2024-01-04T16:38:00,,,zineb38@hot.fr,l390-04
+c139,OUVERTE,2024-01-04T16:39:00,,,jean39@brt.fr,"l003-06,l232-10,l235-12,l318-20,l403-18"
+c140,OUVERTE,2024-01-04T16:40:00,,,chloe40@sfr.fr,"l058-04,l096-02,l313-06"
+c141,OUVERTE,2024-01-04T16:41:00,,,lucas41@hot.fr,l055-19
+c142,OUVERTE,2024-01-04T16:42:00,,,noah42@but.org,"l258-12,l325-16,l267-12,l214-16"
+c143,OUVERTE,2024-01-04T16:43:00,,,jean43@msn.com,l123-14
+c144,OUVERTE,2024-01-04T16:44:00,3,,mehdi44@hot.fr,"l239-13,l199-13,l287-08,l035-05"
+c145,OUVERTE,2024-01-04T16:45:00,,,mehdi45@brt.fr,l020-16
+c146,OUVERTE,2024-01-04T16:46:00,,,noah46@sfr.fr,"l084-14,l008-12,l403-06"
+c147,OUVERTE,2024-01-04T16:47:00,,,lucas47@hot.fr,l081-10
+c148,OUVERTE,2024-01-04T16:48:00,,,fatou48@but.org,"l383-08,l261-08"
+c149,OUVERTE,2024-01-04T16:49:00,,,mehdi49@msn.com,"l372-18,l155-13,l334-12,l123-14,l317-05"
+c150,OUVERTE,2024-01-04T16:50:00,2,,mehdi50@hot.fr,"l268-10,l110-18,l071-16"
+c151,NOTE,"26/03/2024, 17:00",2,,bmorel@or.fr,l151-17
+c152,OUVERTE,2024-01-04T16:52:00,,,jean52@brt.fr,"l128-18,l401-17,l275-08"
+c153,OUVERTE,2024-01-04T16:53:00,,,zineb53@sfr.fr,"l022-07,l393-22,l326-07,l179-17,l074-05"
+c154,OUVERTE,2024-01-04T16:54:00,,,lucas54@hot.fr,"l188-16,l185-03,l127-15,l246-08"
+c155,OUVERTE,2024-01-04T16:55:00,,,jean55@but.org,"l240-10,l278-22,l056-13"
+c156,OUVERTE,2024-01-04T16:56:00,,,lucas56@msn.com,"l294-19,l249-02"
+c157,OUVERTE,2024-01-04T16:57:00,,,alice57@hot.fr,"l047-06,l067-10,l292-15,l372-14"
+c158,OUVERTE,2024-01-04T16:58:00,4,,zineb58@brt.fr,"l221-09,l071-16"
+c159,LIVREE,"27/03/2024, 18:30",,,tbrun@or.fr,l159-17
+c160,OUVERTE,2024-01-04T17:00:00,,,chloe60@sfr.fr,"l295-20,l322-15,l082-16"
+c161,OUVERTE,2024-01-04T17:01:00,,,alice61@hot.fr,"l027-14,l375-12,l203-02"
+c162,OUVERTE,2024-01-04T17:02:00,,,noah62@but.org,"l375-13,l198-12,l079-09"
+c163,OUVERTE,2024-01-04T17:03:00,,,mohamed63@msn.com,"l139-05,l147-10,l406-05,l056-13,l027-14"
+c164,OUVERTE,2024-01-04T17:04:00,,,zineb64@hot.fr,"l315-04,l295-21,l284-17,l379-16"
+c165,OUVERTE,2024-01-04T17:05:00,,,mehdi65@brt.fr,"l305-17,l110-18,l201-13,l281-14"
+c166,OUVERTE,2024-01-04T17:06:00,3,,noah66@sfr.fr,"l129-12,l044-01"
+c167,OUVERTE,2024-01-04T17:07:00,,,mohamed67@hot.fr,"l001-05,l094-06,l049-13"
+c168,OUVERTE,2024-01-04T17:08:00,,,léa68@but.org,"l351-06,l404-18,l050-22,l295-21,l077-21"
+c169,OUVERTE,2024-01-04T17:09:00,,,mohamed69@msn.com,l231-09
+c170,LIVREE,"01/04/2024, 10:30",,,jmorel@or.fr,l170-14
+c171,OUVERTE,2024-01-04T17:11:00,,,alice71@hot.fr,"l087-03,l274-15,l122-10,l303-17,l249-02"
+c172,OUVERTE,2024-01-04T17:12:00,,,chloe72@brt.fr,l302-17
+c173,OUVERTE,2024-01-04T17:13:00,,,alice73@sfr.fr,"l140-08,l409-13,l111-04,l192-15,l024-06"
+c174,OUVERTE,2024-01-04T17:14:00,,,alice74@hot.fr,"l248-16,l372-18,l316-13"
+c175,OUVERTE,2024-01-04T17:15:00,,,fatou75@but.org,"l031-04,l168-10,l031-01,l370-11"
+c176,OUVERTE,2024-01-04T17:16:00,,,léa76@msn.com,"l289-19,l387-12,l228-13,l137-11"
+c177,OUVERTE,2024-01-04T17:17:00,,,alice77@hot.fr,"l178-03,l156-22,l369-15,l136-02"
+c178,OUVERTE,2024-01-04T17:18:00,,,noah78@brt.fr,"l027-18,l330-03,l040-21,l232-10,l117-11"
+c179,OUVERTE,2024-01-04T17:19:00,,,chloe79@sfr.fr,"l369-15,l038-18"
+c180,OUVERTE,2024-01-04T17:20:00,,,lucas80@hot.fr,"l087-03,l063-03,l031-04,l388-17,l101-04"
+c181,OUVERTE,2024-01-04T17:21:00,4,,zineb81@but.org,"l403-18,l344-19"
+c182,OUVERTE,2024-01-04T17:22:00,,,léa82@msn.com,l036-21
+c184,OUVERTE,2024-01-04T17:24:00,,,mohamed84@brt.fr,"l111-10,l212-11,l322-15"
+c185,OUVERTE,2024-01-04T17:25:00,,,fatou85@sfr.fr,l169-04
+c186,OUVERTE,2024-01-04T17:26:00,,,mohamed86@hot.fr,"l393-15,l406-04,l397-06,l064-06,l393-13"
+c187,OUVERTE,2024-01-04T17:27:00,,,chloe87@but.org,"l228-13,l112-12,l147-10"
+c188,OUVERTE,2024-01-04T17:28:00,,,chloe88@msn.com,"l227-01,l275-08"
+c189,OUVERTE,2024-01-04T17:29:00,,,fatou89@hot.fr,"l006-07,l385-19,l001-02,l083-19,l267-04"
+c190,OUVERTE,2024-01-04T17:30:00,,,mohamed90@brt.fr,"l105-12,l243-21,l044-01"
+c191,OUVERTE,2024-01-04T17:31:00,,,alice91@sfr.fr,l255-11
+c192,OUVERTE,2024-01-04T17:32:00,,,fatou92@hot.fr,"l053-13,l384-10,l365-15"
+c193,OUVERTE,2024-01-04T17:33:00,,,alice93@but.org,"l009-07,l035-05,l393-22,l322-20,l019-20"
+c194,OUVERTE,2024-01-04T17:34:00,5,,chloe94@msn.com,"l206-20,l157-16,l316-13,l076-20,l300-10"
+c195,OUVERTE,2024-01-04T17:35:00,2,,léa95@hot.fr,"l051-17,l208-08"
+c196,OUVERTE,2024-01-04T17:36:00,,,fatou96@brt.fr,"l377-11,l379-12,l054-21"
+c197,OUVERTE,2024-01-04T17:37:00,,,mehdi97@sfr.fr,l157-15
+c198,OUVERTE,2024-01-04T17:38:00,4,,zineb98@hot.fr,"l020-08,l200-12,l268-10,l304-08,l092-02"
+c199,OUVERTE,2024-01-04T17:39:00,,,zineb99@but.org,"l030-02,l385-18,l308-16"
+c200,OUVERTE,2024-01-04T17:40:00,,,mohamed100@msn.com,"l318-20,l287-08,l375-02,l070-10,l408-01"
+c201,OUVERTE,2024-01-04T17:41:00,,,lucas101@hot.fr,l005-08
+c202,OUVERTE,2024-01-04T17:42:00,,,mehdi102@brt.fr,"l334-12,l315-04,l210-22"
+c203,OUVERTE,2024-01-04T17:43:00,,,noah103@sfr.fr,l148-17
+c204,OUVERTE,2024-01-04T17:44:00,,,noah104@hot.fr,"l295-21,l321-10,l005-04"
+c205,OUVERTE,2024-01-04T17:45:00,,,alice105@but.org,l058-04
+c206,OUVERTE,2024-01-04T17:46:00,,,mehdi106@msn.com,"l020-12,l074-03,l019-02,l406-17,l372-18"
+c207,OUVERTE,2024-01-04T17:47:00,,,jean107@hot.fr,"l151-17,l262-03,l389-12,l364-09,l371-14"
+c208,OUVERTE,2024-01-04T17:48:00,,,jean108@brt.fr,"l115-02,l393-05,l126-22"
+c209,OUVERTE,2024-01-04T17:49:00,,,chloe109@sfr.fr,"l021-04,l077-21,l092-02,l305-18"
+c210,OUVERTE,2024-01-04T17:50:00,,,fatou110@hot.fr,"l039-07,l030-06,l395-21,l132-11"
+c211,OUVERTE,2024-01-04T17:51:00,,,alice111@but.org,"l137-07,l156-22,l355-18"
+c212,OUVERTE,2024-01-04T17:52:00,4,,fatou112@msn.com,l203-01
+c213,OUVERTE,2024-01-04T17:53:00,,,alice113@hot.fr,"l377-11,l155-13,l055-19,l075-19"
+c214,OUVERTE,2024-01-04T17:54:00,,,mohamed114@brt.fr,l273-03
+c215,OUVERTE,2024-01-04T17:55:00,,,mohamed115@sfr.fr,"l066-18,l251-11,l157-15"
+c216,OUVERTE,2024-01-04T17:56:00,,,lucas116@hot.fr,"l137-11,l396-17"
+c217,OUVERTE,2024-01-04T17:57:00,,,lucas117@but.org,"l370-12,l278-22,l143-03,l219-04"
+c218,OUVERTE,2024-01-04T17:58:00,,,alice118@msn.com,"l117-11,l160-21,l133-13"
+c219,OUVERTE,2024-01-04T17:59:00,,,jean119@hot.fr,"l330-03,l035-11,l204-10,l141-19,l070-10"
+c220,OUVERTE,2024-01-04T18:00:00,,,jean120@brt.fr,"l006-14,l389-12,l025-11,l294-09"
+c221,OUVERTE,2024-01-04T18:01:00,,,fatou121@sfr.fr,"l313-17,l375-22,l352-11"
+c222,OUVERTE,2024-01-04T18:02:00,,,alice122@hot.fr,"l267-12,l067-10,l394-17,l146-15,l104-20"
+c223,OUVERTE,2024-01-04T18:03:00,,,mehdi123@but.org,"l080-13,l103-16"
+c224,OUVERTE,2024-01-04T18:04:00,3,,lucas124@msn.com,"l348-03,l190-11,l246-04,l329-02"
+c225,OUVERTE,2024-01-04T18:05:00,,,lucas125@hot.fr,"l203-11,l272-12"
+c226,OUVERTE,2024-01-04T18:06:00,,,noah126@brt.fr,"l292-02,l111-10,l031-01"
+c227,OUVERTE,2024-01-04T18:07:00,,,zineb127@sfr.fr,"l032-05,l298-15,l308-16"
+c228,OUVERTE,2024-01-04T18:08:00,,,noah128@hot.fr,l065-05
+c229,OUVERTE,2024-01-04T18:09:00,,,alice129@but.org,"l308-13,l404-12,l202-08,l358-01,l041-07"
+c230,OUVERTE,2024-01-04T18:10:00,,,chloe130@msn.com,"l404-04,l269-09,l324-12"
+c231,OUVERTE,2024-01-04T18:11:00,,,jean131@hot.fr,"l023-06,l036-21,l372-13,l111-15"
+c235,OUVERTE,2024-01-04T18:15:00,,,mohamed135@but.org,l149-22
+c236,OUVERTE,2024-01-04T18:16:00,,,fatou136@msn.com,"l031-04,l328-22,l021-19,l031-10"
+c237,OUVERTE,2024-01-04T18:17:00,,,mohamed137@hot.fr,"l401-16,l168-10,l147-10,l074-03"
+c238,OUVERTE,2024-01-04T18:18:00,,,lucas138@brt.fr,"l213-20,l012-07,l166-06"
+c241,OUVERTE,2024-01-04T18:21:00,,,mehdi141@but.org,"l288-07,l303-17,l223-09,l132-11"
+c242,OUVERTE,2024-01-04T18:22:00,,,zineb142@msn.com,"l327-01,l005-02,l086-20"
+c243,OUVERTE,2024-01-04T18:23:00,,,alice143@hot.fr,"l180-16,l081-04"
+c244,OUVERTE,2024-01-04T18:24:00,,,alice144@brt.fr,"l386-20,l390-04,l110-18,l156-07"
+c245,OUVERTE,2024-01-04T18:25:00,,,lucas145@sfr.fr,"l024-15,l295-21,l301-19"
+c251,OUVERTE,2024-01-04T18:31:00,,,jean151@sfr.fr,"l080-12,l379-14"
+c252,OUVERTE,2024-01-04T18:32:00,,,lucas152@hot.fr,"l294-19,l190-06,l096-11,l349-12"
+c253,OUVERTE,2024-01-04T18:33:00,,,mohamed153@but.org,"l023-19,l188-16,l274-15,l376-21"
+c254,OUVERTE,2024-01-04T18:34:00,,,chloe154@msn.com,"l069-17,l208-03"
+c255,OUVERTE,2024-01-04T18:35:00,,,jean155@hot.fr,"l243-01,l006-02,l054-21,l159-17,l031-15"
+c256,OUVERTE,2024-01-04T18:36:00,,,mehdi156@brt.fr,"l008-20,l236-17,l033-07"
+c257,OUVERTE,2024-01-04T18:37:00,,,mehdi157@sfr.fr,"l178-02,l012-17,l243-21,l352-11"
+c258,OUVERTE,2024-01-04T18:38:00,,,fatou158@hot.fr,"l009-06,l115-02"
+c259,OUVERTE,2024-01-04T18:39:00,,,noah159@but.org,"l087-16,l089-12"
+c260,OUVERTE,2024-01-04T18:40:00,,,chloe160@msn.com,l340-07
+c261,OUVERTE,2024-01-04T18:41:00,,,alice161@hot.fr,l097-17
+c262,OUVERTE,2024-01-04T18:42:00,,,léa162@brt.fr,"l305-17,l178-22"
+c263,OUVERTE,2024-01-04T18:43:00,,,mehdi163@sfr.fr,"l193-14,l027-15,l288-07"
+c264,OUVERTE,2024-01-04T18:44:00,,,mehdi164@hot.fr,"l037-02,l085-10"
+c265,OUVERTE,2024-01-04T18:45:00,,,mehdi165@but.org,"l274-15,l264-08,l030-06"
+c266,OUVERTE,2024-01-04T18:46:00,,,noah166@msn.com,"l192-15,l190-11,l288-22,l375-21,l233-19"
+c267,OUVERTE,2024-01-04T18:47:00,,,mehdi167@hot.fr,"l403-18,l244-20"
+c268,OUVERTE,2024-01-04T18:48:00,,,noah168@brt.fr,l076-20
+c270,OUVERTE,2024-01-04T18:50:00,,,jean170@hot.fr,l190-06
+c271,OUVERTE,2024-01-04T18:51:00,,,mohamed171@but.org,"l226-14,l118-20"
+c272,OUVERTE,2024-01-04T18:52:00,,,chloe172@msn.com,"l239-13,l275-08,l314-18,l254-16"
+c273,OUVERTE,2024-01-04T18:53:00,,,fatou173@hot.fr,"l085-10,l106-01,l199-15"
+c276,OUVERTE,2024-01-04T18:56:00,,,noah176@hot.fr,l150-10
+c278,OUVERTE,2024-01-04T18:58:00,,,chloe178@msn.com,"l355-18,l409-14,l279-11,l308-13,l216-13"
+c279,OUVERTE,2024-01-04T18:59:00,,,mehdi179@hot.fr,l399-06
+c280,LIVREE,"05/04/2024, 08:00",,,jfernandez@gm.fr,l280-16
+c281,OUVERTE,2024-01-04T19:01:00,,,mehdi181@brt.fr,"l190-06,l407-19,l136-02,l163-08"
+c282,OUVERTE,2024-01-04T19:02:00,,,mohamed182@sfr.fr,"l178-03,l328-22,l405-06,l040-16"
+c283,OUVERTE,2024-01-04T19:03:00,,,chloe183@hot.fr,"l051-03,l306-15,l170-14,l001-02"
+c284,OUVERTE,2024-01-04T19:04:00,,,mehdi184@but.org,l024-15
+c285,OUVERTE,2024-01-04T19:05:00,,,chloe185@msn.com,"l165-02,l209-11,l262-03,l137-07,l201-13"
+c286,OUVERTE,2024-01-04T19:06:00,,,zineb186@hot.fr,"l408-14,l403-10"
+c287,OUVERTE,2024-01-04T19:07:00,,,fatou187@brt.fr,"l219-06,l009-12,l069-17,l097-17"
+c288,OUVERTE,2024-01-04T19:08:00,,,mehdi188@sfr.fr,"l205-10,l044-17"
+c289,OUVERTE,2024-01-04T19:09:00,,,chloe189@hot.fr,"l299-11,l274-15,l111-06,l387-12,l157-16"
+c290,OUVERTE,2024-01-04T19:10:00,,,léa190@but.org,"l157-12,l313-17,l400-02"
+c291,OUVERTE,2024-01-04T19:11:00,,,zineb191@msn.com,l135-19
+c292,OUVERTE,2024-01-04T19:12:00,,,mohamed192@hot.fr,"l169-19,l009-07,l266-05,l020-16"
+c293,OUVERTE,2024-01-04T19:13:00,,,noah193@brt.fr,"l283-05,l318-20,l067-10"
+c294,OUVERTE,2024-01-04T19:14:00,,,alice194@sfr.fr,"l081-10,l197-08"
+c295,OUVERTE,2024-01-04T19:15:00,,,zineb195@hot.fr,l198-12
+c296,OUVERTE,2024-01-04T19:16:00,,,zineb196@but.org,"l197-08,l401-16,l149-22,l258-12,l270-10"
+c297,OUVERTE,2024-01-04T19:17:00,,,alice197@msn.com,"l221-09,l208-03,l046-22"
+c298,OUVERTE,2024-01-04T19:18:00,,,lucas198@hot.fr,"l141-19,l365-15,l265-21,l408-10"
+c299,OUVERTE,2024-01-04T19:19:00,,,noah199@brt.fr,l192-13
+c300,NOTE,"05/04/2024, 11:30",3,,cguillaume@lp.net,l300-10
+c301,LIVREE,"08/04/2024, 09:00",,,mjoly@or.fr,l301-19
+c302,LIVREE,"08/04/2024, 09:00",,,mbonnet@or.fr,l302-17
+c303,LIVREE,"08/04/2024, 09:30",,,jdurand@gm.fr,l303-17
+c304,NOTE,"08/04/2024, 10:00",2,,mabdel@m6.com,l304-08
+c305,LIVREE,"08/04/2024, 10:30",,,omenard@lp.net,"l305-05,l305-07,l305-12,l305-11,l305-17,l305-15,l305-16,l305-01,l305-13,l305-02,l305-18"
+c306,NOTE,"08/04/2024, 11:00",4,,maziz@m6.com,l306-15
+c307,LIVREE,"08/04/2024, 11:30",,,ldubois@wel.fr,l307-03
+c308,LIVREE,"08/04/2024, 12:00",,,lboucher@sfr.fr,"l308-13,l308-16"
+c309,LIVREE,"08/04/2024, 12:30",,,ldubois@wel.fr,l309-13
+c310,LIVREE,"08/04/2024, 14:00",,,tgiraud@sfr.fr,"l310-13,l310-20"
+c311,LIVREE,"08/04/2024, 15:00",,,jjuma@brt.fr,"l311-13,l311-07"
+c312,LIVREE,"08/04/2024, 15:30",,,tlouis@gm.fr,l312-02
+c313,LIVREE,"08/04/2024, 16:00",,,adupuis@hot.fr,"l313-17,l313-06"
+c314,LIVREE,"08/04/2024, 16:00",,,yguerin@lp.net,l314-18
+c315,LIVREE,"08/04/2024, 16:30",,,mdupont@gm.fr,l315-04
+c316,LIVREE,"08/04/2024, 17:00",,,lmichel@or.fr,l316-13
+c317,LIVREE,"08/04/2024, 17:00",,,lfournier@sfr.fr,"l317-15,l317-05"
+c318,LIVREE,"08/04/2024, 18:00",,,lbarbier1@lp.net,l318-20
+c319,LIVREE,"09/04/2024, 00:30",,,mdupont@gm.fr,"l319-11,l319-19"
+c320,LIVREE,"09/04/2024, 00:30",,,clement@or.fr,"l320-11,l320-22"
+c321,LIVREE,"09/04/2024, 02:00",,,llegrand@or.fr,l321-10
+c322,LIVREE,"09/04/2024, 02:00",,,bleroux@sfr.fr,"l322-20,l322-15"
+c323,LIVREE,"09/04/2024, 02:30",,,tgiraud@sfr.fr,l323-07
+c324,LIVREE,"09/04/2024, 03:30",,,llerouge@free.fr,l324-12
+c325,OUVERTE,"09/04/2024, 04:00",,,jdurand@gm.fr,"l325-14,l325-04,l325-19,l325-12,l325-16"
+c326,OUVERTE,"09/04/2024, 04:00",,,thenri@or.fr,"l326-06,l326-07"
+c327,LIVREE,"09/04/2024, 04:00",,,mbourgeois@lp.net,"l327-01,l327-11"
+c328,LIVREE,"09/04/2024, 04:30",,,aduval1@wan.fr,l328-22
+c329,LIVREE,"09/04/2024, 04:30",,,akhan@but.org,l329-02
+c330,LIVREE,"09/04/2024, 04:30",,,eleroy@ptr.fr,l330-03
+c331,LIVREE,"09/04/2024, 05:00",,,hmartin@hot.fr,l331-04
+c332,LIVREE,"09/04/2024, 05:00",,,mbonnet@or.fr,l332-19
+c333,LIVREE,"09/04/2024, 05:30",,,rbonnet1@hot.fr,l333-10
+c334,LIVREE,"09/04/2024, 06:00",,,ssharma@m6.com,l334-12
+c335,OUVERTE,"09/04/2024, 06:00",,,pnicolas@or.fr,l335-15
+c336,LIVREE,"09/04/2024, 06:30",,,amohed@brt.fr,l336-22
+c337,LIVREE,"09/04/2024, 07:00",,,alam@m6.com,l337-17
+c338,LIVREE,"09/04/2024, 07:00",,,abois@lp.net,l338-13
+c339,LIVREE,"09/04/2024, 07:30",,,lblanc2@wan.fr,l339-21
+c340,LIVREE,"09/04/2024, 08:00",,,zlacroix@hot.fr,l340-07
+c341,OUVERTE,"09/04/2024, 09:30",,,llerouge@free.fr,l341-04
+c342,OUVERTE,"09/04/2024, 09:30",,,abois@lp.net,l342-21
+c343,LIVREE,"09/04/2024, 09:30",,,mabdullah@but.org,l343-22
+c344,LIVREE,"09/04/2024, 10:00",,,lboucher@sfr.fr,l344-19
+c345,LIVREE,"09/04/2024, 10:00",,,tlouis@gm.fr,l345-09
+c346,LIVREE,"09/04/2024, 10:30",,,agilles@sfr.fr,l346-08
+c347,NOTE,"09/04/2024, 10:30",2,,mbourge@gm.fr,l347-18
+c348,NOTE,"09/04/2024, 11:00",5,,lferrand@gm.fr,l348-03
+c349,NOTE,"09/04/2024, 11:00",5,,lferrand@gm.fr,"l349-16,l349-12"
+c350,NOTE,"09/04/2024, 11:30",2,,jjuma@brt.fr,"l350-21,l350-13"
+c351,NOTE,"09/04/2024, 11:30",3,,emoulin@or.fr,l351-06
+c352,NOTE,"09/04/2024, 12:00",2,,alemoine1@sfr.fr,"l352-11,l352-14,l352-16"
+c353,NOTE,"09/04/2024, 12:00",4,,ldupuis1@hot.fr,l353-06
+c354,NOTE,"09/04/2024, 12:30",2,,lmercier@or.fr,l354-02
+c355,NOTE,"09/04/2024, 12:30",3,,lblanc1@lp.net,l355-18
+c356,LIVREE,"09/04/2024, 13:00",,,nlois@or.fr,l356-05
+c357,LIVREE,"09/04/2024, 13:30",,,pnicolas@or.fr,"l357-05,l357-21"
+c358,LIVREE,"09/04/2024, 13:30",,,rjoly@or.fr,l358-01
+c359,LIVREE,"09/04/2024, 14:30",,,mlucas@sfr.fr,l359-20
+c360,LIVREE,"09/04/2024, 14:30",,,tlouis@gm.fr,l360-09
+c361,LIVREE,"09/04/2024, 15:30",,,tgiraud@sfr.fr,l361-22
+c362,LIVREE,"09/04/2024, 16:30",,,smercier@sfr.fr,l362-18
+c363,LIVREE,"09/04/2024, 16:30",,,elaroche@lp.net,l363-22
+c364,LIVREE,"10/04/2024, 15:30",,,lcaron@lp.net,l364-09
+c365,LIVREE,"10/04/2024, 16:00",,,clement@or.fr,l365-15
+c366,LIVREE,"10/04/2024, 16:00",,,ssingh@m6.com,l366-08
+c367,LIVREE,"10/04/2024, 16:30",,,cgirard@or.fr,l367-21
+c368,LIVREE,"10/04/2024, 17:30",,,bleroux@sfr.fr,l368-06
+c369,LIVREE,"10/04/2024, 17:30",,,hmartin@hot.fr,l369-15
+c370,LIVREE,"10/04/2024, 18:00",,,smercier@sfr.fr,"l370-11,l370-12"
+c371,LIVREE,"10/04/2024, 18:30",,,mcolin@sfr.fr,l371-14
+c372,LIVREE,"10/04/2024, 18:30",,,lbarbier1@lp.net,"l372-14,l372-13,l372-05,l372-18"
+c373,LIVREE,"10/04/2024, 20:00",,,nnguyen@brt.fr,l373-17
+c374,LIVREE,"15/04/2024, 21:30",,,lsaleh@brt.fr,l374-01
+c375,LIVREE,"15/04/2024, 21:30",,,lguerin@gm.fr,"l375-02,l375-15,l375-13,l375-21,l375-22,l375-12"
+c376,LIVREE,"15/04/2024, 08:30",,,ljuma@but.org,l376-21
+c377,LIVREE,"15/04/2024, 08:30",,,mgomes@but.org,"l377-11,l377-20"
+c378,OUVERTE,"05/04/2024, 08:30",,,cleclerc@wan.fr,"l378-10,l378-09"
+c379,OUVERTE,"05/04/2024, 08:30",,,jeyer@or.fr,"l379-14,l379-11,l379-16,l379-12,l379-21"
+c380,LIVREE,"05/04/2024, 09:00",,,lbarbier@lp.net,l380-01
+c381,LIVREE,"05/04/2024, 09:00",,,clegrand@or.fr,l381-18
+c382,OUVERTE,"05/04/2024, 10:30",,,rlambert@lp.net,l382-20
+c383,OUVERTE,"05/04/2024, 10:30",,,mmichel@bbox.fr,l383-08
+c384,LIVREE,"05/04/2024, 12:00",,,rgarcia@or.fr,"l384-14,l384-10"
+c385,LIVREE,"05/04/2024, 12:00",,,alemoyne@wan.fr,"l385-13,l385-09,l385-02,l385-19,l385-18"
+c386,LIVREE,"05/04/2024, 12:00",,,lgouillaume@sfr.fr,l386-20
+c387,OUVERTE,"08/04/2024, 12:00",,,lguyot@lp.net,l387-12
+c388,OUVERTE,"08/04/2024, 12:00",,,chenry@hot.fr,l388-17
+c389,LIVREE,"08/04/2024, 12:30",,,sshin@but.org,"l389-12,l389-06"
+c390,LIVREE,"08/04/2024, 12:30",,,tdupont@wan.fr,"l390-03,l390-04"
+c391,LIVREE,"08/04/2024, 13:30",,,mperrier@or.fr,l391-07
+c392,LIVREE,"08/04/2024, 13:30",,,ldupuis2@hot.fr,l392-09
+c393,LIVREE,"08/04/2024, 15:00",,,lbarbier@lp.net,"l393-17,l393-05,l393-01,l393-14,l393-15,l393-13,l393-22"
+c394,LIVREE,"08/04/2024, 15:00",,,marnaud1@sfr.fr,l394-17
+c395,LIVREE,"08/04/2024, 15:00",,,ccarre@hot.fr,l395-21
+c396,LIVREE,"08/04/2024, 15:00",,,wnguyen@but.org,l396-17
+c397,LIVREE,"08/04/2024, 15:00",,,vmartin@lp.net,l397-06
+c398,LIVREE,"08/04/2024, 15:00",,,egarnier@sfr.fr,l398-17
+c399,LIVREE,"08/04/2024, 15:00",,,nlaurent@yahoo.fr,l399-06
+c400,LIVREE,"08/04/2024, 15:00",,,nleclerc@sfr.fr,l400-02
+c401,LIVREE,"08/04/2024, 15:00",,,mgiraud@gm.fr,"l401-16,l401-17"
+c402,LIVREE,"08/04/2024, 15:00",,,emeyer@or.fr,l402-07
+c403,LIVREE,"08/04/2024, 15:00",,,adupuis@hot.fr,"l403-18,l403-10,l403-06"
+c404,LIVREE,"08/04/2024, 15:00",,,lmercier@or.fr,"l404-18,l404-04,l404-12,l404-19,l404-17,l404-02"
+c405,LIVREE,"08/04/2024, 15:00",,,lbarbier@lp.net,"l405-16,l405-06"
+c406,LIVREE,"12/04/2024, 15:30",,,tguillemin@out.fr,"l406-17,l406-14,l406-05,l406-04"
+c407,OUVERTE,"15/04/2024, 15:30",,,bmorel@or.fr,"l407-17,l407-19"
+c408,OUVERTE,"15/04/2024, 15:30",,,lguillaume@lp.net,"l408-14,l408-09,l408-01,l408-10"
+c409,OUVERTE,"15/04/2024, 16:00",,,hkim@brt.fr,"l409-13,l409-02,l409-14"
+c410,OUVERTE,"16/04/2024, 17:00",,,tdufour@sfr.fr,"l410-16,l410-15,l410-20"
+c411,LIVREE,"12/03/2024, 13:30",,,rmercier@gm.fr,l101-04
+c412,NOTE,"12/03/2024, 13:30",2,,mlee@but.org,l102-14
+c413,OUVERTE,"12/03/2024, 13:30",,,mjean@lp.net,l103-16
+c414,OUVERTE,"12/03/2024, 14:30",,,pnicolas@or.fr,l104-20
+c415,OUVERTE,"12/03/2024, 14:30",,,aibrahim@but.org,l105-12
+c416,OUVERTE,"12/03/2024, 14:30",,,lmoreau@wan.fr,l106-01
+c417,OUVERTE,"13/03/2024, 14:30",,,elaroche@lp.net,l107-13
+c418,OUVERTE,"13/03/2024, 16:00",,,lmartin@or.fr,l108-03
+c419,OUVERTE,"13/03/2024, 19:00",,,lmoreau@wan.fr,l109-09
+c420,OUVERTE,"14/03/2024, 08:00",,,lguyot@lp.net,l110-18
+c421,LIVREE,"14/03/2024, 09:00",,,hmartin@hot.fr,"l111-04,l111-14,l111-15,l111-10,l111-06"
+c422,LIVREE,"14/03/2024, 09:00",,,sgautier@hot.fr,l112-12
+c423,LIVREE,"14/03/2024, 10:30",,,egarnier@sfr.fr,l113-17
+c424,LIVREE,"15/03/2024, 10:30",,,llerouge@free.fr,l115-02
+c425,LIVREE,"18/03/2024, 10:30",,,chenry@hot.fr,l117-11
+c426,LIVREE,"18/03/2024, 11:00",,,jfernandez@gm.fr,l118-20
+c427,LIVREE,"18/03/2024, 11:00",,,yali@brt.fr,l119-08
+c428,NOTE,"18/03/2024, 12:30",3,,smercier@sfr.fr,l120-19
+c429,NOTE,"18/03/2024, 12:30",5,,cpetit1@lp.net,l121-21
+c430,LIVREE,"18/03/2024, 12:30",,,smercier@sfr.fr,l122-10
+c431,LIVREE,"19/03/2024, 11:00",,,emeyer1@or.fr,l123-14
+c432,LIVREE,"19/03/2024, 11:00",,,clenoir@gm.fr,"l124-06,l124-15"
+c433,LIVREE,"19/03/2024, 11:00",,,tbrun@or.fr,l125-16
+c434,LIVREE,"19/03/2024, 11:30",,,mgomes@but.org,l126-22
+c435,LIVREE,"19/03/2024, 11:30",,,cguerin@sfr.fr,l127-15
+c436,LIVREE,"19/03/2024, 11:30",,,mcolin@sfr.fr,"l128-05,l128-18"
+c437,NOTE,"19/03/2024, 11:30",3,,lguillaume@lp.net,"l129-12,l129-19"
+c438,LIVREE,"19/03/2024, 12:00",,,tgiraud@sfr.fr,l130-16
+c439,LIVREE,"19/03/2024, 12:00",,,llemaitre@bbox.fr,l131-11
+c440,LIVREE,"19/03/2024, 13:00",,,ldubois@wel.fr,"l132-11,l132-17,l132-13"
+c441,OUVERTE,"19/03/2024, 13:00",,,smercier@sfr.fr,l133-13
+c442,OUVERTE,"19/03/2024, 14:30",,,tbrun@or.fr,l134-07
+c443,OUVERTE,"19/03/2024, 14:30",,,lbrunet@gm.fr,l135-19
+c444,OUVERTE,"20/03/2024, 13:30",,,emeyer1@or.fr,l136-02
+c445,LIVREE,"20/03/2024, 14:00",,,apascal@or.fr,"l137-07,l137-11"
+c446,LIVREE,"20/03/2024, 14:00",,,emeyer1@or.fr,l138-17
+c447,LIVREE,"21/03/2024, 14:00",,,zlemaire@lp.net,l139-05
+c448,LIVREE,"21/03/2024, 14:00",,,rlambert@lp.net,l140-08
+c449,LIVREE,"21/03/2024, 14:30",,,slemaitre@sfr.fr,l141-19
+c450,LIVREE,"21/03/2024, 16:00",,,ldupuis3@gm.fr,l142-14
+c451,LIVREE,"21/03/2024, 16:00",,,sshin@but.org,"l143-04,l143-08,l143-03"
+c452,LIVREE,"21/03/2024, 16:00",,,mkhalid@m6.com,l144-15
+c453,LIVREE,"26/03/2024, 14:30",,,slemaitre@sfr.fr,l145-13
+c454,LIVREE,"26/03/2024, 15:00",,,egarnier@sfr.fr,l146-15
+c455,NOTE,"26/03/2024, 16:00",2,,pbourgeois@gm.fr,l147-10
+c456,NOTE,"26/03/2024, 16:00",4,,idumas@lp.net,"l148-17,l148-13"
+c457,NOTE,"26/03/2024, 16:00",2,,jgar@icloud.com,l149-22
+c458,NOTE,"26/03/2024, 17:00",3,,blee@but.org,"l150-10,l150-09"
+c459,LIVREE,"26/03/2024, 17:30",,,mguerin@lp.net,l152-14
+c460,LIVREE,"26/03/2024, 18:00",,,ljuma@but.org,l153-21
+c461,LIVREE,"26/03/2024, 18:00",,,lfournier@sfr.fr,l154-21
+c462,LIVREE,"26/03/2024, 18:00",,,mabdullah@but.org,"l155-13,l155-03"
+c463,LIVREE,"26/03/2024, 18:00",,,ljuma@but.org,"l156-22,l156-07"
+c464,LIVREE,"26/03/2024, 18:00",,,ljuma@but.org,"l157-12,l157-15,l157-16"
+c465,LIVREE,"27/03/2024, 18:00",,,lblanc2@wan.fr,l158-03
+c466,LIVREE,"27/03/2024, 18:30",,,jmorel@or.fr,l160-21
+c467,LIVREE,"27/03/2024, 18:30",,,ncolin@or.fr,l161-14
+c468,LIVREE,"27/03/2024, 19:30",,,mblanc@bbox.fr,l162-06
+c469,LIVREE,"28/03/2024, 19:30",,,yali@brt.fr,l163-08
+c470,OUVERTE,"29/03/2024, 08:30",,,aguyot@hot.fr,l164-02
+c471,OUVERTE,"01/04/2024, 08:30",,,clefebvre@lp.net,l165-02
+c472,OUVERTE,"01/04/2024, 09:00",,,llemaitre@bbox.fr,"l166-06,l166-07,l166-06"
+c473,LIVREE,"01/04/2024, 09:00",,,zmartinez@bbox.fr,l167-15
+c474,LIVREE,"01/04/2024, 09:00",,,ebernard@lp.net,l168-10
+c475,LIVREE,"01/04/2024, 10:30",,,mjoly@or.fr,"l169-19,l169-04,l169-14"
+c476,LIVREE,"01/04/2024, 11:30",,,eleroy@ptr.fr,l171-08
+c477,LIVREE,"01/04/2024, 11:30",,,cpetit1@lp.net,l172-10
+c478,LIVREE,"01/04/2024, 12:30",,,jguil@or.fr,l173-01
+c479,LIVREE,"01/04/2024, 12:30",,,mguerin@lp.net,l174-13
+c480,LIVREE,"01/04/2024, 14:00",,,eguerin@wan.fr,l175-07
+c481,LIVREE,"01/04/2024, 14:00",,,rleclerc@wan.fr,l176-21
+c482,LIVREE,"01/04/2024, 14:00",,,ldupuis@hot.fr,l177-11
+c483,LIVREE,"01/04/2024, 14:30",,,lfournier@sfr.fr,"l178-02,l178-22,l178-03,l178-10"
+c484,LIVREE,"01/04/2024, 14:30",,,lfournier@sfr.fr,l179-17
+c485,LIVREE,"01/04/2024, 16:00",,,lfournier@sfr.fr,"l180-09,l180-07,l180-16"
+c486,LIVREE,"01/04/2024, 16:00",,,lmartinez@or.fr,l181-12
+c487,LIVREE,"01/04/2024, 17:30",,,apascal@or.fr,l182-13
+c488,LIVREE,"01/04/2024, 17:30",,,amartin@wan.fr,l183-07
+c489,OUVERTE,"01/04/2024, 18:00",,,lcharles@sfr.fr,l184-20
+c490,LIVREE,"01/04/2024, 18:00",,,lfaure@faure.com,l185-03
+c491,LIVREE,"01/04/2024, 18:00",,,clegrand@or.fr,l186-14
+c492,NOTE,"01/04/2024, 18:00",5,,jblanc@hot.fr,l187-07
+c493,NOTE,"01/04/2024, 18:00",3,,lpetit@gm.fr,l188-16
+c494,NOTE,"01/04/2024, 18:00",1,,mgiraud1@gm.fr,l189-18
+c495,LIVREE,"01/04/2024, 18:00",,,bleroux@sfr.fr,"l190-11,l190-08,l190-06"
+c496,LIVREE,"01/04/2024, 18:30",,,ysung@m6.com,"l191-16,l191-01"
+c497,LIVREE,"01/04/2024, 18:30",,,zahmed@but.org,"l192-13,l192-15"
+c498,OUVERTE,"01/04/2024, 18:30",,,hcho@brt.fr,l193-14
+c499,OUVERTE,"01/04/2024, 18:30",,,mbonnet@or.fr,l194-13
+c500,OUVERTE,"01/04/2024, 18:30",,,ysaito@brt.fr,l195-11
+c501,LIVREE,"01/04/2024, 19:00",,,tblanc@hot.fr,l196-02
+c502,LIVREE,"01/04/2024, 19:00",,,marnaud1@sfr.fr,"l197-13,l197-08"
+c503,LIVREE,"01/04/2024, 19:00",,,rmercier@gm.fr,l198-12
+c504,LIVREE,"01/04/2024, 19:00",,,yali@brt.fr,"l199-15,l199-13"
+c505,LIVREE,"01/04/2024, 19:30",,,rdavid@or.fr,l200-12
+c506,LIVREE,"01/04/2024, 19:30",,,ccarre@hot.fr,"l201-13,l201-16"
+c507,LIVREE,"01/04/2024, 19:30",,,vlacroix@sfr.fr,l202-08
+c508,OUVERTE,"01/04/2024, 20:00",,,cdupuis1@gm.fr,"l203-01,l203-02,l203-11,l203-05"
+c509,LIVREE,"01/04/2024, 20:00",,,llerouge@free.fr,l204-10
+c510,LIVREE,"01/04/2024, 20:00",,,nblanc@hot.fr,l205-10
+c511,LIVREE,"01/04/2024, 20:00",,,sshin@but.org,l206-20
+c512,NOTE,"01/04/2024, 20:00",2,,mmorel@out.fr,l207-16
+c513,NOTE,"01/04/2024, 20:00",4,,apascal@or.fr,"l208-08,l208-03"
+c514,NOTE,"01/04/2024, 20:00",3,,lfournier@sfr.fr,"l209-10,l209-11"
+c515,NOTE,"01/04/2024, 20:00",2,,bmoreau@hot.fr,"l210-09,l210-22"
+c516,NOTE,"01/04/2024, 20:00",4,,rdavid@or.fr,"l211-09,l211-14"
+c517,NOTE,"01/04/2024, 20:30",2,,ppatel@m6.com,l212-11
+c518,NOTE,"01/04/2024, 20:30",4,,cpetit@or.fr,l213-20
+c519,NOTE,"01/04/2024, 20:30",3,,mmichel@bbox.fr,l214-16
+c520,LIVREE,"01/04/2024, 20:30",,,lpetit@gm.fr,l215-02
+c521,LIVREE,"01/04/2024, 20:30",,,amohed@brt.fr,"l216-13,l216-14"
+c522,LIVREE,"01/04/2024, 21:00",,,egarnier@sfr.fr,l217-13
+c523,LIVREE,"01/04/2024, 21:00",,,akhan@but.org,l218-20
+c524,LIVREE,"01/04/2024, 21:00",,,elaroche@lp.net,"l219-06,l219-04"
+c525,LIVREE,"01/04/2024, 21:30",,,lbarbier@lp.net,l220-20
+c526,LIVREE,"01/04/2024, 21:30",,,mkhalid@m6.com,l221-09
+c527,LIVREE,"01/04/2024, 21:30",,,zlemaire@lp.net,l222-09
+c528,LIVREE,"01/04/2024, 22:00",,,mcolin1@gm.fr,"l223-02,l223-09"
+c529,LIVREE,"01/04/2024, 22:00",,,aalves@brt.fr,"l224-18,l224-12"
+c530,LIVREE,"01/04/2024, 22:30",,,rjoly@or.fr,l225-20
+c531,LIVREE,"01/04/2024, 22:30",,,slemaitre@sfr.fr,l226-14
+c532,LIVREE,"01/04/2024, 22:30",,,jguil@or.fr,l227-01
+c533,LIVREE,"01/04/2024, 22:30",,,bmoreau@hot.fr,l228-13
+c534,LIVREE,"01/04/2024, 22:30",,,marnaud@out.fr,l229-03
+c535,LIVREE,"01/04/2024, 22:30",,,tlouis@gm.fr,l230-09
+c536,LIVREE,"01/04/2024, 22:30",,,mperrin@lp.net,l231-09
+c537,LIVREE,"01/04/2024, 22:30",,,amartin@wan.fr,l232-10
+c538,LIVREE,"01/04/2024, 22:30",,,adupuis@hot.fr,l233-19
+c539,LIVREE,"01/04/2024, 23:00",,,tguillemin@out.fr,l234-01
+c540,OUVERTE,"01/04/2024, 23:00",,,lmasson@lp.net,l235-12
+c541,LIVREE,"01/04/2024, 23:00",,,bpetit@hot.fr,"l236-22,l236-17"
+c542,LIVREE,"01/04/2024, 23:00",,,bbarbier@or.fr,l237-12
+c543,LIVREE,"01/04/2024, 23:00",,,mbourge@gm.fr,l238-13
+c544,LIVREE,"01/04/2024, 23:30",,,lblanc1@lp.net,"l239-09,l239-13"
+c545,LIVREE,"01/04/2024, 23:30",,,lmartinez@or.fr,l240-10
+c546,LIVREE,"01/04/2024, 23:30",,,jdupont@sfr.fr,l241-18
+c547,LIVREE,"01/04/2024, 23:30",,,emarchand@ok.fr,l242-20
+c548,LIVREE,"01/04/2024, 23:30",,,lfaure@faure.com,"l243-21,l243-01"
+c549,OUVERTE,"01/04/2024, 23:30",,,mabdullah@but.org,l244-20
+c550,OUVERTE,"01/04/2024, 23:30",,,lbarbier1@lp.net,"l245-13,l245-21"
+c551,LIVREE,"01/04/2024, 23:30",,,egarnier@sfr.fr,"l246-08,l246-04"
+c552,LIVREE,"01/04/2024, 23:30",,,tdupont@wan.fr,l247-21
+c553,LIVREE,"01/04/2024, 23:30",,,tguerin@or.fr,l248-16
+c554,OUVERTE,"05/04/2024, 00:30",,,jguie@or.fr,l249-02
+c555,LIVREE,"05/04/2024, 00:30",,,zchen@brt.fr,l250-22
+c556,LIVREE,"05/04/2024, 01:30",,,mcolin1@gm.fr,"l251-22,l251-11,l251-10"
+c557,LIVREE,"05/04/2024, 01:30",,,ldupuis@hot.fr,l252-08
+c558,LIVREE,"05/04/2024, 01:30",,,amorin@or.fr,l253-17
+c559,LIVREE,"05/04/2024, 01:30",,,idumas@lp.net,l254-16
+c560,LIVREE,"05/04/2024, 01:30",,,rbonnet@gm.fr,l255-11
+c561,LIVREE,"05/04/2024, 02:00",,,maziz@m6.com,l256-01
+c562,LIVREE,"05/04/2024, 02:00",,,hnguyen@brt.fr,l257-22
+c563,LIVREE,"05/04/2024, 03:00",,,nchevalier@wan.fr,l258-12
+c564,LIVREE,"05/04/2024, 03:00",,,maziz@m6.com,l259-01
+c565,LIVREE,"05/04/2024, 03:30",,,nbarbier@wan.fr,l260-01
+c566,LIVREE,"05/04/2024, 03:30",,,sdufour@or.fr,l261-08
+c567,LIVREE,"05/04/2024, 03:30",,,lsaleh@brt.fr,l262-03
+c568,LIVREE,"05/04/2024, 03:30",,,emarchand@ok.fr,l263-21
+c569,OUVERTE,"05/04/2024, 03:30",,,jblanc@hot.fr,l264-08
+c570,OUVERTE,"05/04/2024, 04:00",,,lboucher@sfr.fr,l265-21
+c571,LIVREE,"05/04/2024, 04:00",,,rmercier@gm.fr,"l266-05,l266-13"
+c572,LIVREE,"05/04/2024, 04:30",,,mdupont@gm.fr,"l267-04,l267-12"
+c573,LIVREE,"05/04/2024, 04:30",,,bbrunet@or.fr,"l268-20,l268-17,l268-14,l268-10"
+c574,LIVREE,"05/04/2024, 05:00",,,llemaitre@bbox.fr,"l269-09,l269-12"
+c575,LIVREE,"05/04/2024, 05:00",,,sabbasi@m6.com,l270-10
+c576,LIVREE,"05/04/2024, 05:30",,,ldupuis3@gm.fr,l271-17
+c577,LIVREE,"05/04/2024, 06:00",,,cbourgeois@sfr.fr,l272-12
+c578,LIVREE,"05/04/2024, 06:00",,,azainab@m6.com,l273-03
+c579,LIVREE,"05/04/2024, 06:30",,,rmoulin@or.fr,l274-15
+c580,OUVERTE,"05/04/2024, 07:00",,,rahmed@m6.com,l275-08
+c581,OUVERTE,"05/04/2024, 07:00",,,ttan@m6.com,l276-17
+c582,LIVREE,"05/04/2024, 07:30",,,apascal@or.fr,l277-20
+c583,NOTE,"05/04/2024, 07:30",1,,mgomes@but.org,l278-22
+c584,LIVREE,"05/04/2024, 07:30",,,ldupuis2@hot.fr,l279-11
+c585,LIVREE,"05/04/2024, 08:30",,,marnaud@out.fr,l281-14
+c586,LIVREE,"05/04/2024, 08:30",,,jgar@icloud.com,l282-01
+c587,LIVREE,"05/04/2024, 09:00",,,lmasson@lp.net,l283-05
+c588,LIVREE,"05/04/2024, 09:00",,,njabari@brt.fr,l284-17
+c589,LIVREE,"05/04/2024, 09:00",,,ykim@but.org,"l285-09,l285-12"
+c590,LIVREE,"05/04/2024, 09:00",,,emeyer1@or.fr,l286-14
+c591,LIVREE,"05/04/2024, 09:30",,,abois@lp.net,l287-08
+c592,LIVREE,"05/04/2024, 09:30",,,pbourgeois@gm.fr,"l288-22,l288-07"
+c593,LIVREE,"05/04/2024, 09:30",,,azainab@m6.com,"l289-12,l289-19"
+c594,LIVREE,"05/04/2024, 10:00",,,cgarnier@gm.fr,"l290-22,l290-03"
+c595,LIVREE,"05/04/2024, 10:00",,,lfournier@sfr.fr,l291-07
+c596,LIVREE,"05/04/2024, 10:00",,,rleclerc@wan.fr,"l292-15,l292-02"
+c597,LIVREE,"05/04/2024, 10:30",,,lbonnet@or.fr,l293-07
+c598,LIVREE,"05/04/2024, 10:30",,,jfernandez@gm.fr,"l294-09,l294-19"
+c599,LIVREE,"05/04/2024, 10:30",,,lbrunet@gm.fr,"l295-21,l295-20"
+c600,OUVERTE,"05/04/2024, 11:00",,,slemaitre@sfr.fr,"l296-01,l296-22"
+c601,OUVERTE,"05/04/2024, 11:00",,,jlefebvre@or.fr,l297-11
+c602,LIVREE,"05/04/2024, 11:30",,,aalves@brt.fr,l298-15
+c603,LIVREE,"05/04/2024, 11:30",,,rmercier@gm.fr,l299-11

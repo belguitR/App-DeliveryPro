@@ -6,9 +6,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto:  ${DB_JPA_DDL_AUTO:create-drop}
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  web:
-    resources:
-      add-mappings: true

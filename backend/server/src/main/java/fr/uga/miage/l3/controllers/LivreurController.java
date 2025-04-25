@@ -1,55 +1,33 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.endpoints.LivreurEndpoints;
-import fr.uga.miage.l3.mappers.LivreurMapper;
-import fr.uga.miage.l3.models.LivreurEntity;
-import fr.uga.miage.l3.responses.LivreurDTO;
+import fr.uga.miage.l3.endpoints.LivreurEndpoint;
+import fr.uga.miage.l3.responses.LivreurResponse;
 import fr.uga.miage.l3.services.LivreurService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300", "https://main-bvxea6i-jenwo4in7lt44.fr-3.platformsh.site"})
 @RequiredArgsConstructor
-public class LivreurController implements LivreurEndpoints {
-
+@CrossOrigin(origins = "http://localhost:4200")
+public class LivreurController implements LivreurEndpoint {
     private final LivreurService livreurService;
-    private final LivreurMapper livreurMapper;
 
     @Override
-    public ResponseEntity<List<LivreurDTO>> getAllLivreurs() {
-        List<LivreurEntity> livreurs = livreurService.getAllLivreurs();
-        List<LivreurDTO> dtos = livreurs.stream()
-                .map(livreurMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<LivreurResponse>> getAllLivreurs() {
+        return ResponseEntity.ok(livreurService.getAllLivreurs());
     }
 
     @Override
-    public ResponseEntity<LivreurDTO> createLivreur(LivreurDTO livreurDTO) {
-        // Conversion DTO -> Entity
-        LivreurEntity entity = livreurMapper.fromDTO(livreurDTO);
-        // Appel du service
-        LivreurEntity saved = livreurService.createLivreur(entity);
-        // Conversion Entity -> DTO
-        LivreurDTO savedDTO = livreurMapper.toDTO(saved);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDTO);
+    public ResponseEntity<LivreurResponse> getLivreurByEmail(String email) {
+        return ResponseEntity.ok(livreurService.getLivreurByEmail(email));
     }
 
     @Override
-    public ResponseEntity<LivreurDTO> updateLivreur(String idLivreur, LivreurDTO livreurDTO) {
-        // Conversion
-        LivreurEntity entity = livreurMapper.fromDTO(livreurDTO);
-        // Appel du service
-        LivreurEntity updated = livreurService.updateLivreur(idLivreur, entity);
-        // Conversion
-        LivreurDTO updatedDTO = livreurMapper.toDTO(updated);
-        return ResponseEntity.ok(updatedDTO);
+    public ResponseEntity<LivreurResponse> updateLivreur(String email, LivreurResponse livreur) {
+        return ResponseEntity.ok(livreurService.updateLivreur(email, livreur));
     }
 }

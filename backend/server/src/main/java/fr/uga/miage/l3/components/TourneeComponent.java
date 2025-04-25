@@ -1,0 +1,20 @@
+package fr.uga.miage.l3.components;
+
+import fr.uga.miage.l3.models.TourneeEntity;
+import fr.uga.miage.l3.repositories.TourneeRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+@Component
+@RequiredArgsConstructor
+public class TourneeComponent {
+
+    private final TourneeRepository tourneeRepository;
+
+    public Optional<TourneeEntity> findByEquipeLivreursIdAndDate(Integer equipeLivreursId, LocalDate date) {
+        return tourneeRepository.findByEquipeLivreurs_IdEquipeAndJour_Date(equipeLivreursId, date);
+    }
+}

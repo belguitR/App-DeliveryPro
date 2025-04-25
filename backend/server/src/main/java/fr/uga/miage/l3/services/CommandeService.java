@@ -1,102 +1,63 @@
 package fr.uga.miage.l3.services;
 
+import fr.uga.miage.l3.components.CommandeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
-import fr.uga.miage.l3.enums.EtatTournee;
-import fr.uga.miage.l3.models.ClientEntity;
+import fr.uga.miage.l3.exceptions.BusinessRuleException;
+import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.mappers.CommandeMapper;
 import fr.uga.miage.l3.models.CommandeEntity;
-import fr.uga.miage.l3.models.TourneeEntity;
-import fr.uga.miage.l3.repository.ClientRepository;
-import fr.uga.miage.l3.repository.CommandeRepository;
-import fr.uga.miage.l3.repository.TourneeRepository;
-import jakarta.persistence.EntityNotFoundException;
+import fr.uga.miage.l3.requests.CommandePatchRequest;
+import fr.uga.miage.l3.responses.CommandeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommandeService {
+    private final CommandeComponent commandeComponent;
 
-    private final CommandeRepository commandeRepository;
-    private final TourneeRepository tourneeRepository;
-    private final ClientRepository clientRepository;
-
-    public List<CommandeEntity> getAllCommandes() {
-        return commandeRepository.findAll();
+    public List<CommandeResponse> getAllCommandes() {
+        List<CommandeEntity> commandes = commandeComponent.findAll();
+        return commandes.stream()
+                .map(c -> {
+                    try {
+                        return CommandeMapper.toResponse(c);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    public List<CommandeEntity> getCommandesByTournee(Integer idTournee) {
-        return tourneeRepository.findByNumTourneeWithCommandes(idTournee).getCommandes();
+
+
+    public CommandeResponse getCommandeByReference(String reference) {
+        CommandeEntity entity = commandeComponent.findByReference(reference)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande not found: " + reference));
+        return CommandeMapper.toResponse(entity);
     }
-    public List<CommandeEntity> getCommandesNonLivrees() {
-        return commandeRepository.findByEtatNotOrderByDateAsc(EtatCommande.LIVREE);
-    }
 
-
-    @Transactional
-    public CommandeEntity updateCommande(Integer reference, CommandeEntity commandeDetails) {
-        CommandeEntity commande = commandeRepository.findById(reference)
-                .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec la référence : " + reference));
-
-        // Vérifier doublon (mêmes champs sauf référence)
-        List<CommandeEntity> commandes = commandeRepository.findAll();
-        for (CommandeEntity c : commandes) {
-            if (!c.getReference().equals(reference)
-                    && Objects.equals(c.getEtat(), commandeDetails.getEtat())
-                    && Objects.equals(c.getDate(), commandeDetails.getDate())
-                    && Objects.equals(c.getHorairePreferable(), commandeDetails.getHorairePreferable())
-                    && Objects.equals(c.getDateLivre(), commandeDetails.getDateLivre())
-                    && Objects.equals(c.getDateLivraisonEstimee(), commandeDetails.getDateLivraisonEstimee())
-                    && Objects.equals(c.getMontantTotal(), commandeDetails.getMontantTotal())) {
-                throw new IllegalArgumentException("Commande en doublons");
+    public CommandeResponse patchCommande(String reference, CommandePatchRequest request) {
+        CommandeEntity entity = commandeComponent.findByReference(reference)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande not found: " + reference));
+        if (request.getEtat() != null) {
+            EtatCommande etat = EtatCommande.valueOf(request.getEtat());
+            if (etat == EtatCommande.LIVREE && request.getDateDeLivraison() == null) {
+                throw new BusinessRuleException("dateDeLivraison is required when etat is LIVREE");
             }
+            entity.setEtat(etat);
         }
-
-        if (commandeDetails.getEtat() != EtatCommande.LIVREE && commandeDetails.getDateLivre() != null) {
-            throw new IllegalArgumentException("Impossible de définir une dateLivre si la commande n'est pas LIVREE");
+        if (request.getDateDeLivraison() != null) {
+            entity.setDateDeLivraison(request.getDateDeLivraison());
         }
-
-        // Mettre à jour les champs
-        commande.setEtat(commandeDetails.getEtat());
-        commande.setDate(commandeDetails.getDate());
-        commande.setHorairePreferable(commandeDetails.getHorairePreferable());
-        commande.setDateLivre(commandeDetails.getDateLivre());
-        commande.setDateLivraisonEstimee(commandeDetails.getDateLivraisonEstimee());
-        commande.setMontantTotal(commandeDetails.getMontantTotal());
-
-
-        if (commandeDetails.getClient() != null) {
-            String clientCode = commandeDetails.getClient().getCode();
-            ClientEntity existingClient = clientRepository.findById(clientCode)
-                    .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec le code : " + clientCode));
-
-            commande.setClient(existingClient);
-        }
-
-        CommandeEntity updatedCommande = commandeRepository.save(commande);
-
-        if (commande.getTournee() != null) {
-            mettreAJourEtatTournee(commande.getTournee());
-        }
-
-        return updatedCommande;
+        CommandeEntity saved = commandeComponent.save(entity);
+        return CommandeMapper.toResponse(saved);
     }
 
-    private void mettreAJourEtatTournee(TourneeEntity tournee) {
-        List<CommandeEntity> commandes = commandeRepository.findByTourneeNumTournee(tournee.getNumTournee());
-
-        boolean enCours = commandes.stream().anyMatch(cmd -> cmd.getEtat() == EtatCommande.EN_LIVRAISON);
-        boolean toutesLivrees = commandes.stream().allMatch(cmd -> cmd.getEtat() == EtatCommande.LIVREE);
-
-        if (toutesLivrees) {
-            tournee.setEtat(EtatTournee.COMPLETEE);
-        } else if (enCours) {
-            tournee.setEtat(EtatTournee.EN_COURS);
-        }
-
-        tourneeRepository.save(tournee);
-    }
 }

@@ -1,9 +1,12 @@
 package fr.uga.miage.l3.models;
 
 
+import fr.uga.miage.l3.dataTypes.Adresse;
+import fr.uga.miage.l3.dataTypes.GeoPosition;
+import fr.uga.miage.l3.enums.EtatClient;
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.*;
 
@@ -13,34 +16,28 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "client")
 public class ClientEntity {
+
     @Id
-    @Column(nullable = false)
     private String code;
 
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String prenom;
-
-    @Column(nullable = false)
     private String nom;
 
-    private String telephone;
+    @Embedded
+    private Adresse adresse;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "adresse_id")
-    private AdresseEntity adresse;
+    @Embedded
+    private GeoPosition coords;
 
+    @Enumerated(EnumType.STRING)
+    private EtatClient etat;
 
     @OneToMany(mappedBy = "client")
-    private Set<CommandeEntity> commandes;
-
-    @ManyToMany(mappedBy = "clients")
-    private Set<TourneeEntity> tournees;
+    private List<CommandeEntity> commandes;
 
 
 }

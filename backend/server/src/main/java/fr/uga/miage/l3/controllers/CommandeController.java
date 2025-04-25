@@ -1,77 +1,34 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.responses.CommandeDTO;
-import fr.uga.miage.l3.models.CommandeEntity;
+import fr.uga.miage.l3.endpoints.CommandeEndpoint;
+import fr.uga.miage.l3.requests.CommandePatchRequest;
+import fr.uga.miage.l3.responses.CommandeResponse;
 import fr.uga.miage.l3.services.CommandeService;
-import fr.uga.miage.l3.mappers.CommandeMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/commandes")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300", "https://main-bvxea6i-jenwo4in7lt44.fr-3.platformsh.site"})
-@Tag(name = "Commande", description = "Endpoints pour gérer les commandes")
-public class CommandeController {
-
+@RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
+public class CommandeController implements CommandeEndpoint {
     private final CommandeService commandeService;
-    private final CommandeMapper commandeMapper;
 
-    public CommandeController(CommandeService commandeService, CommandeMapper commandeMapper) {
-        this.commandeService = commandeService;
-        this.commandeMapper = commandeMapper;
+    @Override
+    public ResponseEntity<List<CommandeResponse>> getAllCommandes() {
+        return ResponseEntity.ok(commandeService.getAllCommandes());
     }
 
-
-    @GetMapping("/non-livrees")
-    public ResponseEntity<List<CommandeDTO>> getCommandesNonLivrees() {
-        List<CommandeEntity> commandes = commandeService.getCommandesNonLivrees();
-        List<CommandeDTO> dtos = commandes.stream()
-                .map(commandeMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    @Override
+    public ResponseEntity<CommandeResponse> getCommandeByReference(String reference) {
+        return ResponseEntity.ok(commandeService.getCommandeByReference(reference));
     }
 
-
-    @GetMapping
-    public ResponseEntity<List<CommandeDTO>> getAllCommandes() {
-        List<CommandeEntity> commandes = commandeService.getAllCommandes();
-        List<CommandeDTO> dtos = commandes.stream()
-                .map(commandeMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    @Override
+    public ResponseEntity<CommandeResponse> patchCommande(String reference, CommandePatchRequest request) {
+        return ResponseEntity.ok(commandeService.patchCommande(reference, request));
     }
-
-    @GetMapping("/tournee/{idTournee}")
-    public ResponseEntity<List<CommandeDTO>> getCommandesByTournee(@PathVariable Integer idTournee) {
-        List<CommandeEntity> commandes = commandeService.getCommandesByTournee(idTournee);
-        List<CommandeDTO> dtos = commandes.stream()
-                .map(commandeMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-
-    @PutMapping("/{reference}")
-    public ResponseEntity<?> updateCommande(@PathVariable Integer reference,
-                                            @RequestBody CommandeDTO commandeDTO) {
-        try {
-            CommandeEntity entity = commandeMapper.fromDTO(commandeDTO);
-            CommandeEntity updated = commandeService.updateCommande(reference, entity);
-            return ResponseEntity.ok(commandeMapper.toDTO(updated));
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la mise à jour");
-        }
-    }
-
 }

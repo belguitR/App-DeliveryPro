@@ -4,5 +4,6 @@ public enum EtatCommande {
     OUVERTE,
     PLANIFIEE,
     EN_LIVRAISON,
-    LIVREE
+    LIVREE,
+    NOTE
 }

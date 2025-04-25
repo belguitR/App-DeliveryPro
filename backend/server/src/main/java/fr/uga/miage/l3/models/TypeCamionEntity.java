@@ -1,31 +1,27 @@
 package fr.uga.miage.l3.models;
 
-
 import jakarta.persistence.*;
-
-import java.util.Set;
 import lombok.*;
+import java.util.Set;
 
 @Entity
-@Setter
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@Builder
 @Table(name = "type_camion")
 public class TypeCamionEntity {
+
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String nom;
-
-    @Column(nullable = false)
-    private Double prixKm;
-
+    private Double volume;
+    private Double prixAuKm;
     private String image;
 
     @OneToMany(mappedBy = "typeCamion")
     private Set<CamionEntity> camions;
-
-
 }

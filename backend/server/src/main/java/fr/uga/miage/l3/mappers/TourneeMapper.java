@@ -1,38 +1,27 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.responses.TourneeDTO;
 import fr.uga.miage.l3.models.TourneeEntity;
-import fr.uga.miage.l3.mappers.CommandeMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
+import fr.uga.miage.l3.models.CommandeEntity;
+import fr.uga.miage.l3.responses.TourneeResponse;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = CommandeMapper.class)
-public interface TourneeMapper {
-
-    @Mapping(source = "numTournee", target = "numTournee")
-    @Mapping(source = "date", target = "date")
-    @Mapping(source = "distanceAParcourir", target = "distanceAParcourir")
-    @Mapping(source = "montant", target = "montant")
-    @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
-    @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
-    @Mapping(source = "etat", target = "etat")
-    @Mapping(source = "equipeLivreur.numEquipe", target = "equipeLivreurId")
-    @Mapping(source = "commandes", target = "commandes")
-    TourneeDTO toDTO(TourneeEntity entity);
-
-    @Mapping(source = "numTournee", target = "numTournee")
-    @Mapping(source = "date", target = "date")
-    @Mapping(source = "distanceAParcourir", target = "distanceAParcourir")
-    @Mapping(source = "montant", target = "montant")
-    @Mapping(source = "tempsDeMontageTheorique", target = "tempsDeMontageTheorique")
-    @Mapping(source = "tempsDeMontageEffectif", target = "tempsDeMontageEffectif")
-    @Mapping(source = "etat", target = "etat")
-    @Mapping(target = "equipeLivreur", ignore = true)
-    @Mapping(target = "commandes", ignore = true)
-    @Mapping(target = "clients", ignore = true)
-    TourneeEntity fromDTO(TourneeDTO dto);
+public class TourneeMapper {
+    public static TourneeResponse toResponse(TourneeEntity entity) {
+        if (entity == null) return null;
+        return TourneeResponse.builder()
+                .reference(entity.getReference())
+                .etat(entity.getEtat() != null ? entity.getEtat().name() : null)
+                .lettre(entity.getLettre())
+                .distanceAParcourir(entity.getDistanceAParcourir())
+                .tempsAssemblageReel(entity.getTempsAssemblageReel())
+                .equipeLivreursId(entity.getEquipeLivreurs() != null ? entity.getEquipeLivreurs().getIdEquipe() != null ? entity.getEquipeLivreurs().getIdEquipe().toString() : null : null)
+                .camion(entity.getCamion() != null ? CamionMapper.toResponse(entity.getCamion()) : null)
+                .journeeReference(entity.getJour() != null ? entity.getJour().getReference() : null)
+                .commandeReferences(entity.getCommandes() != null
+                        ? entity.getCommandes().stream().map(CommandeEntity::getReference).collect(Collectors.toList())
+                        : null)
+                .build();
+    }
 }
