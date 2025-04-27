@@ -29,6 +29,8 @@ public class CommandeEntity {
 
     private Integer note;
 
+    private Integer tdmTheorique;
+
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private String commentaire;

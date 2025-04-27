@@ -14,6 +14,7 @@ public class CommandeResponse {
     private String etat;
     private LocalDateTime dateDeCreation;
     private Integer note;
+    private Integer tdmTheorique;
     private String commentaire;
     private LocalDateTime dateDeLivraison;
     private ClientResponse client;

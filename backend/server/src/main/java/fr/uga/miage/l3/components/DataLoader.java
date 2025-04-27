@@ -1,5 +1,6 @@
 package fr.uga.miage.l3.components;
 
+import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.models.*;
 import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.repositories.*;
@@ -120,10 +121,89 @@ public class DataLoader {
     }
 
 
-    private void loadLignes(Map<String, ProduitEntity> produitMap, Map<String, CommandeEntity> commandeMap) throws Exception {
+    private Map<String, CommandeEntity> loadCommandes(Map<String, ClientEntity> clientMap)
+            throws Exception {
+        Map<String, CommandeEntity> commandeMap = new HashMap<>();
+        ClassPathResource resource = new ClassPathResource("data/commandes.csv");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm");
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(resource.getInputStream(),
+                        StandardCharsets.UTF_8))) {
+            String line = reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split(
+                        ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                if (tokens.length < 7) {
+                    continue;
+                }
+
+                CommandeEntity commande = new CommandeEntity();
+                commande.setReference(tokens[0].trim());
+                // initialisation du tdmThéorique
+                commande.setTdmTheorique(0);
+
+                if (tokens[1] != null && !tokens[1].isEmpty()) {
+                    try {
+                        commande.setEtat(EtatCommande.valueOf(tokens[1].toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        commande.setEtat(null);
+                    }
+                }
+
+                if (tokens[2] != null && !tokens[2].isEmpty()) {
+                    String dateStr = tokens[2].replace("\"", "").trim();
+                    try {
+                        commande.setDateDeCreation(
+                                LocalDateTime.parse(dateStr, formatter));
+                    } catch (Exception e) {
+                        commande.setDateDeCreation(null);
+                    }
+                }
+
+                if (tokens.length > 3
+                        && tokens[3] != null
+                        && !tokens[3].isEmpty()) {
+                    try {
+                        commande.setNote(Integer.valueOf(tokens[3].trim()));
+                    } catch (NumberFormatException ignored) {}
+                }
+
+                if (tokens.length > 4
+                        && tokens[4] != null
+                        && !tokens[4].isEmpty()) {
+                    commande.setCommentaire(tokens[4].trim());
+                }
+
+                String clientKey = tokens[5].trim();
+                ClientEntity client = clientMap.get(clientKey);
+                if (client == null) {
+                    client = clientMap.values().stream()
+                            .filter(c -> c.getEmail().trim()
+                                    .equalsIgnoreCase(clientKey))
+                            .findFirst()
+                            .orElse(null);
+                }
+                if (client == null) {
+                    System.out.println("WARNING: Client non trouvé pour la commande "
+                            + commande.getReference()
+                            + " (client: [" + clientKey + "])");
+                }
+                commande.setClient(client);
+
+                commandeRepository.save(commande);
+                commandeMap.put(commande.getReference(), commande);
+            }
+        }
+        return commandeMap;
+    }
+
+    private void loadLignes(Map<String, ProduitEntity> produitMap,
+                            Map<String, CommandeEntity> commandeMap)
+            throws Exception {
         ClassPathResource resource = new ClassPathResource("data/lignes.csv");
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+                new InputStreamReader(resource.getInputStream(),
+                        StandardCharsets.UTF_8))) {
             br.readLine(); // skip header
             String line;
             while ((line = br.readLine()) != null) {
@@ -133,102 +213,52 @@ public class DataLoader {
 
                 CommandeEntity commande = commandeMap.get(d[1].trim());
                 ProduitEntity produit = produitMap.get(d[2].trim());
-
-                if (commande == null) {
+                if (commande == null || produit == null) {
                     continue;
                 }
-                if (produit == null) {
-                    continue;
-                }
-
                 l.setCommande(commande);
                 l.setProduit(produit);
 
+                int qty;
                 try {
-                    l.setQuantite(Integer.parseInt(d[3].trim()));
-                } catch (Exception e) {
-                    l.setQuantite(0);
+                    qty = Integer.parseInt(d[3].trim());
+                } catch (NumberFormatException e) {
+                    qty = 0;
                 }
-                l.setOptionAssemblage(Boolean.parseBoolean(d[4].trim()));
+                l.setQuantite(qty);
 
-                double montant = 0.0;
-                if (l.getProduit() != null && l.getQuantite() != null) {
-                    montant = l.getProduit().getPrix() * l.getQuantite();
-                }
+                boolean optAsm = Boolean.parseBoolean(d[4].trim());
+                l.setOptionAssemblage(optAsm);
+
+                double montant = produit.getPrix() * qty;
                 l.setMontant(montant);
+
+                // calcul tdmThéorique de la ligne
+                int tdmLigne;
+                if (optAsm && produit.getTdmTheorique() != null) {
+                    tdmLigne = produit.getTdmTheorique() * qty;
+                } else {
+                    tdmLigne = 0;
+                }
+                l.setTdmTheorique(tdmLigne);
 
                 try {
                     ligneRepository.save(l);
                 } catch (Exception e) {
-                    System.out.println("Error saving ligne " + l.getReference() + ": " + e.getMessage());
-                }
-            }
-        }
-    }
-
-
-    private Map<String, CommandeEntity> loadCommandes(Map<String, ClientEntity> clientMap) throws Exception {
-        Map<String, CommandeEntity> commandeMap = new HashMap<>();
-        ClassPathResource resource = new ClassPathResource("data/commandes.csv");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm");
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            String line = reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                if (tokens.length < 7) continue;
-
-                CommandeEntity commande = new CommandeEntity();
-                commande.setReference(tokens[0]);
-
-                if (tokens[1] != null && !tokens[1].isEmpty()) {
-                    try {
-                        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.valueOf(tokens[1].toUpperCase()));
-                    } catch (IllegalArgumentException e) {
-                        commande.setEtat(null);
-                    }
+                    System.out.println("EREUUUUUUR en savegardant ligne "
+                            + l.getReference() + ": " + e.getMessage());
                 }
 
-                if (tokens[2] != null && !tokens[2].isEmpty()) {
-                    String dateStr = tokens[2].replace("\"", "");
-                    try {
-                        commande.setDateDeCreation(LocalDateTime.parse(dateStr, formatter));
-                    } catch (Exception e) {
-                        commande.setDateDeCreation(null);
-                    }
-                }
-
-                if (tokens.length > 3 && tokens[3] != null && !tokens[3].isEmpty()) {
-                    try {
-                        commande.setNote(Integer.valueOf(tokens[3]));
-                    } catch (NumberFormatException ignored) {}
-                }
-
-                if (tokens.length > 4 && tokens[4] != null && !tokens[4].isEmpty()) {
-                    commande.setCommentaire(tokens[4]);
-                }
-
-                String clientKey = tokens[5].trim();
-                ClientEntity client = clientMap.get(clientKey);
-                if (client == null) {
-                    client = clientMap.values().stream()
-                            .filter(c -> c.getEmail().trim().equalsIgnoreCase(clientKey.trim()))
-                            .findFirst().orElse(null);
-                }
-                if (client == null) {
-                    System.out.println("WARNING: Client not found for commande " + commande.getReference() + " (client: [" + clientKey + "])");
-                }
-                commande.setClient(client);
-
-
-
-
+                // mise à jour du tdmThéorique de la commande
+                int prev = commande.getTdmTheorique() != null
+                        ? commande.getTdmTheorique()
+                        : 0;
+                commande.setTdmTheorique(prev + tdmLigne);
                 commandeRepository.save(commande);
-                commandeMap.put(commande.getReference(), commande);
             }
         }
-        return commandeMap;
     }
+
 
     private Map<String, ProduitEntity> loadProduits() throws Exception {
         Map<String, ProduitEntity> produitMap = new HashMap<>();

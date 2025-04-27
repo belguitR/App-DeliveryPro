@@ -18,6 +18,7 @@ public class CommandeMapper {
                 .etat(entity.getEtat() != null ? entity.getEtat().name() : null)
                 .dateDeCreation(entity.getDateDeCreation())
                 .note(entity.getNote())
+                .tdmTheorique(entity.getTdmTheorique())
                 .commentaire(entity.getCommentaire())
                 .dateDeLivraison(entity.getDateDeLivraison())
                 .client(entity.getClient() != null ? toClientResponse(entity.getClient()) : null)

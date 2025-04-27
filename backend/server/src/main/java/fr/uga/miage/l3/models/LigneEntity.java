@@ -19,6 +19,8 @@ public class LigneEntity {
 
     private Boolean optionAssemblage;
 
+    private Integer tdmTheorique;
+
     private double montant;
 
     @ManyToOne
