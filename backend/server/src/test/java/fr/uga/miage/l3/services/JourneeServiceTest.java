@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.JourneeComponent;
+import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
 import fr.uga.miage.l3.exceptions.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
@@ -17,6 +18,7 @@ import org.mockito.*;
 import java.time.LocalDate;
 import java.util.*;
 
+import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -210,7 +212,311 @@ class JourneeServiceTest {
 
         when(journeeComponent.findByReference("J007")).thenReturn(Optional.empty());
         when(tourneeRepository.findById("T004")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
 
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference("J007");
+        verify(tourneeRepository).findById("T004");
+        verify(equipeLivreursRepository).findById(1);
+        verify(camionRepository).findById("C001");
+    }
+
+    @Test
+    void createJournee_shouldThrowIfCamionAlreadyAssigned() {
+        // Préparation des données de test
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J008")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T005")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        CamionEntity camion = new CamionEntity();
+        camion.setCode("C001");
+
+        TourneeEntity existingTournee = new TourneeEntity();
+        existingTournee.setCamion(camion);
+        existingTournee.setJour(new JourneeEntity());
+        existingTournee.getJour().setDate(request.getDate());
+
+        when(journeeComponent.findByReference("J008")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(camion));
+        when(tourneeRepository.findById("T005")).thenReturn(Optional.empty());
+        when(tourneeRepository.findAll()).thenReturn(List.of(existingTournee));
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        // Exécution du test
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference("J008");
+        verify(camionRepository).findById("C001");
+        verify(tourneeRepository).findById("T005");
+        verify(tourneeRepository).findAll();
+    }
+
+    @Test
+    void createJournee_shouldThrowIfEquipeAlreadyAssigned() {
+        // Préparation des données de test
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J009")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T006")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setIdEquipe(1);
+
+        TourneeEntity existingTournee = new TourneeEntity();
+        existingTournee.setEquipeLivreurs(equipe);
+        existingTournee.setJour(new JourneeEntity());
+        existingTournee.getJour().setDate(request.getDate());
+
+        when(journeeComponent.findByReference("J009")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T006")).thenReturn(Optional.empty());
+        when(tourneeRepository.findAll()).thenReturn(List.of(existingTournee));
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        // Exécution du test
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference("J009");
+        verify(equipeLivreursRepository).findById(1);
+        verify(camionRepository).findById("C001");
+        verify(tourneeRepository).findById("T006");
+        verify(tourneeRepository, times(2)).findAll();
+    }
+
+
+    @Test
+    void createJournee_shouldThrowIfCommandeNotFound() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J010")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T007")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD_NOTFOUND"))
+                                .build()
+                ))
+                .build();
+
+        when(journeeComponent.findByReference("J010")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T007")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD_NOTFOUND")).thenReturn(Optional.empty());
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+    @Test
+    void createJournee_shouldThrowIfCommandeAlreadyAssigned() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J011")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T008")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        CommandeEntity commande = new CommandeEntity();
+        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.OUVERTE);
+        commande.setTournee(new TourneeEntity());
+
+        when(journeeComponent.findByReference("J011")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T008")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(commande));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+    @Test
+    void createJournee_shouldThrowIfTourneeEtatIsNull() {
+        // Préparation des données de test
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J012")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T010")
+                                .etat(null) // État de la tournée est null
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        when(journeeComponent.findByReference("J012")).thenReturn(Optional.empty());
+        when(tourneeRepository.findById("T010")).thenReturn(Optional.empty());
+
+        // Exécution du test
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference("J012");
+        verify(tourneeRepository).findById("T010");
+    }
+
+
+    @Test
+    void createJournee_shouldThrowIfCommandeEtatIsNotOuverte() {
+        // Préparation des données de test
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J013")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T011")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        CommandeEntity commande = new CommandeEntity();
+        commande.setReference("CMD1");
+        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.LIVREE); // État de la commande n'est pas OUVERTE
+
+        when(journeeComponent.findByReference("J013")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T011")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(commande));
+
+        // Exécution du test
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference("J013");
+        verify(equipeLivreursRepository).findById(1);
+        verify(camionRepository).findById("C001");
+        verify(tourneeRepository).findById("T011");
+        verify(commandeRepository).findById("CMD1");
+    }
+
+    @Test
+    void deleteJournee_shouldDeleteJourneeAndTourneesAndUpdateCommandes() {
+        // Préparation des données de test
+        String journeeReference = "J001";
+        JourneeEntity journee = new JourneeEntity();
+        journee.setReference(journeeReference);
+
+        TourneeEntity tournee1 = new TourneeEntity();
+        tournee1.setReference("T001");
+        CommandeEntity commande1 = new CommandeEntity();
+        commande1.setReference("CMD1");
+        commande1.setEtat(EtatCommande.PLANIFIEE);
+        commande1.setTournee(tournee1);
+        tournee1.setCommandes(List.of(commande1));
+
+        TourneeEntity tournee2 = new TourneeEntity();
+        tournee2.setReference("T002");
+        CommandeEntity commande2 = new CommandeEntity();
+        commande2.setReference("CMD2");
+        commande2.setEtat(EtatCommande.OUVERTE);
+        commande2.setTournee(tournee2);
+        tournee2.setCommandes(List.of(commande2));
+
+        journee.setTournees(List.of(tournee1, tournee2));
+
+        // Configuration des mocks
+        when(journeeComponent.findByReference(journeeReference)).thenReturn(Optional.of(journee));
+        when(commandeRepository.save(any(CommandeEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Exécution du test
+        journeeService.deleteJournee(journeeReference);
+
+        // Vérification des appels de méthodes
+        verify(journeeComponent).findByReference(journeeReference);
+        verify(commandeRepository, times(2)).save(any(CommandeEntity.class));
+        verify(tourneeRepository).deleteById("T001");
+        verify(tourneeRepository).deleteById("T002");
+        verify(journeeComponent).deleteByReference(journeeReference);
+
+        // Vérification des états des commandes
+        assertThat(commande1.getTournee()).isNull();
+        assertThat(commande1.getEtat()).isEqualTo(EtatCommande.OUVERTE);
+        assertThat(commande2.getTournee()).isNull();
+        assertThat(commande2.getEtat()).isEqualTo(EtatCommande.OUVERTE);
+    }
+
+
+
+    @Test
+    void deleteJournee_shouldDeleteJourneeAndTournees() {
+        JourneeEntity journee = new JourneeEntity();
+        journee.setReference("J001");
+        TourneeEntity tournee = new TourneeEntity();
+        tournee.setReference("T001");
+        journee.setTournees(List.of(tournee));
+
+        when(journeeComponent.findByReference("J001")).thenReturn(Optional.of(journee));
+
+        journeeService.deleteJournee("J001");
+
+        verify(tourneeRepository).deleteById("T001");
+        verify(journeeComponent).deleteByReference("J001");
+    }
+
+    @Test
+    void deleteJournee_shouldThrowIfNotFound() {
+        when(journeeComponent.findByReference("NOTFOUND")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> journeeService.deleteJournee("NOTFOUND"));
     }
 }
