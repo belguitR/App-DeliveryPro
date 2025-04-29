@@ -40,8 +40,10 @@ class EquipeLivreursServiceTest {
 
     @Test
     void getAllEquipes_shouldReturnList() {
-        EquipeLivreursEntity entity = new EquipeLivreursEntity();
-        entity.setStatus(StatusEquipeLivreurs.PRET);
+        EquipeLivreursEntity entity = EquipeLivreursEntity
+                .builder()
+                .status(StatusEquipeLivreurs.PRET)
+                .build();
         when(equipeComponent.findAll()).thenReturn(List.of(entity));
 
         List<EquipeLivreursResponse> result = equipeService.getAllEquipes();
