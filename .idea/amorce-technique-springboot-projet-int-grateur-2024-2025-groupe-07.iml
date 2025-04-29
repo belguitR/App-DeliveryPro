@@ -39,5 +39,7 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:6.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:6.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:6.1.13" level="project" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="library" name="Maven: jakarta.annotation:jakarta.annotation-api:2.1.1" level="project" />
   </component>
 </module>

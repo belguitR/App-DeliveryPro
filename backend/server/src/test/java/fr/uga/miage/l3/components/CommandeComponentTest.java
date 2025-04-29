@@ -27,10 +27,14 @@ class CommandeComponentTest {
 
     @Test
     void findAll_shouldReturnList() {
-        CommandeEntity c1 = new CommandeEntity();
-        c1.setReference("CMD1");
-        CommandeEntity c2 = new CommandeEntity();
-        c2.setReference("CMD2");
+        CommandeEntity c1 = CommandeEntity
+                .builder()
+                .reference("CMD1")
+                .build();
+        CommandeEntity c2 = CommandeEntity
+                .builder()
+                .reference("CMD2")
+                .build();
         when(commandeRepository.findAll()).thenReturn(List.of(c1, c2));
 
         List<CommandeEntity> result = commandeComponent.findAll();
