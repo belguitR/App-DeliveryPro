@@ -12,6 +12,6 @@ import java.util.List;
 public class JourneeResponse {
     private String reference;
     private LocalDate date;
-    private String planificateurTrigramme;
+    private String planificateurEmail;
     private List<TourneeResponse> tournees;
 }

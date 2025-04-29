@@ -84,12 +84,13 @@ class JourneeControllerTest {
     void createJournee_returnsCreated() {
         PlanificateurEntity planificateur = new PlanificateurEntity();
         planificateur.setTrigramme("PL001");
+        planificateur.setEmail("pl001@orga.com");
         planificateurRepository.save(planificateur);
 
         JourneeRequest request = new JourneeRequest();
         request.setReference("J003");
         request.setDate(LocalDate.now());
-        request.setPlanificateurTrigramme("PL001");
+        request.setPlanificateurEmail("pl001@orga.com");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -102,8 +103,9 @@ class JourneeControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getReference()).isEqualTo("J003");
-        assertThat(response.getBody().getPlanificateurTrigramme()).isEqualTo("PL001");
+        assertThat(response.getBody().getPlanificateurEmail()).isEqualTo("pl001@orga.com");
     }
+
 
     @Test
     void createJournee_duplicateReference_returns400() {

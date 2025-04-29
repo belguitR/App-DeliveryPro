@@ -28,12 +28,14 @@ public class DataLoader {
     private final LigneRepository ligneRepository;
     private final CamionRepository camionRepository;
     private final TypeCamionRepository typeCamionRepository;
+    private final PlanificateurRepository planificateurRepository;
 
 
     @PostConstruct
     public void loadData() throws Exception {
         Map<String, ClientEntity> clientMap = loadClients();
         Map<String, EntrepotEntity> entrepotMap = loadEntrepots();
+        Map<String, PlanificateurEntity> planificateurMap = loadPlanificateurs(entrepotMap);
         Map<String, CamionEntity> camionMap = loadCamions(entrepotMap);
         loadTypeCamions(camionMap);
         Map<String, LivreurEntity> livreurMap = loadLivreurs(entrepotMap);
@@ -43,6 +45,36 @@ public class DataLoader {
         loadLignes(produitMap, commandeMap);
 
     }
+
+    private Map<String, PlanificateurEntity> loadPlanificateurs(Map<String, EntrepotEntity> entrepotMap) throws Exception {
+        Map<String, PlanificateurEntity> planificateurMap = new HashMap<>();
+        ClassPathResource resource = new ClassPathResource("data/planificateurs.csv");
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+            String line = reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split(",", -1);
+                if (tokens.length < 7) continue;
+
+                PlanificateurEntity planificateur = new PlanificateurEntity();
+                planificateur.setTrigramme(tokens[0].trim());
+                planificateur.setPrenom(tokens[1].trim());
+                planificateur.setNom(tokens[2].trim());
+                planificateur.setTelephone(tokens[3].trim());
+                planificateur.setPhoto(tokens[4].trim());
+                planificateur.setEmail(tokens[5].trim());
+
+                String entrepotNom = tokens[6].trim();
+                EntrepotEntity entrepot = entrepotMap.get(entrepotNom);
+                planificateur.setEntrepot(entrepot);
+
+                planificateurRepository.save(planificateur);
+                planificateurMap.put(planificateur.getTrigramme(), planificateur);
+            }
+        }
+        return planificateurMap;
+    }
+
 
     private void loadTypeCamions(Map<String, CamionEntity> camionMap) throws Exception {
         ClassPathResource resource = new ClassPathResource("data/type_camion.csv");

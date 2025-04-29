@@ -47,9 +47,9 @@ public class JourneeService {
         checkJourneeReferenceAndDate(request.getReference(), request.getDate());
 
         PlanificateurEntity planificateur = null;
-        if (request.getPlanificateurTrigramme() != null) {
-            planificateur = planificateurRepository.findById(request.getPlanificateurTrigramme()).orElse(null);
-            System.out.println("Planificateur: " + (planificateur != null ? planificateur.getTrigramme() : "null"));
+        if (request.getPlanificateurEmail() != null) {
+            planificateur = planificateurRepository.findByEmail(request.getPlanificateurEmail())
+                    .orElse(null);
         }
 
         JourneeEntity journee = new JourneeEntity();
