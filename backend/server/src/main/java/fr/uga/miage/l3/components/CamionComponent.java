@@ -18,11 +18,4 @@ public class CamionComponent {
         return camionRepository.findAll();
     }
 
-    public Optional<CamionEntity> findByCode(String code) {
-        return camionRepository.findById(code);
-    }
-
-    public CamionEntity save(CamionEntity entity) {
-        return camionRepository.save(entity);
-    }
 }
