@@ -11,5 +11,6 @@ public interface CommandeRepository extends JpaRepository<CommandeEntity, String
     @EntityGraph(attributePaths = {"lignes", "client"})
     List<CommandeEntity> findAll();
 
+    @EntityGraph(attributePaths = {"lignes", "client"})
     List<CommandeEntity> findByTournee_Reference(String tourneeReference);
 }
