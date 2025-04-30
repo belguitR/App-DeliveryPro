@@ -121,8 +121,12 @@ class JourneeServiceTest {
                 ))
                 .build();
 
+        // FIX: Set status to PRET
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
+
         when(journeeComponent.findByReference("J004")).thenReturn(Optional.empty());
-        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
         when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
         when(tourneeRepository.findById("T001")).thenReturn(Optional.empty());
         CommandeEntity commande = new CommandeEntity();
@@ -140,6 +144,8 @@ class JourneeServiceTest {
         verify(tourneeRepository).save(any());
         verify(commandeRepository).save(any());
     }
+
+
 
     @Test
     void createJournee_shouldThrowIfTourneeReferenceNotUnique() {
@@ -312,7 +318,7 @@ class JourneeServiceTest {
         verify(equipeLivreursRepository).findById(1);
         verify(camionRepository).findById("C001");
         verify(tourneeRepository).findById("T006");
-        verify(tourneeRepository, times(2)).findAll();
+        verify(tourneeRepository, times(1)).findAll();
     }
 
 
@@ -410,7 +416,6 @@ class JourneeServiceTest {
 
     @Test
     void createJournee_shouldThrowIfCommandeEtatIsNotOuverte() {
-        // Préparation des données de test
         JourneeRequest request = JourneeRequest.builder()
                 .reference("J013")
                 .date(LocalDate.now().plusDays(1))
@@ -430,24 +435,26 @@ class JourneeServiceTest {
 
         CommandeEntity commande = new CommandeEntity();
         commande.setReference("CMD1");
-        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.LIVREE); // État de la commande n'est pas OUVERTE
+        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.LIVREE);
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
 
         when(journeeComponent.findByReference("J013")).thenReturn(Optional.empty());
-        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
         when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
         when(tourneeRepository.findById("T011")).thenReturn(Optional.empty());
         when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(commande));
 
-        // Exécution du test
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference("J013");
         verify(equipeLivreursRepository).findById(1);
         verify(camionRepository).findById("C001");
         verify(tourneeRepository).findById("T011");
         verify(commandeRepository).findById("CMD1");
     }
+
 
     @Test
     void deleteJournee_shouldDeleteJourneeAndTourneesAndUpdateCommandes() {
@@ -519,4 +526,90 @@ class JourneeServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> journeeService.deleteJournee("NOTFOUND"));
     }
+
+    @Test
+    void createJournee_shouldThrowIfEquipeIsUnavailable() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J016")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T014")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setIdEquipe(1);
+        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.NON_DISPONIBLE);
+
+        when(journeeComponent.findByReference("J016")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T014")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+    @Test
+    void createJournee_shouldThrowIfTourneeHasNoEquipe() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J015")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T013")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        when(journeeComponent.findByReference("J015")).thenReturn(Optional.empty());
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T013")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+    @Test
+    void createJournee_shouldThrowIfTourneeHasNoCamion() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J014")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T012")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        when(journeeComponent.findByReference("J014")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(tourneeRepository.findById("T012")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+
 }

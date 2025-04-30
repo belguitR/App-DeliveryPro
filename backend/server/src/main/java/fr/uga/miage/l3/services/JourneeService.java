@@ -2,6 +2,7 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.JourneeComponent;
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.JourneeMapper;
@@ -36,15 +37,18 @@ public class JourneeService {
 
     public JourneeResponse getJourneeByReference(String reference) {
         JourneeEntity entity = journeeComponent.findByReference(reference)
-                .orElseThrow(() -> new ResourceNotFoundException("Journee not found: " + reference));
+                .orElseThrow(() -> new ResourceNotFoundException("Journée non trouvée : " + reference));
         return JourneeMapper.toResponse(entity);
     }
 
 
     @Transactional
     public JourneeResponse createJournee(JourneeRequest request) {
-        System.out.println("=== Creating Journee: " + request.getReference() + " ===");
         checkJourneeReferenceAndDate(request.getReference(), request.getDate());
+
+        if (request.getTournees() == null || request.getTournees().isEmpty()) {
+            throw new BusinessRuleException("La journée doit contenir au moins une tournée");
+        }
 
         PlanificateurEntity planificateur = null;
         if (request.getPlanificateurEmail() != null) {
@@ -61,36 +65,30 @@ public class JourneeService {
         List<List<CommandeEntity>> allCommandes = new java.util.ArrayList<>();
         if (request.getTournees() != null) {
             for (TourneeRequest tReq : request.getTournees()) {
-                System.out.println("  Tournee: " + tReq.getReference());
                 if (tourneeRepository.findById(tReq.getReference()).isPresent()) {
-                    System.out.println("    ERROR: Tournee reference must be unique");
-                    throw new BusinessRuleException("Tournee reference must be unique");
+                    throw new BusinessRuleException("La référence de la tournée doit être unique");
                 }
                 if (tReq.getEtat() == null) {
-                    System.out.println("    ERROR: Tournee etat is required");
-                    throw new BusinessRuleException("Tournee etat is required");
+                    throw new BusinessRuleException("L'état de la tournée est obligatoire");
                 }
                 EtatTournee etat;
                 try {
                     etat = EtatTournee.valueOf(tReq.getEtat().toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    System.out.println("    ERROR: Invalid etat for Tournee: " + tReq.getEtat());
-                    throw new BusinessRuleException("Invalid etat for Tournee: " + tReq.getEtat());
+                    throw new BusinessRuleException("État invalide pour la tournée : " + tReq.getEtat());
                 }
                 CamionEntity camion;
                 if (tReq.getCamionCode() != null) {
                     camion = camionRepository.findById(tReq.getCamionCode())
                             .orElseThrow(() -> {
-                                System.out.println("    ERROR: Camion not found: " + tReq.getCamionCode());
-                                return new BusinessRuleException("Camion not found: " + tReq.getCamionCode());
+                                return new BusinessRuleException("Camion non trouvé : " + tReq.getCamionCode());
                             });
-                    System.out.println("    Camion: " + camion.getCode());
                     if (tourneeRepository.findAll().stream().anyMatch(t ->
                             t.getCamion() != null &&
                                     t.getCamion().getCode().equals(camion.getCode()) &&
                                     t.getJour() != null &&
                                     t.getJour().getDate().equals(request.getDate()))) {
-                        throw new BusinessRuleException("Camion already assigned to another tournee on this day");
+                        throw new BusinessRuleException("Camion déjà affecté à une autre tournée ce jour-là");
                     }
                 } else {
                     camion = null;
@@ -99,42 +97,46 @@ public class JourneeService {
                 if (tReq.getEquipeLivreursId() != null) {
                     equipe = equipeLivreursRepository.findById(tReq.getEquipeLivreursId())
                             .orElseThrow(() -> {
-                                System.out.println("    ERROR: EquipeLivreur not found: " + tReq.getEquipeLivreursId());
-                                return new BusinessRuleException("EquipeLivreur not found: " + tReq.getEquipeLivreursId());
+                                return new BusinessRuleException("Équipe de livreurs non trouvée : " + tReq.getEquipeLivreursId());
                             });
-                    System.out.println("    EquipeLivreur: " + equipe.getIdEquipe());
+                    if (equipe.getStatus() != StatusEquipeLivreurs.PRET) {
+                        throw new BusinessRuleException("L'équipe de livreurs n'est pas disponible pour l'affectation");
+                    }
                     if (tourneeRepository.findAll().stream().anyMatch(t ->
                             t.getEquipeLivreurs() != null &&
                                     t.getEquipeLivreurs().getIdEquipe().equals(equipe.getIdEquipe()) &&
                                     t.getJour() != null &&
                                     t.getJour().getDate().equals(request.getDate()))) {
-                        throw new BusinessRuleException("EquipeLivreur already assigned to another tournee on this day");
+                        throw new BusinessRuleException("L'équipe de livreurs est déjà affectée à une autre tournée ce jour-là");
                     }
                 } else {
                     equipe = null;
                 }
                 if (tReq.getCommandeReferences() == null || tReq.getCommandeReferences().isEmpty()) {
-                    System.out.println("    ERROR: Tournee must have at least one commande");
-                    throw new BusinessRuleException("Tournee must have at least one commande");
+                    throw new BusinessRuleException("La tournée doit contenir au moins une commande");
                 }
                 List<CommandeEntity> commandes = tReq.getCommandeReferences().stream()
                         .map(ref -> {
                             CommandeEntity commande = commandeRepository.findById(ref)
                                     .orElseThrow(() -> {
-                                        System.out.println("    ERROR: Commande not found: " + ref);
-                                        return new BusinessRuleException("Commande not found: " + ref);
+                                        return new BusinessRuleException("Commande non trouvée : " + ref);
                                     });
                             if (commande.getEtat() != fr.uga.miage.l3.enums.EtatCommande.OUVERTE) {
-                                System.out.println("    ERROR: Commande " + ref + " is not OUVERTE and cannot be planned");
-                                throw new BusinessRuleException("Commande " + ref + " is not OUVERTE and cannot be planned");
+                                throw new BusinessRuleException("La commande " + ref + " n'est pas OUVERTE et ne peut pas être planifiée");
                             }
                             if (commande.getTournee() != null) {
-                                System.out.println("    ERROR: Commande " + ref + " is already assigned to a tournee");
-                                throw new BusinessRuleException("Commande " + ref + " is already assigned to a tournee");
+                                throw new BusinessRuleException("La commande " + ref + " est déjà affectée à une tournée");
                             }
                             return commande;
                         })
                         .collect(Collectors.toList());
+
+                if (camion == null) {
+                    throw new BusinessRuleException("La tournée doit avoir un camion affecté");
+                }
+                if (equipe == null) {
+                    throw new BusinessRuleException("La tournée doit avoir une équipe de livreurs affectée");
+                }
 
                 TourneeEntity tournee = new TourneeEntity();
                 tournee.setReference(tReq.getReference());
@@ -149,7 +151,6 @@ public class JourneeService {
 
                 tournees.add(tournee);
                 allCommandes.add(commandes);
-                System.out.println("    Tournee " + tReq.getReference() + " validated and ready to save.");
             }
         }
 
@@ -168,20 +169,19 @@ public class JourneeService {
         }
 
         JourneeEntity withTournees = journeeComponent.findByReference(savedJournee.getReference()).orElse(savedJournee);
-        System.out.println("=== Journee " + savedJournee.getReference() + " created successfully ===");
         return JourneeMapper.toResponse(withTournees);
     }
 
 
     private void checkJourneeReferenceAndDate(String reference, LocalDate date) {
         if (reference == null || reference.isEmpty()) {
-            throw new BusinessRuleException("Journee reference is required");
+            throw new BusinessRuleException("La référence de la journée est obligatoire");
         }
         if (journeeComponent.findByReference(reference).isPresent()) {
-            throw new BusinessRuleException("Journee reference must be unique");
+            throw new BusinessRuleException("La référence de la journée doit être unique");
         }
         if (date == null || date.isBefore(LocalDate.now())) {
-            throw new BusinessRuleException("Journee date must be today or in the future");
+            throw new BusinessRuleException("La date de la journée doit être aujourd'hui ou dans le futur");
         }
     }
 
@@ -189,7 +189,7 @@ public class JourneeService {
     @Transactional
     public void deleteJournee(String reference) {
         JourneeEntity journee = journeeComponent.findByReference(reference)
-                .orElseThrow(() -> new ResourceNotFoundException("Journee not found: " + reference));
+                .orElseThrow(() -> new ResourceNotFoundException("Journée non trouvée : " + reference));
         if (journee.getTournees() != null) {
             for (TourneeEntity tournee : journee.getTournees()) {
                 if (tournee.getCommandes() != null) {

@@ -17,7 +17,6 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public interface CommandeEndpoint {
 
-    // Add error 404
     @Operation(summary = "Get all commandes")
     @ApiResponse(responseCode = "200", description = "List of commandes")
     @GetMapping

@@ -6,3 +6,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto:  ${DB_JPA_DDL_AUTO:create-drop}
+      schema_update:
+        unique_constraint_strategy=SKIP

@@ -118,15 +118,6 @@ class LivreurServiceTest {
 
         LivreurResponse result = livreurService.updateLivreur("test@mail.com", update);
 
-        System.out.println("Nom: " + result.getNom());
-        System.out.println("Prenom: " + result.getPrenom());
-        System.out.println("Affecte: " + result.isAffecte());
-        System.out.println("APermis: " + result.isAPermis());
-        System.out.println("Photo: " + result.getPhoto());
-        System.out.println("Telephone: " + result.getTelephone());
-        System.out.println("EquipeId: " + result.getEquipeId());
-        System.out.println("EntrepotNom: " + result.getEntrepotNom());
-
         assertThat(result).isNotNull();
         assertThat(result.getNom()).isEqualTo("NewNom");
         assertThat(result.getPrenom()).isEqualTo("NewPrenom");

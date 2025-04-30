@@ -236,7 +236,7 @@ public class DataLoader {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(),
                         StandardCharsets.UTF_8))) {
-            br.readLine(); // skip header
+            br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
                 String[] d = line.split(",", -1);
@@ -300,7 +300,6 @@ public class DataLoader {
             String line = reader.readLine(); // skip header
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                System.out.println("Loading produit: " + Arrays.toString(tokens));
                 if (tokens.length < 6) continue;
 
                 ProduitEntity produit = new ProduitEntity();
