@@ -76,4 +76,31 @@ class CommandeComponentTest {
         assertThat(result).isSameAs(c1);
         verify(commandeRepository).save(c1);
     }
+
+    @Test
+    void findByTourneeReference_shouldReturnCommandes() {
+        String tourneeRef = "T001";
+        CommandeEntity c1 = CommandeEntity.builder().reference("CMD1").build();
+        CommandeEntity c2 = CommandeEntity.builder().reference("CMD2").build();
+
+        when(commandeRepository.findByTournee_Reference(tourneeRef)).thenReturn(List.of(c1, c2));
+
+        List<CommandeEntity> result = commandeComponent.findByTourneeReference(tourneeRef);
+
+        assertThat(result).containsExactlyInAnyOrder(c1, c2);
+        verify(commandeRepository).findByTournee_Reference(tourneeRef);
+    }
+
+
+    @Test
+    void findByTourneeReference_shouldReturnEmptyListIfNoneFound() {
+        String tourneeRef = "T404";
+        when(commandeRepository.findByTournee_Reference(tourneeRef)).thenReturn(List.of());
+
+        List<CommandeEntity> result = commandeComponent.findByTourneeReference(tourneeRef);
+
+        assertThat(result).isEmpty();
+        verify(commandeRepository).findByTournee_Reference(tourneeRef);
+    }
+
 }

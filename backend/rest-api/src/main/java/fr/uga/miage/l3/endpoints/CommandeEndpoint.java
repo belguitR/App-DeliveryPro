@@ -22,14 +22,14 @@ public interface CommandeEndpoint {
     @GetMapping
     ResponseEntity<List<CommandeResponse>> getAllCommandes();
 
-    @Operation(summary = "Get a commande by reference")
+    @Operation(summary = "Get all commandes of a tournee by tournee reference")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Commande found"),
-            @ApiResponse(responseCode = "404", description = "Commande not found",
+            @ApiResponse(responseCode = "200", description = "List of commandes for the tournee"),
+            @ApiResponse(responseCode = "404", description = "Tournee not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/{reference}")
-    ResponseEntity<CommandeResponse> getCommandeByReference(@PathVariable String reference);
+    @GetMapping("/tournee/{tourneeReference}")
+    ResponseEntity<List<CommandeResponse>> getCommandesByTourneeReference(@PathVariable String tourneeReference);
 
     @Operation(summary = "Patch a commande (etat and dateDeLivraison only)")
     @ApiResponses({

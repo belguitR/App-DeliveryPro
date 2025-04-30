@@ -46,25 +46,6 @@ class CommandeServiceTest {
     }
 
     @Test
-    void getCommandeByReference_shouldReturnCommande() {
-        CommandeEntity entity = new CommandeEntity();
-        entity.setReference("CMD2");
-        when(commandeComponent.findByReference("CMD2")).thenReturn(Optional.of(entity));
-
-        CommandeResponse result = commandeService.getCommandeByReference("CMD2");
-
-        assertThat(result.getReference()).isEqualTo("CMD2");
-        verify(commandeComponent).findByReference("CMD2");
-    }
-
-    @Test
-    void getCommandeByReference_shouldThrowIfNotFound() {
-        when(commandeComponent.findByReference("NOTFOUND")).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> commandeService.getCommandeByReference("NOTFOUND"));
-    }
-
-    @Test
     void patchCommande_shouldUpdateEtatAndDateDeLivraison() {
         CommandeEntity entity = new CommandeEntity();
         entity.setReference("CMD3");
@@ -93,4 +74,33 @@ class CommandeServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> commandeService.patchCommande("NOTFOUND", patch));
     }
+
+    @Test
+    void getCommandesByTourneeReference_shouldReturnCommandeResponses() {
+        String tourneeRef = "T001";
+        CommandeEntity c1 = new CommandeEntity();
+        c1.setReference("CMD1");
+        CommandeEntity c2 = new CommandeEntity();
+        c2.setReference("CMD2");
+
+        when(commandeComponent.findByTourneeReference(tourneeRef)).thenReturn(List.of(c1, c2));
+
+        List<CommandeResponse> result = commandeService.getCommandesByTourneeReference(tourneeRef);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(CommandeResponse::getReference)
+                .containsExactlyInAnyOrder("CMD1", "CMD2");
+        verify(commandeComponent).findByTourneeReference(tourneeRef);
+    }
+
+    @Test
+    void getCommandesByTourneeReference_shouldThrowIfNoneFound() {
+        String tourneeRef = "T404";
+        when(commandeComponent.findByTourneeReference(tourneeRef)).thenReturn(List.of());
+
+        assertThrows(ResourceNotFoundException.class, () -> commandeService.getCommandesByTourneeReference(tourneeRef));
+        verify(commandeComponent).findByTourneeReference(tourneeRef);
+    }
+
+
 }

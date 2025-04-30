@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})
 public class CommandeController implements CommandeEndpoint {
     private final CommandeService commandeService;
 
@@ -23,9 +23,10 @@ public class CommandeController implements CommandeEndpoint {
     }
 
     @Override
-    public ResponseEntity<CommandeResponse> getCommandeByReference(String reference) {
-        return ResponseEntity.ok(commandeService.getCommandeByReference(reference));
+    public ResponseEntity<List<CommandeResponse>> getCommandesByTourneeReference(String tourneeReference) {
+        return ResponseEntity.ok(commandeService.getCommandesByTourneeReference(tourneeReference));
     }
+
 
     @Override
     public ResponseEntity<CommandeResponse> patchCommande(String reference, CommandePatchRequest request) {

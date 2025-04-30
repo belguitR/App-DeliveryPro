@@ -24,4 +24,8 @@ public class CommandeComponent {
     public CommandeEntity save(CommandeEntity entity) {
         return commandeRepository.save(entity);
     }
+
+    public List<CommandeEntity> findByTourneeReference(String tourneeReference) {
+        return commandeRepository.findByTournee_Reference(tourneeReference);
+    }
 }

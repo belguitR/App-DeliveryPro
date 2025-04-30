@@ -3,9 +3,11 @@ package fr.uga.miage.l3.controllers;
 import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.enums.EtatCommande;
+import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.repositories.ClientRepository;
 import fr.uga.miage.l3.repositories.CommandeRepository;
 import fr.uga.miage.l3.repositories.LigneRepository;
+import fr.uga.miage.l3.repositories.TourneeRepository;
 import fr.uga.miage.l3.responses.CommandeResponse;
 import fr.uga.miage.l3.requests.CommandePatchRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +20,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +40,9 @@ class CommandeControllerTest {
 
     @Autowired
     private LigneRepository ligneRepository;
+
+    @Autowired
+    private TourneeRepository tourneeRepository;
 
     @AfterEach
     void tearDown() {
@@ -320,32 +326,6 @@ class CommandeControllerTest {
         assertThat(response.getBody().getDateDeLivraison()).isNull();
     }
 
-    @Test
-    void getCommandeByReference_returnsCommande() {
-        // Given
-        CommandeEntity commande = new CommandeEntity();
-        commande.setReference("CMD2");
-        commande.setEtat(EtatCommande.OUVERTE);
-        commande.setDateDeCreation(LocalDateTime.now());
-        commandeRepository.save(commande);
-
-        // When
-        ResponseEntity<CommandeResponse> response = restTemplate.getForEntity(
-                "/api/commandes/CMD2", CommandeResponse.class);
-
-        // Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getReference()).isEqualTo("CMD2");
-    }
-
-    @Test
-    void getCommandeByReference_notFound_returns404() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                "/api/commandes/NOTFOUND", String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
 
     @Test
     void patchCommande_updatesEtatAndDateDeLivraison() {
@@ -396,6 +376,52 @@ class CommandeControllerTest {
                 httpEntity,
                 String.class
         );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+
+
+    @Test
+    void getCommandesByTourneeReference_returnsList() {
+        TourneeEntity tournee = new TourneeEntity();
+        tournee.setReference("T001");
+        tourneeRepository.save(tournee);
+
+        CommandeEntity c1 = new CommandeEntity();
+        c1.setReference("CMD1");
+        c1.setEtat(EtatCommande.OUVERTE);
+        c1.setTournee(tournee);
+
+        CommandeEntity c2 = new CommandeEntity();
+        c2.setReference("CMD2");
+        c2.setEtat(EtatCommande.EN_LIVRAISON);
+        c2.setTournee(tournee);
+
+        commandeRepository.saveAll(List.of(c1, c2));
+
+        // When
+        ResponseEntity<CommandeResponse[]> response = restTemplate.getForEntity(
+                "/api/commandes/tournee/T001", CommandeResponse[].class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().length).isEqualTo(2);
+        assertThat(
+                java.util.Arrays.stream(response.getBody())
+                        .anyMatch(c -> "CMD1".equals(c.getReference()))
+        ).isTrue();
+        assertThat(
+                java.util.Arrays.stream(response.getBody())
+                        .anyMatch(c -> "CMD2".equals(c.getReference()))
+        ).isTrue();
+    }
+
+    @Test
+    void getCommandesByTourneeReference_notFound_returns404() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                "/api/commandes/tournee/NOTFOUND", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }

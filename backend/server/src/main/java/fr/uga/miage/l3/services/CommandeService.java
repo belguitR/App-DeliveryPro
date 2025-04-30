@@ -6,6 +6,8 @@ import fr.uga.miage.l3.exceptions.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.CommandeMapper;
 import fr.uga.miage.l3.models.CommandeEntity;
+import fr.uga.miage.l3.models.TourneeEntity;
+import fr.uga.miage.l3.repositories.TourneeRepository;
 import fr.uga.miage.l3.requests.CommandePatchRequest;
 import fr.uga.miage.l3.responses.CommandeResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommandeService {
     private final CommandeComponent commandeComponent;
+    private final TourneeRepository tourneeRepository;
 
     public List<CommandeResponse> getAllCommandes() {
         List<CommandeEntity> commandes = commandeComponent.findAll();
@@ -37,11 +40,16 @@ public class CommandeService {
 
 
 
-    public CommandeResponse getCommandeByReference(String reference) {
-        CommandeEntity entity = commandeComponent.findByReference(reference)
-                .orElseThrow(() -> new ResourceNotFoundException("Commande not found: " + reference));
-        return CommandeMapper.toResponse(entity);
+    public List<CommandeResponse> getCommandesByTourneeReference(String tourneeReference) {
+        List<CommandeEntity> commandes = commandeComponent.findByTourneeReference(tourneeReference);
+        if (commandes.isEmpty()) {
+            throw new ResourceNotFoundException("Tournee not found: " + tourneeReference);
+        }
+        return commandes.stream()
+                .map(CommandeMapper::toResponse)
+                .collect(Collectors.toList());
     }
+
 
     public CommandeResponse patchCommande(String reference, CommandePatchRequest request) {
         CommandeEntity entity = commandeComponent.findByReference(reference)
