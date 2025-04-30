@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})
 public class EquipeLivreursController implements EquipeLivreursEndpoint {
     private final EquipeLivreursService equipeLivreursService;
 

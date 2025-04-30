@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RequestMapping("/api/tournees")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})
 public interface TourneeEndpoint {
 
     @Operation(summary = "Get the last Tournee by livreur email")

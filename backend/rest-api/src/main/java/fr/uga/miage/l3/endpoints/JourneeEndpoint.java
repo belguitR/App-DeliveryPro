@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequestMapping("/api/journees")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})
 public interface JourneeEndpoint {
 
     @Operation(summary = "Get all journees")
