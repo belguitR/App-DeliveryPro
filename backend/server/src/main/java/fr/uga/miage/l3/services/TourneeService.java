@@ -16,13 +16,9 @@ public class TourneeService {
 
     private final TourneeComponent tourneeComponent;
 
-    public TourneeResponse getTodayTourneeByEquipe(Integer equipeId) {
-        LocalDate today = LocalDate.now();
-        TourneeEntity tournee = tourneeComponent.findByEquipeLivreursIdAndDate(equipeId, today)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Aucune tournée trouvée pour l'équipeLivreurs avec l'ID: " + equipeId + " pour aujourd'hui"
-                ));
-
-        return TourneeMapper.toResponse(tournee);
+    public TourneeResponse getLastTourneeByLivreurEmail(String email) {
+        return tourneeComponent.findLastTourneeByLivreurEmail(email)
+                .map(TourneeMapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Aucune tournée trouvée pour le livreur : " + email));
     }
 }

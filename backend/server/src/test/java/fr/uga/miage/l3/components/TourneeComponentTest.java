@@ -1,16 +1,14 @@
 package fr.uga.miage.l3.components;
 
 import fr.uga.miage.l3.enums.EtatTournee;
-import fr.uga.miage.l3.models.TourneeEntity;
-import fr.uga.miage.l3.repositories.TourneeRepository;
+import fr.uga.miage.l3.models.*;
+import fr.uga.miage.l3.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,6 +19,10 @@ class TourneeComponentTest {
 
     @Mock
     private TourneeRepository tourneeRepository;
+    @Mock
+    private LivreurRepository livreurRepository;
+    @Mock
+    private EquipeLivreursRepository equipeLivreursRepository;
 
     @InjectMocks
     private TourneeComponent tourneeComponent;
@@ -30,36 +32,81 @@ class TourneeComponentTest {
         MockitoAnnotations.openMocks(this);
     }
 
-
     @Test
-    void testFindByEquipeLivreursIdAndDate_shouldReturnTournee() {
-        Integer equipeLivreursId = 1;
-        LocalDate date = LocalDate.now();
-        TourneeEntity tournee = TourneeEntity
-                .builder()
+    void findLastTourneeByLivreurEmail_shouldReturnTournee() {
+        String email = "test@livreur.com";
+        LivreurEntity livreur = new LivreurEntity();
+        livreur.setEmail(email);
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setLivreurs(Set.of(livreur));
+
+        TourneeEntity tournee = TourneeEntity.builder()
                 .reference("T002")
                 .etat(EtatTournee.EN_COURS)
                 .build();
 
-        when(tourneeRepository.findByEquipeLivreurs_IdEquipeAndJour_Date(equipeLivreursId, date)).thenReturn(Optional.of(tournee));
+        when(livreurRepository.findByEmail(email)).thenReturn(Optional.of(livreur));
+        when(equipeLivreursRepository.findByLivreursContaining(livreur)).thenReturn(Optional.of(equipe));
+        when(tourneeRepository.findFirstByEquipeLivreursOrderByJour_DateDesc(equipe)).thenReturn(Optional.of(tournee));
 
-        Optional<TourneeEntity> result = tourneeComponent.findByEquipeLivreursIdAndDate(equipeLivreursId, date);
+        Optional<TourneeEntity> result = tourneeComponent.findLastTourneeByLivreurEmail(email);
 
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(tournee);
-        verify(tourneeRepository).findByEquipeLivreurs_IdEquipeAndJour_Date(equipeLivreursId, date);
+
+        verify(livreurRepository).findByEmail(email);
+        verify(equipeLivreursRepository).findByLivreursContaining(livreur);
+        verify(tourneeRepository).findFirstByEquipeLivreursOrderByJour_DateDesc(equipe);
     }
 
     @Test
-    void testFindByEquipeLivreursIdAndDate_shouldReturnEmptyIfNotFound() {
-        Integer equipeLivreursId = 1;
-        LocalDate date = LocalDate.now();
+    void findLastTourneeByLivreurEmail_shouldReturnEmptyIfLivreurNotFound() {
+        String email = "notfound@livreur.com";
+        when(livreurRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        when(tourneeRepository.findByEquipeLivreurs_IdEquipeAndJour_Date(equipeLivreursId, date)).thenReturn(Optional.empty());
-
-        Optional<TourneeEntity> result = tourneeComponent.findByEquipeLivreursIdAndDate(equipeLivreursId, date);
+        Optional<TourneeEntity> result = tourneeComponent.findLastTourneeByLivreurEmail(email);
 
         assertThat(result).isEmpty();
-        verify(tourneeRepository).findByEquipeLivreurs_IdEquipeAndJour_Date(equipeLivreursId, date);
+        verify(livreurRepository).findByEmail(email);
+        verifyNoInteractions(equipeLivreursRepository, tourneeRepository);
+    }
+
+    @Test
+    void findLastTourneeByLivreurEmail_shouldReturnEmptyIfEquipeNotFound() {
+        String email = "test@livreur.com";
+        LivreurEntity livreur = new LivreurEntity();
+        livreur.setEmail(email);
+
+        when(livreurRepository.findByEmail(email)).thenReturn(Optional.of(livreur));
+        when(equipeLivreursRepository.findByLivreursContaining(livreur)).thenReturn(Optional.empty());
+
+        Optional<TourneeEntity> result = tourneeComponent.findLastTourneeByLivreurEmail(email);
+
+        assertThat(result).isEmpty();
+        verify(livreurRepository).findByEmail(email);
+        verify(equipeLivreursRepository).findByLivreursContaining(livreur);
+        verifyNoInteractions(tourneeRepository);
+    }
+
+    @Test
+    void findLastTourneeByLivreurEmail_shouldReturnEmptyIfNoTourneeFound() {
+        String email = "test@livreur.com";
+        LivreurEntity livreur = new LivreurEntity();
+        livreur.setEmail(email);
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setLivreurs(Set.of(livreur));
+
+        when(livreurRepository.findByEmail(email)).thenReturn(Optional.of(livreur));
+        when(equipeLivreursRepository.findByLivreursContaining(livreur)).thenReturn(Optional.of(equipe));
+        when(tourneeRepository.findFirstByEquipeLivreursOrderByJour_DateDesc(equipe)).thenReturn(Optional.empty());
+
+        Optional<TourneeEntity> result = tourneeComponent.findLastTourneeByLivreurEmail(email);
+
+        assertThat(result).isEmpty();
+        verify(livreurRepository).findByEmail(email);
+        verify(equipeLivreursRepository).findByLivreursContaining(livreur);
+        verify(tourneeRepository).findFirstByEquipeLivreursOrderByJour_DateDesc(equipe);
     }
 }

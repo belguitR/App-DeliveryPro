@@ -5,16 +5,18 @@ import fr.uga.miage.l3.responses.TourneeResponse;
 import fr.uga.miage.l3.services.TourneeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})
 public class TourneeController implements TourneeEndpoint {
 
     private final TourneeService tourneeService;
 
     @Override
-    public ResponseEntity<TourneeResponse> getTodayTourneeByEquipeLivreurs(Integer equipeId) {
-        return ResponseEntity.ok(tourneeService.getTodayTourneeByEquipe(equipeId));
+    public ResponseEntity<TourneeResponse> getLastTourneeByLivreurEmail(String email) {
+        return ResponseEntity.ok(tourneeService.getLastTourneeByLivreurEmail(email));
     }
 }

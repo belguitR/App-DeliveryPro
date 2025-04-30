@@ -16,12 +16,12 @@ import java.time.LocalDate;
 @CrossOrigin(origins = "http://localhost:4200")
 public interface TourneeEndpoint {
 
-    @Operation(summary = "Get today's Tournee by EquipeLivreur ID")
+    @Operation(summary = "Get the last Tournee by livreur email")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Tournee found"),
             @ApiResponse(responseCode = "404", description = "Tournee not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping("/today/equipeLivreurs/{equipeId}")
-    ResponseEntity<TourneeResponse> getTodayTourneeByEquipeLivreurs(@PathVariable Integer equipeId);
+    @GetMapping("/last/by-livreur/{email}")
+    ResponseEntity<TourneeResponse> getLastTourneeByLivreurEmail(@PathVariable String email);
 }
