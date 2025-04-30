@@ -109,4 +109,38 @@ class TourneeComponentTest {
         verify(equipeLivreursRepository).findByLivreursContaining(livreur);
         verify(tourneeRepository).findFirstByEquipeLivreursOrderByJour_DateDesc(equipe);
     }
+
+    @Test
+    void findByReference_shouldReturnTournee() {
+        TourneeEntity tournee = new TourneeEntity();
+        tournee.setReference("T001");
+        when(tourneeRepository.findById("T001")).thenReturn(Optional.of(tournee));
+
+        Optional<TourneeEntity> result = tourneeComponent.findByReference("T001");
+
+        assertThat(result).contains(tournee);
+        verify(tourneeRepository).findById("T001");
+    }
+
+    @Test
+    void findByReference_shouldReturnEmptyIfNotFound() {
+        when(tourneeRepository.findById("T404")).thenReturn(Optional.empty());
+
+        Optional<TourneeEntity> result = tourneeComponent.findByReference("T404");
+
+        assertThat(result).isEmpty();
+        verify(tourneeRepository).findById("T404");
+    }
+
+    @Test
+    void save_shouldReturnSavedTournee() {
+        TourneeEntity tournee = new TourneeEntity();
+        tournee.setReference("T001");
+        when(tourneeRepository.save(tournee)).thenReturn(tournee);
+
+        TourneeEntity result = tourneeComponent.save(tournee);
+
+        assertThat(result).isSameAs(tournee);
+        verify(tourneeRepository).save(tournee);
+    }
 }

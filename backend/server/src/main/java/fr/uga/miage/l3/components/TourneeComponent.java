@@ -22,6 +22,13 @@ public class TourneeComponent {
     private final LivreurRepository livreurRepository;
     private final EquipeLivreursRepository equipeLivreursRepository;
 
+    public Optional<TourneeEntity> findByReference(String reference) {
+        return tourneeRepository.findById(reference);
+    }
+
+    public TourneeEntity save(TourneeEntity entity) {
+        return tourneeRepository.save(entity);
+    }
     public Optional<TourneeEntity> findLastTourneeByLivreurEmail(String email) {
         LivreurEntity livreur = livreurRepository.findByEmail(email).orElse(null);
         if (livreur == null) return Optional.empty();

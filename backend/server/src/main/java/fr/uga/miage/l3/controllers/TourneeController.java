@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.endpoints.TourneeEndpoint;
+import fr.uga.miage.l3.requests.TourneePatchEtatRequest;
 import fr.uga.miage.l3.responses.TourneeResponse;
 import fr.uga.miage.l3.services.TourneeService;
 import lombok.RequiredArgsConstructor;
@@ -19,4 +20,10 @@ public class TourneeController implements TourneeEndpoint {
     public ResponseEntity<TourneeResponse> getLastTourneeByLivreurEmail(String email) {
         return ResponseEntity.ok(tourneeService.getLastTourneeByLivreurEmail(email));
     }
+
+    @Override
+    public ResponseEntity<TourneeResponse> patchTourneeEtat(String reference, TourneePatchEtatRequest request) {
+        return ResponseEntity.ok(tourneeService.patchTourneeEtat(reference, request));
+    }
+
 }

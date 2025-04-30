@@ -1,5 +1,6 @@
 package fr.uga.miage.l3.endpoints;
 
+import fr.uga.miage.l3.requests.TourneePatchEtatRequest;
 import fr.uga.miage.l3.responses.TourneeResponse;
 import fr.uga.miage.l3.responses.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,4 +25,19 @@ public interface TourneeEndpoint {
     })
     @GetMapping("/last/by-livreur/{email}")
     ResponseEntity<TourneeResponse> getLastTourneeByLivreurEmail(@PathVariable String email);
+
+    @Operation(summary = "Patch the etat of a tournee")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tournee patched"),
+            @ApiResponse(responseCode = "404", description = "Tournee not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/{reference}/etat")
+    ResponseEntity<TourneeResponse> patchTourneeEtat(
+            @PathVariable String reference,
+            @RequestBody TourneePatchEtatRequest request
+    );
+
 }
