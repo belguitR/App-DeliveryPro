@@ -1,11 +1,15 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.CommandeComponent;
+import fr.uga.miage.l3.dataTypes.Adresse;
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.CommandeMapper;
+import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
+import fr.uga.miage.l3.models.LigneEntity;
 import fr.uga.miage.l3.requests.CommandePatchRequest;
+import fr.uga.miage.l3.responses.ClientResponse;
 import fr.uga.miage.l3.responses.CommandeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import org.mockito.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,18 +37,7 @@ class CommandeServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void getAllCommandes_shouldReturnList() {
-        CommandeEntity entity = new CommandeEntity();
-        entity.setReference("CMD1");
-        when(commandeComponent.findAll()).thenReturn(List.of(entity));
 
-        List<CommandeResponse> result = commandeService.getAllCommandes();
-
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getReference()).isEqualTo("CMD1");
-        verify(commandeComponent).findAll();
-    }
 
     @Test
     void patchCommande_shouldUpdateEtatAndDateDeLivraison() {
@@ -101,6 +95,83 @@ class CommandeServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> commandeService.getCommandesByTourneeReference(tourneeRef));
         verify(commandeComponent).findByTourneeReference(tourneeRef);
     }
+    @Test
+    void getAllCommandes_shouldReturnList() {
+        // Arrange : création d'une commande avec client et lignes
+        CommandeEntity entity = new CommandeEntity();
+        entity.setReference("CMD1");
+        entity.setDateDeCreation(LocalDateTime.now());
+        entity.setNote(5);
+        entity.setTdmTheorique(42);
+        entity.setCommentaire("commentaire");
+        entity.setDateDeLivraison(LocalDateTime.now().plusDays(1));
+
+        // Ajout d'un client
+        ClientEntity client = new ClientEntity();
+        client.setCode("C001");
+        client.setNom("Nom");
+        client.setPrenom("Prenom");
+        client.setEmail("mail@mail.com");
+        client.setEtat(null);
+        entity.setClient(client);
+
+        // Ajout d'une ligne
+        LigneEntity ligne = new LigneEntity();
+        ligne.setReference("L001");
+        entity.setLignes(Set.of(ligne));
+
+        when(commandeComponent.findAll()).thenReturn(List.of(entity));
+
+        // Act
+        List<CommandeResponse> result = commandeService.getAllCommandes();
+
+        // Assert sur le service
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getReference()).isEqualTo("CMD1");
+        assertThat(result.get(0).getClient().getCode()).isEqualTo("C001");
+        assertThat(result.get(0).getLigneReferences()).contains("L001");
+        verify(commandeComponent).findAll();
+
+        // --- Couverture du mapper CommandeMapper ---
+        // Cas normal
+        CommandeResponse mapped = CommandeMapper.toResponse(entity);
+        assertThat(mapped.getReference()).isEqualTo(entity.getReference());
+        assertThat(mapped.getClient().getCode()).isEqualTo("C001");
+        assertThat(mapped.getLigneReferences()).contains("L001");
+
+        // Cas null
+        assertThat(CommandeMapper.toResponse(null)).isNull();
+
+        // Cas client null
+        CommandeEntity entityNoClient = new CommandeEntity();
+        entityNoClient.setReference("CMD2");
+        entityNoClient.setClient(null);
+        CommandeResponse mappedNoClient = CommandeMapper.toResponse(entityNoClient);
+        assertThat(mappedNoClient.getClient()).isNull();
+
+        // Cas lignes null
+        CommandeEntity entityNoLignes = new CommandeEntity();
+        entityNoLignes.setReference("CMD3");
+        entityNoLignes.setLignes(null);
+        CommandeResponse mappedNoLignes = CommandeMapper.toResponse(entityNoLignes);
+        assertThat(mappedNoLignes.getLigneReferences()).isNull();
+
+        // Cas client mapping direct
+        ClientResponse clientResp = CommandeMapper.toClientResponse(client);
+        assertThat(clientResp.getCode()).isEqualTo("C001");
+        assertThat(CommandeMapper.toClientResponse(null)).isNull();
+    }
+    @Test
+    void testAdressePojo() {
+        Adresse a = new Adresse();
+        a.setAdresse("rue des taillées");
+        a.setCodePostal("38400");
+        a.setVille("Grenoble");
+        assertEquals("rue des taillées", a.getAdresse());
+        assertEquals("38400", a.getCodePostal());
+        assertEquals("Grenoble", a.getVille());
+    }
+
 
 
 }

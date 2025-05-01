@@ -2,6 +2,7 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.LivreurComponent;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
+import fr.uga.miage.l3.mappers.LivreurMapper;
 import fr.uga.miage.l3.models.EntrepotEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.models.EquipeLivreursEntity;
@@ -40,16 +41,58 @@ class LivreurServiceTest {
 
     @Test
     void getAllLivreurs_shouldReturnList() {
+        // Arrange
         LivreurEntity entity = new LivreurEntity();
-        entity.setTrigramme("EBD");
+        entity.setTrigramme("TRI");
+        entity.setNom("Nom");
+        entity.setPrenom("Prenom");
+        entity.setEmail("mail@mail.com");
+        entity.setPhoto("photo.png");
+        entity.setTelephone("123456789");
+        entity.setAffecte(true);
+        entity.setAPermis(true);
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setIdEquipe(42);
+        entity.setEquipeLivreurs(equipe);
+
+        EntrepotEntity entrepot = new EntrepotEntity();
+        entrepot.setNom("Entrepot");
+        entity.setEntrepot(entrepot);
+
         when(livreurComponent.findAll()).thenReturn(List.of(entity));
 
+        // Act
         List<LivreurResponse> result = livreurService.getAllLivreurs();
 
+        // Assert service
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTrigramme()).isEqualTo("EBD");
+        assertThat(result.get(0).getTrigramme()).isEqualTo("TRI");
+        assertThat(result.get(0).getEquipeId()).isEqualTo(42);
+        assertThat(result.get(0).getEntrepotNom()).isEqualTo("Entrepot");
         verify(livreurComponent).findAll();
+
+        // --- Couverture LivreurMapper ---
+        // Cas normal
+        LivreurResponse resp = LivreurMapper.toResponse(entity);
+        assertThat(resp.getTrigramme()).isEqualTo("TRI");
+        assertThat(resp.getEquipeId()).isEqualTo(42);
+        assertThat(resp.getEntrepotNom()).isEqualTo("Entrepot");
+
+        // Cas null
+        assertThat(LivreurMapper.toResponse(null)).isNull();
+
+        // Cas mapping inverse
+        LivreurResponse response = new LivreurResponse("TRI", "Nom", "Prenom", "mail@mail.com", "photo.png", "123456789", true, true, 42, "Entrepot");
+        LivreurEntity entity2 = LivreurMapper.toEntity(response, equipe, entrepot);
+        assertThat(entity2.getTrigramme()).isEqualTo("TRI");
+        assertThat(entity2.getEquipeLivreurs()).isEqualTo(equipe);
+        assertThat(entity2.getEntrepot()).isEqualTo(entrepot);
+
+        // Cas mapping inverse null
+        assertThat(LivreurMapper.toEntity(null, null, null)).isNull();
     }
+
 
     @Test
     void getAllLivreurs_shouldReturnEmptyList() {

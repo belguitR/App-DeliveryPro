@@ -3,6 +3,7 @@ package fr.uga.miage.l3.services;
 import fr.uga.miage.l3.components.JourneeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.JourneeMapper;
@@ -612,4 +613,77 @@ class JourneeServiceTest {
     }
 
 
+    @Test
+    void deleteJournee_shouldHandleJourneeWithoutTournees() {
+        // Cas où la journée n'a pas de tournée (liste vide ou null)
+        JourneeEntity journee = new JourneeEntity();
+        journee.setReference("JEMPTY");
+        journee.setTournees(null);
+
+        when(journeeComponent.findByReference("JEMPTY")).thenReturn(Optional.of(journee));
+
+        journeeService.deleteJournee("JEMPTY");
+
+        verify(journeeComponent).deleteByReference("JEMPTY");
+    }
+
+    @Test
+    void createJournee_shouldThrowIfTourneeHasNoLettre() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J017")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T015")
+                                .etat("EN_COURS")
+                                .lettre(null) // lettre manquante
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        when(journeeComponent.findByReference("J017")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T015")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
+
+    @Test
+    void createJournee_shouldThrowIfEquipeStatusNotPret() {
+        JourneeRequest request = JourneeRequest.builder()
+                .reference("J018")
+                .date(LocalDate.now().plusDays(1))
+                .tournees(List.of(
+                        TourneeRequest.builder()
+                                .reference("T016")
+                                .etat("EN_COURS")
+                                .lettre("A")
+                                .distanceAParcourir(100.0)
+                                .tempsAssemblageReel(2)
+                                .equipeLivreursId(1)
+                                .camionCode("C001")
+                                .commandeReferences(List.of("CMD1"))
+                                .build()
+                ))
+                .build();
+
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setIdEquipe(1);
+        equipe.setStatus(StatusEquipeLivreurs.NON_DISPONIBLE);
+
+        when(journeeComponent.findByReference("J018")).thenReturn(Optional.empty());
+        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
+        when(tourneeRepository.findById("T016")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
+
+        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
+    }
 }

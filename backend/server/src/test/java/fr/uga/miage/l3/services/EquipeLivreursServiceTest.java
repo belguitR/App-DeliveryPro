@@ -40,17 +40,43 @@ class EquipeLivreursServiceTest {
 
     @Test
     void getAllEquipes_shouldReturnList() {
-        EquipeLivreursEntity entity = EquipeLivreursEntity
-                .builder()
-                .status(StatusEquipeLivreurs.PRET)
-                .build();
+        // Arrange
+        EquipeLivreursEntity entity = new EquipeLivreursEntity();
+        entity.setIdEquipe(1);
+        entity.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
+
+        LivreurEntity livreur = new LivreurEntity();
+        livreur.setTrigramme("TRI");
+        entity.setLivreurs(Set.of(livreur));
+
         when(equipeComponent.findAll()).thenReturn(List.of(entity));
 
+        // Act
         List<EquipeLivreursResponse> result = equipeService.getAllEquipes();
 
+        // Assert service
         assertThat(result).hasSize(1);
+        assertThat(result.get(0).getIdEquipe()).isEqualTo(1);
         assertThat(result.get(0).getStatus()).isEqualTo("PRET");
+        assertThat(result.get(0).getLivreurIds()).contains("TRI");
         verify(equipeComponent).findAll();
+
+        // --- Couverture EquipeLivreursMapper ---
+        // Cas normal
+        EquipeLivreursResponse resp = EquipeLivreursMapper.toResponse(entity);
+        assertThat(resp.getIdEquipe()).isEqualTo(1);
+        assertThat(resp.getStatus()).isEqualTo("PRET");
+        assertThat(resp.getLivreurIds()).contains("TRI");
+
+        // Cas null
+        assertThat(EquipeLivreursMapper.toResponse(null)).isNull();
+        assertThat(EquipeLivreursMapper.toEntity(null)).isNull();
+
+        // Cas mapping inverse
+        EquipeLivreursResponse response = new EquipeLivreursResponse(2, "PRET", List.of("TRI"));
+        EquipeLivreursEntity entity2 = EquipeLivreursMapper.toEntity(response);
+        assertThat(entity2.getIdEquipe()).isEqualTo(2);
+        assertThat(entity2.getStatus()).isEqualTo(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
     }
 
     @Test
@@ -230,5 +256,33 @@ class EquipeLivreursServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> equipeService.patchEquipeStatus(1, "PRET"));
     }
 
+    @Test
+    void patchEquipeStatus_shouldThrowIfStatusInvalid() {
+        EquipeLivreursEntity entity = new EquipeLivreursEntity();
+        when(equipeComponent.findById(1)).thenReturn(Optional.of(entity));
+        // Status inexistant
+        assertThrows(IllegalArgumentException.class, () -> equipeService.patchEquipeStatus(1, "INVALID_STATUS"));
+    }
+
+    @Test
+    void deleteEquipe_shouldRemoveLivreurEquipeReference() {
+        // Cas où des livreurs sont affectés à l'équipe à supprimer
+        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
+        equipe.setIdEquipe(1);
+        LivreurEntity l1 = new LivreurEntity();
+        l1.setEquipeLivreurs(equipe);
+        LivreurEntity l2 = new LivreurEntity();
+        l2.setEquipeLivreurs(equipe);
+
+        when(equipeComponent.findById(1)).thenReturn(Optional.of(equipe));
+        when(livreurRepository.findByEquipeLivreurs(equipe)).thenReturn(List.of(l1, l2));
+
+        equipeService.deleteEquipe(1);
+
+        // Les livreurs doivent être "désaffectés"
+        assertThat(l1.getEquipeLivreurs()).isNull();
+        assertThat(l2.getEquipeLivreurs()).isNull();
+        verify(equipeComponent).deleteById(1);
+    }
 
 }
