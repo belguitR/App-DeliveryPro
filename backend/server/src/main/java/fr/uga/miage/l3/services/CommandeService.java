@@ -60,7 +60,7 @@ public class CommandeService {
             try {
                 etat = EtatCommande.valueOf(request.getEtat());
             } catch (IllegalArgumentException e) {
-                throw new BusinessRuleException("Valeur Incalide pour etat : " + request.getEtat());
+                throw new BusinessRuleException("Valeur Invalide pour etat : " + request.getEtat());
             }
             if (etat == EtatCommande.LIVREE && request.getDateDeLivraison() == null) {
                 throw new BusinessRuleException("dateDeLivraison est requise quand l'etat est LIVREE");
