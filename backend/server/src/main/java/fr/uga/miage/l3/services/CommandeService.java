@@ -11,6 +11,7 @@ import fr.uga.miage.l3.requests.CommandePatchRequest;
 import fr.uga.miage.l3.responses.CommandeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,11 +51,17 @@ public class CommandeService {
     }
 
 
+    @Transactional
     public CommandeResponse patchCommande(String reference, CommandePatchRequest request) {
         CommandeEntity entity = commandeComponent.findByReference(reference)
                 .orElseThrow(() -> new ResourceNotFoundException("Commande non trouvée: " + reference));
         if (request.getEtat() != null) {
-            EtatCommande etat = EtatCommande.valueOf(request.getEtat());
+            EtatCommande etat;
+            try {
+                etat = EtatCommande.valueOf(request.getEtat());
+            } catch (IllegalArgumentException e) {
+                throw new BusinessRuleException("Invalid value for etat: " + request.getEtat());
+            }
             if (etat == EtatCommande.LIVREE && request.getDateDeLivraison() == null) {
                 throw new BusinessRuleException("dateDeLivraison est requise quand l'etat est LIVREE");
             }
