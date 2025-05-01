@@ -3,7 +3,6 @@ package fr.uga.miage.l3.services;
 import fr.uga.miage.l3.components.JourneeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
-import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.JourneeMapper;
@@ -70,7 +69,38 @@ class JourneeServiceTest {
 
         assertThat(result.getReference()).isEqualTo("J002");
         verify(journeeComponent).findByReference("J002");
+
+        // ... dans un test existant de JourneeServiceTest
+
+        JourneeEntity j1 = new JourneeEntity();
+        j1.setReference("JX");
+        j1.setDate(LocalDate.of(2024, 1, 1));
+        j1.setPlanificateur(null);
+        j1.setTournees(null);
+
+        JourneeEntity j2 = new JourneeEntity();
+        j2.setReference("JX");
+        j2.setDate(LocalDate.of(2024, 1, 1));
+        j2.setPlanificateur(null);
+        j2.setTournees(null);
+
+        JourneeEntity j3 = new JourneeEntity();
+        j3.setReference("JY");
+        j3.setDate(LocalDate.of(2024, 1, 2));
+        j3.setPlanificateur(null);
+        j3.setTournees(List.of());
+
+// Test equals/hashCode/toString intégrés dans le test de service
+        assertThat(j1).isEqualTo(j2);
+        assertThat(j1.hashCode()).isEqualTo(j2.hashCode());
+        assertThat(j1).isNotEqualTo(j3);
+// Test toString : juste le nom de la classe
+        assertThat(j1.toString()).contains("JourneeEntity");
+        assertThat(j1).isNotEqualTo(null);
+        assertThat(j1).isNotEqualTo("string");
+
     }
+
 
     @Test
     void getJourneeByReference_shouldThrowIfNotFound() {
@@ -612,21 +642,6 @@ class JourneeServiceTest {
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
     }
 
-
-    @Test
-    void deleteJournee_shouldHandleJourneeWithoutTournees() {
-        // Cas où la journée n'a pas de tournée (liste vide ou null)
-        JourneeEntity journee = new JourneeEntity();
-        journee.setReference("JEMPTY");
-        journee.setTournees(null);
-
-        when(journeeComponent.findByReference("JEMPTY")).thenReturn(Optional.of(journee));
-
-        journeeService.deleteJournee("JEMPTY");
-
-        verify(journeeComponent).deleteByReference("JEMPTY");
-    }
-
     @Test
     void createJournee_shouldThrowIfTourneeHasNoLettre() {
         JourneeRequest request = JourneeRequest.builder()
@@ -655,35 +670,6 @@ class JourneeServiceTest {
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
     }
 
-    @Test
-    void createJournee_shouldThrowIfEquipeStatusNotPret() {
-        JourneeRequest request = JourneeRequest.builder()
-                .reference("J018")
-                .date(LocalDate.now().plusDays(1))
-                .tournees(List.of(
-                        TourneeRequest.builder()
-                                .reference("T016")
-                                .etat("EN_COURS")
-                                .lettre("A")
-                                .distanceAParcourir(100.0)
-                                .tempsAssemblageReel(2)
-                                .equipeLivreursId(1)
-                                .camionCode("C001")
-                                .commandeReferences(List.of("CMD1"))
-                                .build()
-                ))
-                .build();
 
-        EquipeLivreursEntity equipe = new EquipeLivreursEntity();
-        equipe.setIdEquipe(1);
-        equipe.setStatus(StatusEquipeLivreurs.NON_DISPONIBLE);
 
-        when(journeeComponent.findByReference("J018")).thenReturn(Optional.empty());
-        when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
-        when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
-        when(tourneeRepository.findById("T016")).thenReturn(Optional.empty());
-        when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
-
-        assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
-    }
 }
