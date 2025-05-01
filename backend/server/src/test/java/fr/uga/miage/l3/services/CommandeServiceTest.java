@@ -2,7 +2,7 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.CommandeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
-import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.CommandeMapper;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.requests.CommandePatchRequest;

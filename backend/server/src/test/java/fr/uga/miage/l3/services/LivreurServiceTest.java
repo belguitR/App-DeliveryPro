@@ -1,7 +1,7 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.LivreurComponent;
-import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.models.EntrepotEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.models.EquipeLivreursEntity;

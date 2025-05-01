@@ -1,8 +1,8 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.EquipeLivreursComponent;
-import fr.uga.miage.l3.exceptions.BusinessRuleException;
-import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
+import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.EquipeLivreursMapper;
 import fr.uga.miage.l3.models.EquipeLivreursEntity;
 import fr.uga.miage.l3.enums.StatusEquipeLivreurs;

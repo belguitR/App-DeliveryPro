@@ -2,11 +2,10 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.CommandeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
-import fr.uga.miage.l3.exceptions.BusinessRuleException;
-import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
+import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.CommandeMapper;
 import fr.uga.miage.l3.models.CommandeEntity;
-import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.repositories.TourneeRepository;
 import fr.uga.miage.l3.requests.CommandePatchRequest;
 import fr.uga.miage.l3.responses.CommandeResponse;

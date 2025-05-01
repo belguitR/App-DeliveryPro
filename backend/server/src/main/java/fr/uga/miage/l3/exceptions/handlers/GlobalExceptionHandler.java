@@ -1,8 +1,8 @@
-package fr.uga.miage.l3.handlers;
+package fr.uga.miage.l3.exceptions.handlers;
 
-import fr.uga.miage.l3.exceptions.BusinessRuleException;
-import fr.uga.miage.l3.exceptions.InvalidStatusRestException;
-import fr.uga.miage.l3.exceptions.ResourceNotFoundException;
+import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
+import fr.uga.miage.l3.exceptions.rest.InvalidStatusRestException;
+import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import fr.uga.miage.l3.responses.ErrorResponse;

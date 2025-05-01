@@ -1,7 +1,7 @@
 package fr.uga.miage.l3.controllers;
 
 import fr.uga.miage.l3.endpoints.EquipeLivreursEndpoint;
-import fr.uga.miage.l3.exceptions.InvalidStatusRestException;
+import fr.uga.miage.l3.exceptions.rest.InvalidStatusRestException;
 import fr.uga.miage.l3.responses.EquipeLivreursResponse;
 import fr.uga.miage.l3.requests.EquipeStatusPatchRequest;
 import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
