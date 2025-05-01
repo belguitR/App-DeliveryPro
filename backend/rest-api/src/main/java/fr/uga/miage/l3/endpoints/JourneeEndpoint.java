@@ -18,14 +18,14 @@ import java.util.List;
 public interface JourneeEndpoint {
 
     @Operation(summary = "Get all journees")
-    @ApiResponse(responseCode = "200", description = "List of journees")
+    @ApiResponse(responseCode = "200", description = "Liste des journées")
     @GetMapping
     ResponseEntity<List<JourneeResponse>> getAllJournees();
 
     @Operation(summary = "Get a journee by reference")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Journee found"),
-            @ApiResponse(responseCode = "404", description = "Journee not found",
+            @ApiResponse(responseCode = "200", description = "Journee trouvée"),
+            @ApiResponse(responseCode = "404", description = "Journee non trouvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{reference}")
@@ -33,7 +33,7 @@ public interface JourneeEndpoint {
 
     @Operation(summary = "Create a new journee")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Journee created"),
+            @ApiResponse(responseCode = "201", description = "Journée créée"),
             @ApiResponse(responseCode = "400", description = "Invalid request or business rule violation",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -42,8 +42,8 @@ public interface JourneeEndpoint {
 
     @Operation(summary = "Delete a journee by reference")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Journee deleted"),
-            @ApiResponse(responseCode = "404", description = "Journee not found",
+            @ApiResponse(responseCode = "204", description = "Journee suprrimée"),
+            @ApiResponse(responseCode = "404", description = "Journee non trouvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{reference}")

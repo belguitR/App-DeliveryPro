@@ -73,9 +73,9 @@ class JourneeServiceTest {
 
     @Test
     void getJourneeByReference_shouldThrowIfNotFound() {
-        when(journeeComponent.findByReference("NOTFOUND")).thenReturn(Optional.empty());
+        when(journeeComponent.findByReference("NON TROUVé")).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> journeeService.getJourneeByReference("NOTFOUND"));
+        assertThrows(ResourceNotFoundException.class, () -> journeeService.getJourneeByReference("NON TROUVé"));
     }
 
     @Test
@@ -336,7 +336,7 @@ class JourneeServiceTest {
                                 .tempsAssemblageReel(2)
                                 .equipeLivreursId(1)
                                 .camionCode("C001")
-                                .commandeReferences(List.of("CMD_NOTFOUND"))
+                                .commandeReferences(List.of("CMD_NON TROUVé"))
                                 .build()
                 ))
                 .build();
@@ -345,7 +345,7 @@ class JourneeServiceTest {
         when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(new EquipeLivreursEntity()));
         when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
         when(tourneeRepository.findById("T007")).thenReturn(Optional.empty());
-        when(commandeRepository.findById("CMD_NOTFOUND")).thenReturn(Optional.empty());
+        when(commandeRepository.findById("CMD_NON TROUVé")).thenReturn(Optional.empty());
 
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
     }
@@ -522,9 +522,9 @@ class JourneeServiceTest {
 
     @Test
     void deleteJournee_shouldThrowIfNotFound() {
-        when(journeeComponent.findByReference("NOTFOUND")).thenReturn(Optional.empty());
+        when(journeeComponent.findByReference("NON TROUVé")).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> journeeService.deleteJournee("NOTFOUND"));
+        assertThrows(ResourceNotFoundException.class, () -> journeeService.deleteJournee("NON TROUVé"));
     }
 
     @Test

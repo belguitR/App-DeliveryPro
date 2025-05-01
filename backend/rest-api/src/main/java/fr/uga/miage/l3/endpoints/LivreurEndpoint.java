@@ -16,22 +16,22 @@ import java.util.List;
 public interface LivreurEndpoint {
 
     @Operation(summary = "Get all livreurs")
-    @ApiResponse(responseCode = "200", description = "List of livreurs")
+    @ApiResponse(responseCode = "200", description = "liste des livreurs")
     @GetMapping
     ResponseEntity<List<LivreurResponse>> getAllLivreurs();
 
     @Operation(summary = "Get a livreur by email")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Livreur found"),
-            @ApiResponse(responseCode = "404", description = "Livreur not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Livreur trouvé"),
+            @ApiResponse(responseCode = "404", description = "Livreur non trouvé", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{email}")
     ResponseEntity<LivreurResponse> getLivreurByEmail(@PathVariable String email);
 
     @Operation(summary = "Update a livreur by email")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Livreur updated"),
-            @ApiResponse(responseCode = "404", description = "Livreur not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Livreur mis a jour"),
+            @ApiResponse(responseCode = "404", description = "Livreur non trouvé", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PutMapping("/{email}")
     ResponseEntity<LivreurResponse> updateLivreur(@PathVariable String email, @RequestBody LivreurResponse livreur);

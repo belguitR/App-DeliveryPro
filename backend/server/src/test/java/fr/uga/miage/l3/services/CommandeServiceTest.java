@@ -67,12 +67,12 @@ class CommandeServiceTest {
 
     @Test
     void patchCommande_shouldThrowIfNotFound() {
-        when(commandeComponent.findByReference("NOTFOUND")).thenReturn(Optional.empty());
+        when(commandeComponent.findByReference("NON TROUVé")).thenReturn(Optional.empty());
 
         CommandePatchRequest patch = new CommandePatchRequest();
         patch.setEtat("LIVREE");
 
-        assertThrows(ResourceNotFoundException.class, () -> commandeService.patchCommande("NOTFOUND", patch));
+        assertThrows(ResourceNotFoundException.class, () -> commandeService.patchCommande("NON TROUVé", patch));
     }
 
     @Test

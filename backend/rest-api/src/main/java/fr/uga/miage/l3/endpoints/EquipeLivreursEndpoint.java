@@ -18,14 +18,14 @@ public interface EquipeLivreursEndpoint {
 
     @Operation(
             summary = "Get all équipes",
-            description = "Returns a list of all équipes"
+            description = "Renvoie une liste de toutes les équipes de livreurs."
     )
     @ApiResponse(responseCode = "200", description = "List of équipes")
     @GetMapping
     ResponseEntity<List<EquipeLivreursResponse>> getAllEquipes();
     @Operation(summary = "Create a new équipe")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Equipe created"),
+            @ApiResponse(responseCode = "201", description = "Equipe crée"),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping
@@ -33,8 +33,8 @@ public interface EquipeLivreursEndpoint {
 
     @Operation(summary = "Delete an équipe by id")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Equipe deleted"),
-            @ApiResponse(responseCode = "404", description = "Equipe not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "204", description = "Equipe supprimée"),
+            @ApiResponse(responseCode = "404", description = "Equipe non trouvée", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteEquipe(@PathVariable Integer id);
@@ -42,7 +42,7 @@ public interface EquipeLivreursEndpoint {
     @Operation(summary = "Patch équipe status")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Equipe status updated"),
-            @ApiResponse(responseCode = "404", description = "Equipe not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "404", description = "Equipe non tourvée", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/{id}/status")
     ResponseEntity<EquipeLivreursResponse> patchEquipeStatus(@PathVariable Integer id, @RequestBody EquipeStatusPatchRequest request);

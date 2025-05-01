@@ -29,13 +29,13 @@ public class LivreurService {
 
     public LivreurResponse getLivreurByEmail(String email) {
         LivreurEntity entity = livreurComponent.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Livreur not found: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Livreur non trouvé: " + email));
         return LivreurMapper.toResponse(entity);
     }
 
     public LivreurResponse updateLivreur(String email, LivreurResponse livreur) {
         LivreurEntity entity = livreurComponent.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Livreur not found: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Livreur non trouvé: " + email));
         entity.setNom(livreur.getNom());
         entity.setPrenom(livreur.getPrenom());
         entity.setAffecte(livreur.isAffecte());

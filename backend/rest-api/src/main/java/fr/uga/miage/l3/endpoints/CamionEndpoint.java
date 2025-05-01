@@ -15,7 +15,7 @@ import java.util.List;
 public interface CamionEndpoint {
 
     @Operation(summary = "Get all camions")
-    @ApiResponse(responseCode = "200", description = "List of camions")
+    @ApiResponse(responseCode = "200", description = "Liste des camions")
     @GetMapping
     ResponseEntity<List<CamionResponse>> getAllCamions();
 }

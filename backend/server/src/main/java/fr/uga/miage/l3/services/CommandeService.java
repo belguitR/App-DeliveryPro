@@ -42,7 +42,7 @@ public class CommandeService {
     public List<CommandeResponse> getCommandesByTourneeReference(String tourneeReference) {
         List<CommandeEntity> commandes = commandeComponent.findByTourneeReference(tourneeReference);
         if (commandes.isEmpty()) {
-            throw new ResourceNotFoundException("Tournee not found: " + tourneeReference);
+            throw new ResourceNotFoundException("Tournée non trouvée: " + tourneeReference);
         }
         return commandes.stream()
                 .map(CommandeMapper::toResponse)
@@ -52,11 +52,11 @@ public class CommandeService {
 
     public CommandeResponse patchCommande(String reference, CommandePatchRequest request) {
         CommandeEntity entity = commandeComponent.findByReference(reference)
-                .orElseThrow(() -> new ResourceNotFoundException("Commande not found: " + reference));
+                .orElseThrow(() -> new ResourceNotFoundException("Commande non trouvée: " + reference));
         if (request.getEtat() != null) {
             EtatCommande etat = EtatCommande.valueOf(request.getEtat());
             if (etat == EtatCommande.LIVREE && request.getDateDeLivraison() == null) {
-                throw new BusinessRuleException("dateDeLivraison is required when etat is LIVREE");
+                throw new BusinessRuleException("dateDeLivraison est requise quand l'etat est LIVREE");
             }
             entity.setEtat(etat);
         }

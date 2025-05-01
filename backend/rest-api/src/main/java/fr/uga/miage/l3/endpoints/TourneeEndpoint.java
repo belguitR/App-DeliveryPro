@@ -19,8 +19,8 @@ public interface TourneeEndpoint {
 
     @Operation(summary = "Get the last Tournee by livreur email")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tournee found"),
-            @ApiResponse(responseCode = "404", description = "Tournee not found",
+            @ApiResponse(responseCode = "200", description = "Tournée trouvée"),
+            @ApiResponse(responseCode = "404", description = "Tournée non trouvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/last/by-livreur/{email}")
@@ -28,8 +28,8 @@ public interface TourneeEndpoint {
 
     @Operation(summary = "Patch the etat of a tournee")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tournee patched"),
-            @ApiResponse(responseCode = "404", description = "Tournee not found",
+            @ApiResponse(responseCode = "200", description = "Tournée patched"),
+            @ApiResponse(responseCode = "404", description = "Tournée non trouvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))

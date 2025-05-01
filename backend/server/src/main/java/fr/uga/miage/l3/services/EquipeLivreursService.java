@@ -33,7 +33,7 @@ public class EquipeLivreursService {
         List<String> livreurIds = response.getLivreurIds();
 
         if (livreurIds == null || livreurIds.size() < 1 || livreurIds.size() > 2) {
-            throw new BusinessRuleException("Equipe must have 1 or 2 livreurs");
+            throw new BusinessRuleException("L'équipe doit avoir 1 ou 2 livreurs");
         }
 
         Set<LivreurEntity> livreurs = new HashSet<>();
@@ -41,10 +41,10 @@ public class EquipeLivreursService {
 
         for (String trigramme : livreurIds) {
             LivreurEntity livreur = livreurRepository.findById(trigramme)
-                    .orElseThrow(() -> new ResourceNotFoundException("Livreur not found: " + trigramme));
+                    .orElseThrow(() -> new ResourceNotFoundException("Livreur non trouvé: " + trigramme));
 
             if (livreur.getEquipeLivreurs() != null) {
-                throw new BusinessRuleException("Livreur " + trigramme + " is already in an équipe");
+                throw new BusinessRuleException("Livreur " + trigramme + " est deja dans une équipe");
             }
 
             livreurs.add(livreur);
@@ -54,7 +54,7 @@ public class EquipeLivreursService {
         }
 
         if (!atLeastOnePermis) {
-            throw new BusinessRuleException("At least one livreur must have permis");
+            throw new BusinessRuleException("Au moins un livreur doit avoir le permis");
         }
 
         EquipeLivreursEntity entity = new EquipeLivreursEntity();
@@ -84,7 +84,7 @@ public class EquipeLivreursService {
 
     public void deleteEquipe(Integer id) {
         EquipeLivreursEntity equipe = equipeComponent.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Equipe not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Equipe non trouvée: " + id));
         List<LivreurEntity> livreurs = livreurRepository.findByEquipeLivreurs(equipe);
         for (LivreurEntity livreur : livreurs) {
             livreur.setEquipeLivreurs(null);
@@ -96,7 +96,7 @@ public class EquipeLivreursService {
 
     public EquipeLivreursResponse patchEquipeStatus(Integer id, String status) {
         EquipeLivreursEntity entity = equipeComponent.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Equipe not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Equipe non trouvée: " + id));
         entity.setStatus(StatusEquipeLivreurs.valueOf(status));
         EquipeLivreursEntity saved = equipeComponent.save(entity);
         return EquipeLivreursMapper.toResponse(saved);

@@ -25,10 +25,10 @@ public class TourneeService {
 
     public TourneeResponse patchTourneeEtat(String reference, TourneePatchEtatRequest request) {
         TourneeEntity tournee = tourneeComponent.findByReference(reference)
-                .orElseThrow(() -> new ResourceNotFoundException("Tournee not found: " + reference));
+                .orElseThrow(() -> new ResourceNotFoundException("Tournee non Ttrouvé: " + reference));
 
         if (request.getEtat() == null) {
-            throw new BusinessRuleException("Etat is required");
+            throw new BusinessRuleException("Etat est obligatoire");
         }
 
         try {

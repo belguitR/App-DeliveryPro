@@ -18,14 +18,14 @@ import java.util.List;
 public interface CommandeEndpoint {
 
     @Operation(summary = "Get all commandes")
-    @ApiResponse(responseCode = "200", description = "List of commandes")
+    @ApiResponse(responseCode = "200", description = "Lists des commandes")
     @GetMapping
     ResponseEntity<List<CommandeResponse>> getAllCommandes();
 
-    @Operation(summary = "Get all commandes of a tournee by tournee reference")
+    @Operation(summary = "Get all commandes of tournee by reference")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "List of commandes for the tournee"),
-            @ApiResponse(responseCode = "404", description = "Tournee not found",
+            @ApiResponse(responseCode = "200", description = "Liste des commandes pour une tournée"),
+            @ApiResponse(responseCode = "404", description = "Tournée non trouvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/tournee/{tourneeReference}")
@@ -34,7 +34,7 @@ public interface CommandeEndpoint {
     @Operation(summary = "Patch a commande (etat and dateDeLivraison only)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Commande patched"),
-            @ApiResponse(responseCode = "404", description = "Commande not found",
+            @ApiResponse(responseCode = "404", description = "Commande non touvée",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
