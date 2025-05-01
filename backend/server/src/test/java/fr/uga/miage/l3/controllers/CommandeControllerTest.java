@@ -192,7 +192,7 @@ class CommandeControllerTest {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("Invalid value for etat");
+        assertThat(response.getBody()).contains("Valeur Invalide pour etat :");
     }
 
     @Test
