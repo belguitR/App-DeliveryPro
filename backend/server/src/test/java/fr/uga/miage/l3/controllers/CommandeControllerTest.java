@@ -98,7 +98,7 @@ class CommandeControllerTest {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("dateDeLivraison is required when etat is LIVREE");
+        assertThat(response.getBody()).contains("dateDeLivraison est requise quand l'etat est LIVREE");
     }
 
     @Test
