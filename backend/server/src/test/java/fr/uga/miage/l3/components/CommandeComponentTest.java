@@ -1,21 +1,14 @@
 package fr.uga.miage.l3.components;
 
-import fr.uga.miage.l3.mappers.CommandeMapper;
-import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
-import fr.uga.miage.l3.models.LigneEntity;
 import fr.uga.miage.l3.repositories.CommandeRepository;
-import fr.uga.miage.l3.responses.ClientResponse;
-import fr.uga.miage.l3.responses.CommandeResponse;
 import fr.uga.miage.l3.services.CommandeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -27,9 +20,6 @@ class CommandeComponentTest {
 
     @InjectMocks
     private CommandeComponent commandeComponent;
-
-    @Mock
-    private CommandeService commandeService;
 
     @BeforeEach
     void setUp() {

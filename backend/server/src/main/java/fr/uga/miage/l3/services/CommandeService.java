@@ -6,7 +6,6 @@ import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.CommandeMapper;
 import fr.uga.miage.l3.models.CommandeEntity;
-import fr.uga.miage.l3.repositories.TourneeRepository;
 import fr.uga.miage.l3.requests.CommandePatchRequest;
 import fr.uga.miage.l3.responses.CommandeResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommandeService {
     private final CommandeComponent commandeComponent;
-    private final TourneeRepository tourneeRepository;
 
     public List<CommandeResponse> getAllCommandes() {
         List<CommandeEntity> commandes = commandeComponent.findAll();

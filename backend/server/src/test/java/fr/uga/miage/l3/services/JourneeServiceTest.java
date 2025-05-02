@@ -2,10 +2,9 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.JourneeComponent;
 import fr.uga.miage.l3.enums.EtatCommande;
-import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
-import fr.uga.miage.l3.mappers.JourneeMapper;
 import fr.uga.miage.l3.models.*;
 import fr.uga.miage.l3.repositories.*;
 import fr.uga.miage.l3.requests.JourneeRequest;
@@ -18,7 +17,6 @@ import org.mockito.*;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,8 +25,6 @@ class JourneeServiceTest {
 
     @Mock
     private JourneeComponent journeeComponent;
-    @Mock
-    private PlanificateurRepository planificateurRepository;
     @Mock
     private CamionRepository camionRepository;
     @Mock
@@ -70,8 +66,6 @@ class JourneeServiceTest {
         assertThat(result.getReference()).isEqualTo("J002");
         verify(journeeComponent).findByReference("J002");
 
-        // ... dans un test existant de JourneeServiceTest
-
         JourneeEntity j1 = new JourneeEntity();
         j1.setReference("JX");
         j1.setDate(LocalDate.of(2024, 1, 1));
@@ -90,11 +84,9 @@ class JourneeServiceTest {
         j3.setPlanificateur(null);
         j3.setTournees(List.of());
 
-// Test equals/hashCode/toString intégrés dans le test de service
         assertThat(j1).isEqualTo(j2);
         assertThat(j1.hashCode()).isEqualTo(j2.hashCode());
         assertThat(j1).isNotEqualTo(j3);
-// Test toString : juste le nom de la classe
         assertThat(j1.toString()).contains("JourneeEntity");
         assertThat(j1).isNotEqualTo(null);
         assertThat(j1).isNotEqualTo("string");
@@ -152,16 +144,15 @@ class JourneeServiceTest {
                 ))
                 .build();
 
-        // FIX: Set status to PRET
         EquipeLivreursEntity equipe = new EquipeLivreursEntity();
-        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
+        equipe.setStatus(StatusEquipeLivreurs.PRET);
 
         when(journeeComponent.findByReference("J004")).thenReturn(Optional.empty());
         when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
         when(camionRepository.findById("C001")).thenReturn(Optional.of(new CamionEntity()));
         when(tourneeRepository.findById("T001")).thenReturn(Optional.empty());
         CommandeEntity commande = new CommandeEntity();
-        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.OUVERTE);
+        commande.setEtat(EtatCommande.OUVERTE);
         when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(commande));
         when(journeeComponent.save(any())).thenAnswer(inv -> inv.getArgument(0));
         when(tourneeRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -254,7 +245,6 @@ class JourneeServiceTest {
 
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference("J007");
         verify(tourneeRepository).findById("T004");
         verify(equipeLivreursRepository).findById(1);
@@ -263,7 +253,6 @@ class JourneeServiceTest {
 
     @Test
     void createJournee_shouldThrowIfCamionAlreadyAssigned() {
-        // Préparation des données de test
         JourneeRequest request = JourneeRequest.builder()
                 .reference("J008")
                 .date(LocalDate.now().plusDays(1))
@@ -296,10 +285,8 @@ class JourneeServiceTest {
         when(tourneeRepository.findAll()).thenReturn(List.of(existingTournee));
         when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
 
-        // Exécution du test
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference("J008");
         verify(camionRepository).findById("C001");
         verify(tourneeRepository).findById("T005");
@@ -308,7 +295,6 @@ class JourneeServiceTest {
 
     @Test
     void createJournee_shouldThrowIfEquipeAlreadyAssigned() {
-        // Préparation des données de test
         JourneeRequest request = JourneeRequest.builder()
                 .reference("J009")
                 .date(LocalDate.now().plusDays(1))
@@ -341,10 +327,8 @@ class JourneeServiceTest {
         when(tourneeRepository.findAll()).thenReturn(List.of(existingTournee));
         when(commandeRepository.findById("CMD1")).thenReturn(Optional.of(new CommandeEntity()));
 
-        // Exécution du test
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference("J009");
         verify(equipeLivreursRepository).findById(1);
         verify(camionRepository).findById("C001");
@@ -401,7 +385,7 @@ class JourneeServiceTest {
                 .build();
 
         CommandeEntity commande = new CommandeEntity();
-        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.OUVERTE);
+        commande.setEtat(EtatCommande.OUVERTE);
         commande.setTournee(new TourneeEntity());
 
         when(journeeComponent.findByReference("J011")).thenReturn(Optional.empty());
@@ -415,14 +399,13 @@ class JourneeServiceTest {
 
     @Test
     void createJournee_shouldThrowIfTourneeEtatIsNull() {
-        // Préparation des données de test
         JourneeRequest request = JourneeRequest.builder()
                 .reference("J012")
                 .date(LocalDate.now().plusDays(1))
                 .tournees(List.of(
                         TourneeRequest.builder()
                                 .reference("T010")
-                                .etat(null) // État de la tournée est null
+                                .etat(null)
                                 .lettre("A")
                                 .distanceAParcourir(100.0)
                                 .tempsAssemblageReel(2)
@@ -436,10 +419,8 @@ class JourneeServiceTest {
         when(journeeComponent.findByReference("J012")).thenReturn(Optional.empty());
         when(tourneeRepository.findById("T010")).thenReturn(Optional.empty());
 
-        // Exécution du test
         assertThrows(BusinessRuleException.class, () -> journeeService.createJournee(request));
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference("J012");
         verify(tourneeRepository).findById("T010");
     }
@@ -466,10 +447,10 @@ class JourneeServiceTest {
 
         CommandeEntity commande = new CommandeEntity();
         commande.setReference("CMD1");
-        commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.LIVREE);
+        commande.setEtat(EtatCommande.LIVREE);
 
         EquipeLivreursEntity equipe = new EquipeLivreursEntity();
-        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.PRET);
+        equipe.setStatus(StatusEquipeLivreurs.PRET);
 
         when(journeeComponent.findByReference("J013")).thenReturn(Optional.empty());
         when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
@@ -489,7 +470,6 @@ class JourneeServiceTest {
 
     @Test
     void deleteJournee_shouldDeleteJourneeAndTourneesAndUpdateCommandes() {
-        // Préparation des données de test
         String journeeReference = "J001";
         JourneeEntity journee = new JourneeEntity();
         journee.setReference(journeeReference);
@@ -512,21 +492,17 @@ class JourneeServiceTest {
 
         journee.setTournees(List.of(tournee1, tournee2));
 
-        // Configuration des mocks
         when(journeeComponent.findByReference(journeeReference)).thenReturn(Optional.of(journee));
         when(commandeRepository.save(any(CommandeEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Exécution du test
         journeeService.deleteJournee(journeeReference);
 
-        // Vérification des appels de méthodes
         verify(journeeComponent).findByReference(journeeReference);
         verify(commandeRepository, times(2)).save(any(CommandeEntity.class));
         verify(tourneeRepository).deleteById("T001");
         verify(tourneeRepository).deleteById("T002");
         verify(journeeComponent).deleteByReference(journeeReference);
 
-        // Vérification des états des commandes
         assertThat(commande1.getTournee()).isNull();
         assertThat(commande1.getEtat()).isEqualTo(EtatCommande.OUVERTE);
         assertThat(commande2.getTournee()).isNull();
@@ -579,7 +555,7 @@ class JourneeServiceTest {
 
         EquipeLivreursEntity equipe = new EquipeLivreursEntity();
         equipe.setIdEquipe(1);
-        equipe.setStatus(fr.uga.miage.l3.enums.StatusEquipeLivreurs.NON_DISPONIBLE);
+        equipe.setStatus(StatusEquipeLivreurs.NON_DISPONIBLE);
 
         when(journeeComponent.findByReference("J016")).thenReturn(Optional.empty());
         when(equipeLivreursRepository.findById(1)).thenReturn(Optional.of(equipe));
@@ -651,7 +627,7 @@ class JourneeServiceTest {
                         TourneeRequest.builder()
                                 .reference("T015")
                                 .etat("EN_COURS")
-                                .lettre(null) // lettre manquante
+                                .lettre(null)
                                 .distanceAParcourir(100.0)
                                 .tempsAssemblageReel(2)
                                 .equipeLivreursId(1)

@@ -36,11 +36,9 @@ class CamionControllerTest {
 
     @BeforeEach
     void setup() {
-        // Clean DB before each test
         camionRepository.deleteAll();
         typeCamionRepository.deleteAll();
 
-        // Setup RestTemplate for PATCH/PUT support
         CloseableHttpClient httpClient = HttpClients.createDefault();
         restTemplate.getRestTemplate().setRequestFactory(
                 new HttpComponentsClientHttpRequestFactory(httpClient)
@@ -89,7 +87,7 @@ class CamionControllerTest {
 
     @Test
     void getAllCamions_returnsEmptyList_whenNoCamionsExist() {
-        // Given:
+        // Given
 
         // When
         ResponseEntity<CamionResponse[]> response = restTemplate.getForEntity(

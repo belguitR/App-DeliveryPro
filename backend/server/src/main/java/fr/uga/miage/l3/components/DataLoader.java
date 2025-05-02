@@ -1,5 +1,7 @@
 package fr.uga.miage.l3.components;
 
+import fr.uga.miage.l3.dataTypes.Adresse;
+import fr.uga.miage.l3.dataTypes.GeoPosition;
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.models.*;
 import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
@@ -51,7 +53,7 @@ public class DataLoader {
         ClassPathResource resource = new ClassPathResource("data/planificateurs.csv");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            String line = reader.readLine(); // skip header
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",", -1);
                 if (tokens.length < 7) continue;
@@ -94,7 +96,7 @@ public class DataLoader {
 
                 typeCamionRepository.save(typeCamion);
 
-                // Link camions if present
+                // Lier les camions s'ils sont présents
                 if (tokens.length > 4 && tokens[4] != null && !tokens[4].isEmpty()) {
                     String camionsStr = tokens[4].replace("\"", "");
                     String[] camionCodes = camionsStr.split(",");
@@ -161,7 +163,7 @@ public class DataLoader {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(),
                         StandardCharsets.UTF_8))) {
-            String line = reader.readLine(); // skip header
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(
                         ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -297,7 +299,7 @@ public class DataLoader {
         ClassPathResource resource = new ClassPathResource("data/produits.csv");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            String line = reader.readLine(); // skip header
+            String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
                 String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 if (tokens.length < 6) continue;
@@ -362,14 +364,14 @@ public class DataLoader {
                 client.setPrenom(tokens[3]);
 
                 // Adresse
-                fr.uga.miage.l3.dataTypes.Adresse adr = new fr.uga.miage.l3.dataTypes.Adresse();
+                Adresse adr = new Adresse();
                 adr.setAdresse(tokens[4]);
                 adr.setVille(tokens[5]);
                 adr.setCodePostal(tokens[6]);
                 client.setAdresse(adr);
 
                 // Coords
-                fr.uga.miage.l3.dataTypes.GeoPosition coords = new fr.uga.miage.l3.dataTypes.GeoPosition();
+                GeoPosition coords = new GeoPosition();
                 try {
                     coords.setLat(Double.parseDouble(tokens[7]));
                     coords.setLng(Double.parseDouble(tokens[8]));

@@ -10,7 +10,6 @@ import fr.uga.miage.l3.models.LivreurEntity;
 import fr.uga.miage.l3.repositories.LivreurRepository;
 import fr.uga.miage.l3.responses.EquipeLivreursResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

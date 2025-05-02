@@ -97,7 +97,6 @@ class CommandeServiceTest {
     }
     @Test
     void getAllCommandes_shouldReturnList() {
-        // Arrange : création d'une commande avec client et lignes
         CommandeEntity entity = new CommandeEntity();
         entity.setReference("CMD1");
         entity.setDateDeCreation(LocalDateTime.now());
@@ -106,7 +105,6 @@ class CommandeServiceTest {
         entity.setCommentaire("commentaire");
         entity.setDateDeLivraison(LocalDateTime.now().plusDays(1));
 
-        // Ajout d'un client
         ClientEntity client = new ClientEntity();
         client.setCode("C001");
         client.setNom("Nom");
@@ -115,48 +113,39 @@ class CommandeServiceTest {
         client.setEtat(null);
         entity.setClient(client);
 
-        // Ajout d'une ligne
         LigneEntity ligne = new LigneEntity();
         ligne.setReference("L001");
         entity.setLignes(Set.of(ligne));
 
         when(commandeComponent.findAll()).thenReturn(List.of(entity));
 
-        // Act
         List<CommandeResponse> result = commandeService.getAllCommandes();
 
-        // Assert sur le service
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getReference()).isEqualTo("CMD1");
         assertThat(result.get(0).getClient().getCode()).isEqualTo("C001");
         assertThat(result.get(0).getLigneReferences()).contains("L001");
         verify(commandeComponent).findAll();
 
-        // --- Couverture du mapper CommandeMapper ---
-        // Cas normal
         CommandeResponse mapped = CommandeMapper.toResponse(entity);
         assertThat(mapped.getReference()).isEqualTo(entity.getReference());
         assertThat(mapped.getClient().getCode()).isEqualTo("C001");
         assertThat(mapped.getLigneReferences()).contains("L001");
 
-        // Cas null
         assertThat(CommandeMapper.toResponse(null)).isNull();
 
-        // Cas client null
         CommandeEntity entityNoClient = new CommandeEntity();
         entityNoClient.setReference("CMD2");
         entityNoClient.setClient(null);
         CommandeResponse mappedNoClient = CommandeMapper.toResponse(entityNoClient);
         assertThat(mappedNoClient.getClient()).isNull();
 
-        // Cas lignes null
         CommandeEntity entityNoLignes = new CommandeEntity();
         entityNoLignes.setReference("CMD3");
         entityNoLignes.setLignes(null);
         CommandeResponse mappedNoLignes = CommandeMapper.toResponse(entityNoLignes);
         assertThat(mappedNoLignes.getLigneReferences()).isNull();
 
-        // Cas client mapping direct
         ClientResponse clientResp = CommandeMapper.toClientResponse(client);
         assertThat(clientResp.getCode()).isEqualTo("C001");
         assertThat(CommandeMapper.toClientResponse(null)).isNull();
