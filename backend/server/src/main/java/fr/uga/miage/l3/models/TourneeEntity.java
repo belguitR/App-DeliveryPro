@@ -42,6 +42,7 @@ public class TourneeEntity {
     private JourneeEntity jour;
 
     @OneToMany(mappedBy = "tournee")
+    @OrderColumn(name = "position")
     private List<CommandeEntity> commandes;
 
 }
