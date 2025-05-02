@@ -193,6 +193,12 @@ public class JourneeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Journée non trouvée : " + reference));
         if (journee.getTournees() != null) {
             for (TourneeEntity tournee : journee.getTournees()) {
+                if (tournee.getEquipeLivreurs() != null &&
+                        tournee.getEquipeLivreurs().getStatus() == StatusEquipeLivreurs.EN_LIVRAISON) {
+                    tournee.getEquipeLivreurs().setStatus(StatusEquipeLivreurs.PRET);
+                    equipeLivreursRepository.save(tournee.getEquipeLivreurs());
+                }
+
                 if (tournee.getCommandes() != null) {
                     for (CommandeEntity commande : tournee.getCommandes()) {
                         commande.setTournee(null);

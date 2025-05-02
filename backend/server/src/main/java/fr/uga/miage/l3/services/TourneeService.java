@@ -2,6 +2,7 @@ package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.TourneeComponent;
 import fr.uga.miage.l3.enums.EtatTournee;
+import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
 import fr.uga.miage.l3.exceptions.technical.ResourceNotFoundException;
 import fr.uga.miage.l3.mappers.TourneeMapper;
@@ -31,12 +32,29 @@ public class TourneeService {
             throw new BusinessRuleException("Etat est obligatoire");
         }
 
+        EtatTournee oldEtat = tournee.getEtat();
+        EtatTournee newEtat;
+
         try {
-            tournee.setEtat(EtatTournee.valueOf(request.getEtat().toUpperCase()));
+            newEtat = EtatTournee.valueOf(request.getEtat().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BusinessRuleException("Invalid etat: " + request.getEtat());
         }
 
+        if (oldEtat == EtatTournee.PLANIFIEE && newEtat == EtatTournee.EN_COURS) {
+            if (tournee.getEquipeLivreurs() != null) {
+                if (tournee.getEquipeLivreurs().getStatus() != StatusEquipeLivreurs.PRET) {
+                    throw new BusinessRuleException("L'équipe n'est pas prête pour cette tournée");
+                }
+                tournee.getEquipeLivreurs().setStatus(StatusEquipeLivreurs.EN_LIVRAISON);
+            }
+        } else if (oldEtat == EtatTournee.EN_COURS && newEtat == EtatTournee.COMPLETEE) {
+            if (tournee.getEquipeLivreurs() != null) {
+                tournee.getEquipeLivreurs().setStatus(StatusEquipeLivreurs.PRET);
+            }
+        }
+
+        tournee.setEtat(newEtat);
         tourneeComponent.save(tournee);
         return TourneeMapper.toResponse(tournee);
     }
