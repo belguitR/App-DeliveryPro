@@ -13,11 +13,4 @@ import java.util.Set;
 public class PlanificateurEntity extends EmployeEntity {
 
 
-
-//    @OneToMany(mappedBy = "planificateur")
-//    private List<TourneeEntity> tournees;
-//
-//    @OneToMany(mappedBy = "planificateur")
-//    private Set<JourneeEntity> jours;
-
 }
