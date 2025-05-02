@@ -9,7 +9,6 @@ import fr.uga.miage.l3.repositories.EquipeLivreursRepository;
 import fr.uga.miage.l3.repositories.JourneeRepository;
 import fr.uga.miage.l3.repositories.LivreurRepository;
 import fr.uga.miage.l3.repositories.TourneeRepository;
-import fr.uga.miage.l3.requests.TourneePatchEtatRequest;
 import fr.uga.miage.l3.responses.TourneeResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

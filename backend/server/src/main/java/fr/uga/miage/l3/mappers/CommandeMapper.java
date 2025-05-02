@@ -7,7 +7,6 @@ import fr.uga.miage.l3.responses.ClientResponse;
 import fr.uga.miage.l3.responses.CommandeResponse;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CommandeMapper {

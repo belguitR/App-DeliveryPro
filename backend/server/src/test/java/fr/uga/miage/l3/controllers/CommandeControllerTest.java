@@ -1,6 +1,5 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.models.ClientEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.models.TourneeEntity;

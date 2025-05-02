@@ -4,7 +4,6 @@ import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.models.CommandeEntity;
 import fr.uga.miage.l3.responses.TourneeResponse;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class TourneeMapper {

@@ -1,6 +1,7 @@
 package fr.uga.miage.l3.services;
 
 import fr.uga.miage.l3.components.JourneeComponent;
+import fr.uga.miage.l3.enums.EtatCommande;
 import fr.uga.miage.l3.enums.EtatTournee;
 import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.exceptions.technical.BusinessRuleException;
@@ -121,7 +122,7 @@ public class JourneeService {
                                     .orElseThrow(() -> {
                                         return new BusinessRuleException("Commande non trouvée : " + ref);
                                     });
-                            if (commande.getEtat() != fr.uga.miage.l3.enums.EtatCommande.OUVERTE) {
+                            if (commande.getEtat() != EtatCommande.OUVERTE) {
                                 throw new BusinessRuleException("La commande " + ref + " n'est pas OUVERTE et ne peut pas être planifiée");
                             }
                             if (commande.getTournee() != null) {
@@ -163,7 +164,7 @@ public class JourneeService {
             List<CommandeEntity> commandes = allCommandes.get(i);
             for (CommandeEntity commande : commandes) {
                 commande.setTournee(savedTournee);
-                commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.PLANIFIEE);
+                commande.setEtat(EtatCommande.PLANIFIEE);
                 commandeRepository.save(commande);
             }
         }
@@ -195,8 +196,8 @@ public class JourneeService {
                 if (tournee.getCommandes() != null) {
                     for (CommandeEntity commande : tournee.getCommandes()) {
                         commande.setTournee(null);
-                        if (commande.getEtat() == fr.uga.miage.l3.enums.EtatCommande.PLANIFIEE) {
-                            commande.setEtat(fr.uga.miage.l3.enums.EtatCommande.OUVERTE);
+                        if (commande.getEtat() == EtatCommande.PLANIFIEE) {
+                            commande.setEtat(EtatCommande.OUVERTE);
                         }
                         commandeRepository.save(commande);
                     }

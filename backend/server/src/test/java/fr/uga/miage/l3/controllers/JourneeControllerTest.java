@@ -1,14 +1,9 @@
 package fr.uga.miage.l3.controllers;
 
-import fr.uga.miage.l3.enums.EtatCommande;
-import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
 import fr.uga.miage.l3.models.*;
 import fr.uga.miage.l3.repositories.*;
 import fr.uga.miage.l3.requests.JourneeRequest;
-import fr.uga.miage.l3.requests.TourneeRequest;
 import fr.uga.miage.l3.responses.JourneeResponse;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +14,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,24 +31,11 @@ class JourneeControllerTest {
     @Autowired
     private PlanificateurRepository planificateurRepository;
 
-    @Autowired
-    private CommandeRepository commandeRepository;
-
-    @Autowired
-    private CamionRepository camionRepository;
-
-    @Autowired
-    private EquipeLivreursRepository equipeLivreursRepository;
-
-
-
     @AfterEach
     void tearDown() {
         journeeRepository.deleteAll();
         planificateurRepository.deleteAll();
     }
-
-
 
     @Test
     void getAllJournees_returnsList() {

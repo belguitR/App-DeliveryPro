@@ -1,10 +1,7 @@
 package fr.uga.miage.l3.components;
 
-import fr.uga.miage.l3.enums.StatusEquipeLivreurs;
-import fr.uga.miage.l3.mappers.EquipeLivreursMapper;
 import fr.uga.miage.l3.models.EquipeLivreursEntity;
 import fr.uga.miage.l3.repositories.EquipeLivreursRepository;
-import fr.uga.miage.l3.responses.EquipeLivreursResponse;
 import fr.uga.miage.l3.services.EquipeLivreursService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,9 +21,6 @@ class EquipeLivreursComponentTest {
 
     @InjectMocks
     private EquipeLivreursComponent equipeLivreursComponent;
-
-    @Mock
-    private EquipeLivreursService equipeService;
 
     public EquipeLivreursComponentTest() {
         MockitoAnnotations.openMocks(this);
@@ -78,7 +72,7 @@ class EquipeLivreursComponentTest {
 
         List<EquipeLivreursEntity> result = equipeLivreursComponent.findAll();
 
-        assertThat(result).isEqualTo(list); // ou .hasSize(1)
+        assertThat(result).isEqualTo(list);
     }
 
 }

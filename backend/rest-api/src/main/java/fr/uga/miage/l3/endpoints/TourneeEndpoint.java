@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 
 @RequestMapping("/api/tournees")
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4300"})

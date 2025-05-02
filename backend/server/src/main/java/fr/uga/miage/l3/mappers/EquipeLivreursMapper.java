@@ -2,7 +2,6 @@ package fr.uga.miage.l3.mappers;
 
 import fr.uga.miage.l3.models.EquipeLivreursEntity;
 import fr.uga.miage.l3.responses.EquipeLivreursResponse;
-import org.mapstruct.Mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;

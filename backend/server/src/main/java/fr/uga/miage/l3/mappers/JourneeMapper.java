@@ -1,10 +1,8 @@
 package fr.uga.miage.l3.mappers;
 
 import fr.uga.miage.l3.models.JourneeEntity;
-import fr.uga.miage.l3.models.TourneeEntity;
 import fr.uga.miage.l3.responses.JourneeResponse;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 

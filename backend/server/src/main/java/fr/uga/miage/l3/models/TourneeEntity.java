@@ -3,11 +3,7 @@ package fr.uga.miage.l3.models;
 
 import fr.uga.miage.l3.enums.EtatTournee;
 import jakarta.persistence.*;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import lombok.*;
 
 @Entity
