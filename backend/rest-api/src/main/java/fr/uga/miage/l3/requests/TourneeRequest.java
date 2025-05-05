@@ -16,6 +16,8 @@ public class TourneeRequest {
     private Double distanceAParcourir;
     private Integer tempsAssemblageReel;
     private Integer equipeLivreursId;
+    private Double dureeTheorique;
+    private Double cout;
     private String camionCode;
     private String journeeReference;
     private List<String> commandeReferences;

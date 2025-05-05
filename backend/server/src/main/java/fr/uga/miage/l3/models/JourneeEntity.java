@@ -22,6 +22,8 @@ public class JourneeEntity {
     @ManyToOne
     private PlanificateurEntity planificateur;
 
+    private Double coutTotal;
+
     @OneToMany(mappedBy = "jour")
     private List<TourneeEntity> tournees;
 }

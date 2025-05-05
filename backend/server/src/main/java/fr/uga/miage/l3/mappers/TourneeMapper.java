@@ -15,6 +15,8 @@ public class TourneeMapper {
                 .lettre(entity.getLettre())
                 .distanceAParcourir(entity.getDistanceAParcourir())
                 .tempsAssemblageReel(entity.getTempsAssemblageReel())
+                .cout(entity.getCout())
+                .dureeTheorique(entity.getDureeTheorique())
                 .equipeLivreursId(entity.getEquipeLivreurs() != null ? entity.getEquipeLivreurs().getIdEquipe() != null ? entity.getEquipeLivreurs().getIdEquipe().toString() : null : null)
                 .camion(entity.getCamion() != null ? CamionMapper.toResponse(entity.getCamion()) : null)
                 .journeeReference(entity.getJour() != null ? entity.getJour().getReference() : null)
