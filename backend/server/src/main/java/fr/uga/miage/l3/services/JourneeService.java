@@ -61,6 +61,7 @@ public class JourneeService {
         journee.setReference(request.getReference());
         journee.setDate(request.getDate());
         journee.setPlanificateur(planificateur);
+        journee.setCoutTotal(request.getCoutTotal());
 
         List<TourneeEntity> tournees = new java.util.ArrayList<>();
         List<List<CommandeEntity>> allCommandes = new java.util.ArrayList<>();
@@ -146,6 +147,8 @@ public class JourneeService {
                 tournee.setDistanceAParcourir(tReq.getDistanceAParcourir() != null ? tReq.getDistanceAParcourir() : 0.0);
                 tournee.setTempsAssemblageReel(tReq.getTempsAssemblageReel());
                 tournee.setJour(journee);
+                tournee.setCout(tReq.getCout());
+                tournee.setDureeTheorique(tReq.getDureeTheorique());
                 tournee.setCamion(camion);
                 tournee.setEquipeLivreurs(equipe);
                 tournee.setCommandes(commandes);
@@ -202,9 +205,8 @@ public class JourneeService {
                 if (tournee.getCommandes() != null) {
                     for (CommandeEntity commande : tournee.getCommandes()) {
                         commande.setTournee(null);
-                        if (commande.getEtat() == EtatCommande.PLANIFIEE) {
-                            commande.setEtat(EtatCommande.OUVERTE);
-                        }
+                        commande.setEtat(EtatCommande.OUVERTE);
+
                         commandeRepository.save(commande);
                     }
                 }

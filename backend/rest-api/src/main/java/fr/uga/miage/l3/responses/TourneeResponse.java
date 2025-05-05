@@ -16,6 +16,8 @@ public class TourneeResponse {
     private Integer tempsAssemblageReel;
     private String equipeLivreursId;
     private CamionResponse camion;
+    private Double dureeTheorique;
+    private Double cout;
     private String journeeReference;
     private List<String> commandeReferences;
 }

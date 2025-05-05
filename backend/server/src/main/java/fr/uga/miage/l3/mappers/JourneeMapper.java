@@ -12,6 +12,7 @@ public class JourneeMapper {
         return JourneeResponse.builder()
                 .reference(entity.getReference())
                 .date(entity.getDate())
+                .coutTotal(entity.getCoutTotal())
                 .planificateurEmail(entity.getPlanificateur() != null ? entity.getPlanificateur().getEmail() : null)
                 .tournees(entity.getTournees() != null
                         ? entity.getTournees().stream()
