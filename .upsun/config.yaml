@@ -18,7 +18,7 @@ applications:
     hooks:
       build: |
         set -eux
-        mvn clean package -DskipTests
+        mvn clean package
 
     relationships:
       postgresql:
