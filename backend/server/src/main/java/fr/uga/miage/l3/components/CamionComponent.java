@@ -17,4 +17,6 @@ public class CamionComponent {
         return camionRepository.findAll();
     }
 
+    // sadasdasdasd
+
 }
