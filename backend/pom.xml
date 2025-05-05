@@ -21,9 +21,11 @@
 	<description>Spring Boot Data JPA Sample</description>
 
 	<modules>
-		<module>server</module>
+		<module>common</module>
 		<module>rest-api</module>
+		<module>server</module>
 	</modules>
+
 
 	<properties>
 		<lombok.version>1.18.30</lombok.version>

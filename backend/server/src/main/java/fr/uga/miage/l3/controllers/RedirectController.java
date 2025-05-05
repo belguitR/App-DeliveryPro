@@ -5,15 +5,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class RedirectController {
-    // Existing mapping for "/"
+
     @RequestMapping("/")
     public String redirectToIndex() {
         return "forward:/index.html";
     }
 
-    // Catch-all mapping to handle client-side routes
-    @RequestMapping(value = "/{[path:[^\\.]*}")
-    public String redirect() {
-        return "forward:/index.html";
+    @RequestMapping({"/planificateur", "/planificateur/"})
+    public String forwardPlanificateurRoot() {
+        return "forward:/planificateur/index.html";
     }
+
+    @RequestMapping({"/livreur", "/livreur/"})
+    public String forwardLivreurRoot() {
+        return "forward:/livreur/index.html";
+    }
+
+
+
+
+    @RequestMapping(value = "/planificateur/{path:[^\\.]*}")
+    public String forwardPlanificateur() {
+        return "forward:/planificateur/index.html";
+    }
+
+    @RequestMapping(value = "/livreur/{path:[^\\.]*}")
+    public String forwardLivreur() {
+        return "forward:/livreur/index.html";
+    }
+
 }
