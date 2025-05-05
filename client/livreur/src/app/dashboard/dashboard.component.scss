@@ -1,0 +1,144 @@
+.dashboard.row.main-container {
+  display: flex;
+  width: 100%;
+  // min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent;
+  gap: 0;
+}
+
+.col-md-2 {
+  flex: 0 0 240px;
+  max-width: 260px;
+  min-width: 200px;
+  padding: 0.5rem 0.3rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.left-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.tournee-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.7rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.tournee-title, .tournee-card h2 {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2a3b4d;
+  border-bottom: 1px solid rgb(40, 58, 118);
+  padding-bottom: 0.2rem;
+}
+
+.tournee-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.tournee-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tournee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.1rem;
+  font-size: 0.92rem;
+}
+
+.tournee-label {
+  font-weight: 500;
+  color: rgb(40, 58, 118);
+}
+
+.tournee-value {
+  font-weight: 400;
+  color: #222;
+}
+
+.tournee-etat {
+  padding: 0.1em 0.5em;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95em;
+  text-transform: capitalize;
+}
+
+.tournee-etat-planifiee {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+.tournee-etat-en_cours {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+.tournee-etat-completee {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.col-md-8 {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.7rem 1.2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.col-md-2:last-child {
+  flex: 0 0 260px;
+  max-width: 260px;
+  min-width: 200px;
+  padding: 0.5rem 0.3rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.livraisons {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 2rem);
+  padding-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .dashboard.row.main-container {
+    flex-direction: column;
+  }
+  .col-md-2,
+  .col-md-2:last-child,
+  .col-md-8 {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 0.5rem 0.5rem;
+  }
+  .tournee-card {
+    padding: 0.7rem;
+  }
+}
