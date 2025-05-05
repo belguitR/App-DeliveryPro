@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/amorce-technique-springboot-projet-int-grateur-2024-2025-groupe-07.iml" filepath="$PROJECT_DIR$/.idea/amorce-technique-springboot-projet-int-grateur-2024-2025-groupe-07.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/server/server.iml" filepath="$PROJECT_DIR$/backend/server/server.iml" />
     </modules>
   </component>
 </project>

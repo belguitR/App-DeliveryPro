@@ -1,33 +1,31 @@
 package fr.uga.miage.l3.components;
 
-import fr.uga.miage.l3.exceptions.technicals.NotFoundCommandeEntityException;
 import fr.uga.miage.l3.models.CommandeEntity;
-import fr.uga.miage.l3.repository.CommandeRepository;
+import fr.uga.miage.l3.repositories.CommandeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class CommandeComponent {
-
     private final CommandeRepository commandeRepository;
 
-    public CommandeComponent(CommandeRepository commandeRepository) {
-        this.commandeRepository = commandeRepository;
-    }
-
-    // Récupère toutes les commandes
-    public List<CommandeEntity> getAllCommandes() {
+    public List<CommandeEntity> findAll() {
         return commandeRepository.findAll();
     }
 
-    // Récupère une commande par son ID
-    public CommandeEntity getCommandeById(Integer id) throws NotFoundCommandeEntityException {
-        return commandeRepository.findById(id).orElseThrow(()-> new NotFoundCommandeEntityException("La commande [" + id + "] n'a pas été trouvée"));
+    public Optional<CommandeEntity> findByReference(String reference) {
+        return commandeRepository.findById(reference);
     }
 
-    // Supprime une commande par son ID
-    public void deleteCommande(Integer id) {
-        commandeRepository.deleteById(id);
+    public CommandeEntity save(CommandeEntity entity) {
+        return commandeRepository.save(entity);
+    }
+
+    public List<CommandeEntity> findByTourneeReference(String tourneeReference) {
+        return commandeRepository.findByTournee_Reference(tourneeReference);
     }
 }

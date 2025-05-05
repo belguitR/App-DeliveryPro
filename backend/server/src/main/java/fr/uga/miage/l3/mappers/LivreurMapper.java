@@ -1,43 +1,41 @@
 package fr.uga.miage.l3.mappers;
 
-import fr.uga.miage.l3.responses.LivreurDTO;
+import fr.uga.miage.l3.models.EntrepotEntity;
+import fr.uga.miage.l3.models.EquipeLivreursEntity;
 import fr.uga.miage.l3.models.LivreurEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import java.time.ZoneId;
+import fr.uga.miage.l3.responses.LivreurResponse;
 
-@Mapper(componentModel = "spring", imports = {java.sql.Date.class})
-public interface LivreurMapper {
+public class LivreurMapper {
 
-    @Mapping(
-            target = "dateNaissance",
-            expression = "java(entity.getDateNaissance() == null ? null : ((java.sql.Date) entity.getDateNaissance()).toLocalDate())"
-    )
-    @Mapping(source = "idEmploye", target = "idEmploye")
-    @Mapping(source = "nom", target = "nom")
-    @Mapping(source = "prenom", target = "prenom")
-    @Mapping(source = "photoURL", target = "photoURL")
-    @Mapping(source = "telephone", target = "telephone")
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "affecte", target = "affecte")
-    @Mapping(source = "APermis", target = "APermis")
-    @Mapping(source = "entrepot", target = "entrepot")
-    @Mapping(source = "equipeLivreur", target = "equipeLivreur")
-    LivreurDTO toDTO(LivreurEntity entity);
+    public static LivreurResponse toResponse(LivreurEntity entity) {
+        if (entity == null) return null;
+        return new LivreurResponse(
+                entity.getTrigramme(),
+                entity.getNom(),
+                entity.getPrenom(),
+                entity.getEmail(),
+                entity.getPhoto(),
+                entity.getTelephone(),
+                entity.isAffecte(),
+                entity.isAPermis(),
+                entity.getEquipeLivreurs() != null ? entity.getEquipeLivreurs().getIdEquipe() : null,
+                entity.getEntrepot() != null ? entity.getEntrepot().getNom() : null
+        );
+    }
 
-    @Mapping(
-            target = "dateNaissance",
-            expression = "java(dto.getDateNaissance() == null ? null : java.sql.Date.valueOf(dto.getDateNaissance()))"
-    )
-    @Mapping(source = "idEmploye", target = "idEmploye")
-    @Mapping(source = "nom", target = "nom")
-    @Mapping(source = "prenom", target = "prenom")
-    @Mapping(source = "photoURL", target = "photoURL")
-    @Mapping(source = "telephone", target = "telephone")
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "affecte", target = "affecte")
-    @Mapping(source = "APermis", target = "APermis")
-    @Mapping(source = "entrepot", target = "entrepot")
-    @Mapping(target = "equipeLivreur", ignore = true) // si vous ne souhaitez pas mapper l'équipe
-    LivreurEntity fromDTO(LivreurDTO dto);
+    public static LivreurEntity toEntity(LivreurResponse resp, EquipeLivreursEntity equipe, EntrepotEntity entrepot) {
+        if (resp == null) return null;
+        LivreurEntity entity = new LivreurEntity();
+        entity.setTrigramme(resp.getTrigramme());
+        entity.setNom(resp.getNom());
+        entity.setPrenom(resp.getPrenom());
+        entity.setEmail(resp.getEmail());
+        entity.setPhoto(resp.getPhoto());
+        entity.setTelephone(resp.getTelephone());
+        entity.setAffecte(resp.isAffecte());
+        entity.setAPermis(resp.isAPermis());
+        entity.setEquipeLivreurs(equipe);
+        entity.setEntrepot(entrepot);
+        return entity;
+    }
 }

@@ -1,34 +1,34 @@
 package fr.uga.miage.l3.models;
 
 
+import fr.uga.miage.l3.dataTypes.Adresse;
+import fr.uga.miage.l3.dataTypes.GeoPosition;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
-
-import lombok.*;
 
 @Entity
 @Setter
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 @Table(name = "entrepot")
 public class EntrepotEntity {
     @Id
-    @Column(nullable = false)
     private String nom;
 
-    @OneToMany(mappedBy = "entrepot", fetch = FetchType.EAGER)
-    private Set<LivreurEntity> livreurs;
+    private String lettre;
+
+    private String photo;
+
+    @Embedded
+    private Adresse adresse;
+
+    @Embedded
+    private GeoPosition coords;
 
     @OneToMany(mappedBy = "entrepot")
-    private Set<CommandeEntity> commandes;
-
-    @OneToMany(mappedBy = "entrepot")
-    private Set<CamionEntity> camions;
+    private List<CamionEntity> camions;
 
 
 }
