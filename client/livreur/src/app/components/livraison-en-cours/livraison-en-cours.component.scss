@@ -1,0 +1,107 @@
+.contact-client {
+  background: #fff;
+  border: 1px solid #e0e3ea;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(40,58,118,0.06);
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.7rem;
+  text-align: left;
+}
+
+.contact-client h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #27345a;
+  border-bottom: 1px solid #e0e3ea;
+  padding-bottom: 0.2rem;
+  letter-spacing: 0.01em;
+}
+
+.client-box {
+  background: #f6f8fa;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #e0e3ea;
+  margin-top: 0.4rem;
+}
+
+.client-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.client-list li {
+  margin-bottom: 0.3rem;
+  color: #333;
+  font-size: 0.97rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.bold_blue_text {
+  color: #27345a;
+  font-weight: 600;
+  font-size: 0.97rem;
+  margin-bottom: 0.1rem;
+  text-decoration: none;
+}
+
+.underlined {
+  border-bottom: 1px solid #e0e3ea;
+  padding-bottom: 0.18rem;
+  margin-bottom: 0.18rem;
+}
+
+.livraison-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.confirm-button,
+.alert-button {
+  padding: 0.28rem 0.9rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(40,58,118,0.04);
+}
+
+.confirm-button {
+  background: #27345a;
+  color: #fff;
+}
+
+.confirm-button:hover {
+  background: #3a4a7c;
+}
+
+.alert-button {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.alert-button:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 600px) {
+  .contact-client {
+    padding: 0.5rem 0.5rem;
+  }
+  .client-box {
+    padding: 0.4rem 0.4rem;
+  }
+  .livraison-buttons {
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: stretch;
+  }
+}

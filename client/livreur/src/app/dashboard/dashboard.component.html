@@ -1,0 +1,66 @@
+<app-header></app-header>
+
+<div class="dashboard row main-container">
+
+<div class="col-md-2">
+  <div class="left-panel">
+
+  <app-livraison-en-cours ></app-livraison-en-cours>
+  <div class="tournee-card">
+    <h2 class="tournee-title">
+      <span class="tournee-icon">🚚</span>
+      Détails de la tournée
+    </h2>
+    <div class="tournee-details">
+      <div class="tournee-row">
+        <span class="tournee-label">Référence:</span>
+        <span class="tournee-value">{{ tournee()?.reference }}</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">État:</span>
+        <span class="tournee-value tournee-etat tournee-etat-{{ tournee()?.etat?.toLowerCase() }}">
+          {{ tournee()?.etat }}
+        </span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Lettre:</span>
+        <span class="tournee-value">{{ tournee()?.lettre ?? '—' }}</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Distance à parcourir:</span>
+        <span class="tournee-value">{{ tournee()?.distanceAParcourir ?? '—' }} km</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Durée Theorique:</span>
+        <span class="tournee-value">{{ tournee()?.tempsAssemblageReel ?? '—' }} min</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Équipe Livreurs ID:</span>
+        <span class="tournee-value">{{ tournee()?.equipeLivreursId ?? '—' }}</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Camion:</span>
+        <span class="tournee-value">{{ tournee()?.camion?.immatriculation ?? 'Aucun' }}</span>
+      </div>
+      <div class="tournee-row">
+        <span class="tournee-label">Journée référence:</span>
+        <span class="tournee-value">{{ tournee()?.journeeReference }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+   <div class="col-md-8">
+    
+
+    <app-map
+    #mapRef
+  ></app-map>
+  </div>
+
+  <div class="col-md-2">
+
+  <app-livraisons-liste  ></app-livraisons-liste>
+  </div>
+</div>
