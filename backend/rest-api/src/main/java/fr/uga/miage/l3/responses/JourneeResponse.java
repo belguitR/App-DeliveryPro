@@ -13,5 +13,6 @@ public class JourneeResponse {
     private String reference;
     private LocalDate date;
     private String planificateurEmail;
+    private Double coutTotal;
     private List<TourneeResponse> tournees;
 }

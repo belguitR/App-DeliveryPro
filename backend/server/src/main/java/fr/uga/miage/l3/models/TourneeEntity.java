@@ -25,6 +25,10 @@ public class TourneeEntity {
     private double distanceAParcourir;
     private Integer tempsAssemblageReel;
 
+    private Double dureeTheorique;
+
+    private Double cout;
+
     @ManyToOne
     private PlanificateurEntity planificateur;
 
