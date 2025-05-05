@@ -1,0 +1,69 @@
+.commande-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.32rem 0.5rem;
+  margin-bottom: 4px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+  font-size: 0.92rem;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.commande-box.active {
+  border-color: #27345a;
+  background-color: #e0f0ff;
+  box-shadow: 0 0 0 2px #27345a22;
+}
+
+.title-h2 {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #27345a;
+  border-bottom: 1px solid #27345a;
+  padding-bottom: 0.15rem;
+  margin-bottom: 0.3rem;
+}
+
+.client-title,
+.colored-title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #27345a;
+  margin-bottom: 0.12rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.client-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #27345a;
+}
+
+.commande-box b {
+  font-size: 0.89rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.commande-box p {
+  margin: 0 0 0.12rem 0;
+  font-size: 0.89rem;
+  color: #222;
+}
+
+.livraisons ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.livraisons {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}

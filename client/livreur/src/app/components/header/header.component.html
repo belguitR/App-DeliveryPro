@@ -1,0 +1,17 @@
+<header>
+    <div class="header-left"> 
+        <img src="assets/images/logo2_mobilis.png">
+    </div>
+    
+    @if(auth.user()) {
+        <div class="header-center">Livreur - {{ auth.username() }}</div>
+    }
+    <div class="header-right">
+        <div class="profile-dropdown">
+            <button class="profile-dropbtn"> <img src="assets/images/logout-icon.png"> </button>
+            <div class="profile-dropdown-content">
+                <button (click)="logout()">Se déconnecter</button>
+            </div>
+        </div>
+    </div>
+</header>

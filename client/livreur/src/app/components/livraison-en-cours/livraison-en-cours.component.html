@@ -1,0 +1,60 @@
+@if (tournee() && tournee()?.etat === 'PLANIFIEE') {
+  <div class="contact-client">
+    <h2>Bienvenue !</h2>
+    <button class="confirm-button" (click)="onStart()">
+      Commencer la tournée
+    </button>
+  </div>
+} @else {
+  @if (activeCommande(); as activeCommande) {
+    <div class="contact-client">
+      <h2>
+        Livraison
+        @if (index() === 0) {
+          <span>en cours:</span>
+        }
+      </h2>
+
+      <div class="client-box">
+        <ul class="client-list">
+          <li class="underlined">
+            <a class="bold_blue_text">Client:</a>
+            <p>{{ activeCommande.client.nom }} {{ activeCommande.client.prenom }}</p>
+          </li>
+          <li class="underlined">
+            <a class="bold_blue_text">Adresse:</a>
+            <p>
+              {{ activeCommande.client.adresse.adresse }},
+              {{ activeCommande.client.adresse.codePostal }},
+              {{ activeCommande.client.adresse.ville }}
+            </p>
+          </li>
+          <li class="underlined">
+            <a class="bold_blue_text">Émail:</a>
+            <p>{{ activeCommande.client.email }}</p>
+          </li>
+          <li class="underlined">
+            <a class="bold_blue_text">Coordonnées GPS:</a>
+            <p>
+              {{ activeCommande.client.coords.lat }},
+              {{ activeCommande.client.coords.lng }}
+            </p>
+          </li>
+        </ul>
+      </div>
+
+        <div class="livraison-buttons">
+          <button class="confirm-button" (click)="onConfirm()">
+            Confirmer
+          </button>
+          <button class="alert-button" (click)="onSignal()">
+            Signaler
+          </button>
+        </div>
+    </div>
+  } @else {
+    <div class="contact-client">
+      <h2>Tournée terminée !</h2>
+    </div>
+  }
+}
