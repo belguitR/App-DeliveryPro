@@ -474,7 +474,7 @@ public class DataLoader {
     }
 
     private void loadEquipes(Map<String, LivreurEntity> livreurMap) throws Exception {
-        ClassPathResource resource = new ClassPathResource("data/equipesdeLivreurs.csv");
+        ClassPathResource resource = new ClassPathResource("data/equipesDeLivreurs.csv");
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
             String line = reader.readLine();
