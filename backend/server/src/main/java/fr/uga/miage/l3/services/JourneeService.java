@@ -202,9 +202,8 @@ public class JourneeService {
                 if (tournee.getCommandes() != null) {
                     for (CommandeEntity commande : tournee.getCommandes()) {
                         commande.setTournee(null);
-                        if (commande.getEtat() == EtatCommande.PLANIFIEE) {
-                            commande.setEtat(EtatCommande.OUVERTE);
-                        }
+                        commande.setEtat(EtatCommande.OUVERTE);
+
                         commandeRepository.save(commande);
                     }
                 }
