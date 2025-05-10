@@ -1,100 +1,117 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { signal } from '@angular/core';
+import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { signal } from '@angular/core';
+
 import { TourneesComponent } from './tournees.component';
+
 import { DataService } from '../../services/data.service';
+import { PlanificationService } from '../../services/planification.service';
+
 import { EquipeLivreurs } from '../../../models/interfaces/equipe-livreurs.model';
 import { Livreur } from '../../../models/interfaces/livreur.model';
 import { Commande } from '../../../models/interfaces/commande.model';
 
 
+
 class DataServiceStub {
-  journees = signal<any[]>([{ reference: 'J1' }]);
-
+  journees        = signal<any[]>([{ reference: 'J1', date: '2025-05-09' }]);
   equipesLivreurs = signal<EquipeLivreurs[]>([
-    { idEquipe: 1, status: 'PRET' } as unknown as EquipeLivreurs,
+    { idEquipe: 1, status: 'PRET' } as EquipeLivreurs,
+  ]);
+  livreurs        = signal<Livreur[]>([
+    { trigramme: 'ABC', nom: 'Alice'  } as Livreur,
+    { trigramme: 'XYZ', nom: 'Xavier' } as Livreur,
+  ]);
+  commandes       = signal<Commande[]>([
+    { reference: 'CMD1' } as Commande,
+    { reference: 'CMD2' } as Commande,
   ]);
 
-  livreurs = signal<Livreur[]>([
-    { trigramme: 'ABC', nom: 'Alice', prenom: 'B.', tel: '' } as unknown as Livreur,
-    { trigramme: 'DEF', nom: 'Daniel', prenom: 'E.', tel: '' } as unknown as Livreur,
-  ]);
-
-  commandes = signal<Commande[]>([
-    { reference: 'C1', etat: 0 } as unknown as Commande,
-    { reference: 'C2', etat: 0 } as unknown as Commande,
-  ]);
-
-  // HTTP‑like calls mocked with observables
-  deleteJournee = jasmine.createSpy('deleteJournee').and.returnValue(of(null));
-  refreshJournees = jasmine.createSpy('refreshJournees');
+  /*  méthodes spyées  */
+  deleteJournee    = jasmine.createSpy('deleteJournee').and.returnValue(of(void 0));
+  refreshJournees  = jasmine.createSpy('refreshJournees');
   refreshCommandes = jasmine.createSpy('refreshCommandes');
-  refreshEquipes = jasmine.createSpy('refreshEquipes');
-  refreshLivreurs = jasmine.createSpy('refreshLivreurs');
+  refreshEquipes   = jasmine.createSpy('refreshEquipes');
+  refreshLivreurs  = jasmine.createSpy('refreshLivreurs');
 }
 
-/**************************
- *       TEST SUITE       *
- **************************/
+class PlanificationServiceStub {
+  savedLayers = signal<any[]>([{}]); // signal non-vide au départ
+}
 
-describe('TESTS TourneesComponent', () => {
-  let fixture: ComponentFixture<TourneesComponent>;
+/* ------------------------------------------------------------------
+ * Suite de tests
+ * ----------------------------------------------------------------*/
+describe('TourneesComponent', () => {
+  let fixture:   ComponentFixture<TourneesComponent>;
   let component: TourneesComponent;
-  let data: DataServiceStub;
+  let dataStub:  DataServiceStub;
+  let planif:    PlanificationServiceStub;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TourneesComponent],
-      providers: [{ provide: DataService, useClass: DataServiceStub }],
-      schemas: [],
+      imports: [NoopAnimationsModule, TourneesComponent], // composant standalone
+      providers: [
+        { provide: DataService,         useClass: DataServiceStub },
+        { provide: PlanificationService, useClass: PlanificationServiceStub },
+      ],
     })
-      // override the template to focus on class logic and avoid template-dependent errors
-      .overrideComponent(TourneesComponent, {
-        set: { template: '' },
-      })
+      //  pour éviter les erreurs de binding
+      .overrideComponent(TourneesComponent, { set: { template: '' } })
       .compileComponents();
 
-    fixture = TestBed.createComponent(TourneesComponent);
+    fixture   = TestBed.createComponent(TourneesComponent);
     component = fixture.componentInstance;
-    data = TestBed.inject(DataService) as unknown as DataServiceStub;
+    dataStub  = TestBed.inject(DataService)          as unknown as DataServiceStub;
+    planif    = TestBed.inject(PlanificationService) as unknown as PlanificationServiceStub;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  /* ------------------------------------------------------------
+   * Tests basiques
+   * ---------------------------------------------------------- */
+  it('devrait créer le composant', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getEquipeById should find equipe', () => {
-    const eq = component.getEquipeById('1');
-    expect(eq?.idEquipe).toBe(1);
+  it('#getEquipeById renvoie la bonne équipe', () => {
+    const equipe = component.getEquipeById('1');
+    expect(equipe?.idEquipe).toBe(1);
   });
 
-  it('getLivreursFromIds should map ids to livreurs', () => {
-    const livs = component.getLivreursFromIds(['ABC', 'DEF']);
-    expect(livs.length).toBe(2);
-    expect(livs[0].trigramme).toBe('ABC');
+  it('#getLivreursFromIds mappe correctement les trigrammes', () => {
+    const livreurs = component.getLivreursFromIds(['ABC', 'XYZ']);
+    expect(livreurs.length).toBe(2);
+    expect(livreurs[0].nom).toBe('Alice');
   });
 
-  it('getCommandeByReference should return commande', () => {
-    const cmd = component.getCommandeByReference('C2');
-    expect(cmd?.reference).toBe('C2');
+  it('#getCommandeByReference renvoie la commande voulue', () => {
+    const cmd = component.getCommandeByReference('CMD2');
+    expect(cmd?.reference).toBe('CMD2');
   });
 
-  describe('#deleteJournee', () => {
-    it('should abort if user cancels', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
-      component.deleteJournee('J1');
-      expect(data.deleteJournee).not.toHaveBeenCalled();
-    });
+  /* ------------------------------------------------------------
+   * deleteJournee
+   * ---------------------------------------------------------- */
+  it('#deleteJournee annule si confirm() renvoie false', () => {
+    spyOn(window, 'confirm').and.returnValue(false);
 
-    it('should call deleteJournee and refresh methods if confirmed', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
-      component.deleteJournee('J1');
-      expect(data.deleteJournee).toHaveBeenCalledWith('J1');
-      expect(data.refreshJournees).toHaveBeenCalled();
-      expect(data.refreshCommandes).toHaveBeenCalled();
-      expect(data.refreshEquipes).toHaveBeenCalled();
-      expect(data.refreshLivreurs).toHaveBeenCalled();
-    });
+    component.deleteJournee('J1');
+
+    expect(dataStub.deleteJournee).not.toHaveBeenCalled();
+    expect(planif.savedLayers().length).toBe(1); // inchangé
   });
+
+  it('#deleteJournee supprime et rafraîchit si confirm() renvoie true', fakeAsync(() => {
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    component.deleteJournee('J1');
+    tick(); // flush observable retourné par of()
+
+    expect(dataStub.deleteJournee).toHaveBeenCalledWith('J1');
+    expect(dataStub.refreshJournees).toHaveBeenCalled();
+    expect(dataStub.refreshCommandes).toHaveBeenCalled();
+    expect(planif.savedLayers().length).toBe(0); // vidé
+  }));
 });

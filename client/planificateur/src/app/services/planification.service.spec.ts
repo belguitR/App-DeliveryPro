@@ -1,97 +1,55 @@
 import { TestBed } from '@angular/core/testing';
 import { PlanificationService } from './planification.service';
-import { DataService } from './data.service';
 import { CartoService } from './carto.service';
+import { DataService } from './data.service';
 import { KMeansService } from './kmeans.service';
-import { of } from 'rxjs';
-import { LatLng } from 'leaflet';
-import { EtatTournee } from '../../models/enums/etat-tournee.enum';
-
+import { Layer } from 'leaflet';
 
 describe('TESTS PlanificationService', () => {
   let service: PlanificationService;
-  let mockDataService: jasmine.SpyObj<DataService>;
-  let mockCartoService: jasmine.SpyObj<CartoService>;
-  let mockKMeansService: jasmine.SpyObj<KMeansService>;
 
   beforeEach(() => {
-    mockDataService = jasmine.createSpyObj('DataService', [
-      'journees', 'commandes', 'planificateurEmail', 'createJournee'
-    ]);
-    mockCartoService = jasmine.createSpyObj('CartoService', [
-      'getOptimizationAutmatique', 'getColorForTeam'
-    ]);
-    mockKMeansService = jasmine.createSpyObj('KMeansService', [
-      'kmeans'
-    ]);
-
     TestBed.configureTestingModule({
       providers: [
         PlanificationService,
-        { provide: DataService, useValue: mockDataService },
-        { provide: CartoService, useValue: mockCartoService },
-        { provide: KMeansService, useValue: mockKMeansService },
-      ],
+        { provide: CartoService, useValue: { getColorForTeam: (id: number) => `color-${id}` } },
+        { provide: DataService, useValue: {} },
+        { provide: KMeansService, useValue: {} }
+      ]
     });
 
     service = TestBed.inject(PlanificationService);
   });
 
-  it('getTomorrowDate should return correct format', () => {
-    const result = service.getTomorrowDate();
-    expect(result).toMatch(/\d{4}-\d{2}-\d{2}/);
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('generateTourneeReference should generate correctly', () => {
-    const result = service.generateTourneeReference([{ reference: 'TRN002' } as any]);
-    expect(result).toBe('TRN003');
+  it('should update saved layers', () => {
+    const layers: Layer[] = [{} as Layer];
+    service.updateSavedLayers(layers);
+    expect(service.savedLayers()).toEqual(layers);
   });
 
-  it('creerTournees should create tournees with shortest strategy', async () => {
-    mockDataService.journees.and.returnValue([]);
-    mockDataService.commandes.and.returnValue([]);
-    mockDataService.planificateurEmail.and.returnValue('test@test.com');
-    mockDataService.createJournee.and.returnValue(of({}));
-    mockCartoService.getColorForTeam.and.returnValue('#ff0000');
-    mockCartoService.getOptimizationAutmatique.and.returnValue(of({
-      routes: [{
-        summary: { distance: 100 },
-        steps: [
-          { type: 'job', job: 1, location: [1, 2] },
-          { type: 'job', job: 2, location: [3, 4] },
-        ]
-      }]
-    }));
-    mockKMeansService.kmeans.and.returnValue({
-      clusters: [0, 0],
-      centroids: [],
-      iterations: 1,
-      converged: true
-    });
+  it('should return tomorrow\'s date', () => {
+    const tomorrow = service.getTomorrowDate();
+    const expected = new Date();
+    expected.setDate(expected.getDate() + 1);
+    expect(tomorrow).toBe(expected.toISOString().substring(0, 10));
+  });
 
-    const commandes = [
-      { reference: 'CMD1', client: { coords: { lat: 1, lng: 2 } } },
-      { reference: 'CMD2', client: { coords: { lat: 3, lng: 4 } } }
-    ];
+  it('should return a color for a team', () => {
+    const color = service.getEquipeColor(2);
+    expect(color).toBe('color-2');
+  });
 
-    const equipes = [
-      { idEquipe: 1, livreurIds: [] }
-    ];
+  it('should generate journee reference', () => {
+    const ref = service.generateJourneeReference([{ reference: 'JRN00000001' } as any]);
+    expect(ref).toBe('JRN00000002');
+  });
 
-    const camions = [
-      { code: 'CAM1' }
-    ];
-
-    const result = await service.creerTournees(
-      equipes as any,
-      commandes as any,
-      new LatLng(0, 0),
-      'shortest',
-      '2025-05-05',
-      camions as any
-    );
-
-    expect(result.routes.length).toBe(1);
-    expect(mockDataService.createJournee).toHaveBeenCalled();
+  it('should generate tournee reference', () => {
+    const ref = service.generateTourneeReference([{ reference: 'TRN001' } as any]);
+    expect(ref).toBe('TRN002');
   });
 });

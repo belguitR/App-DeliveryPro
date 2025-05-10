@@ -104,4 +104,39 @@
     gap: 0.3rem;
     align-items: stretch;
   }
+  ::ng-deep .mat-dialog-container {
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    background-color: #f9fafb; /* Couleur claire et douce */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    font-family: 'Roboto', sans-serif;
+    color: #2a3b4d; /* Couleur texte principale */
+    max-width: 400px;
+  }
+  
+  .dialog-title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: #27345a;
+  }
+  
+  .dialog-content {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #4a5568;
+  }
+  
+  .dialog-actions button {
+    min-width: 100px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    text-transform: none;
+  }
+  
+  .dialog-actions button:first-child {
+    margin-right: 1rem;
+  }
+  
 }

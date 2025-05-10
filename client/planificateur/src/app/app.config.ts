@@ -5,12 +5,9 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
+
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { AuthService } from './services/auth.service';
-import { HttpInterceptorFn } from '@angular/common/http'; // Import HttpInterceptorFn
-import { switchMap, take } from 'rxjs';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAop-7jh9zfTUvu9ruAsOtW-4dUjNj8xh8",

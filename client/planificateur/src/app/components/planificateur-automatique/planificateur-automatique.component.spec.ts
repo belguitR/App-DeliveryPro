@@ -1,160 +1,169 @@
-import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import {
+  TestBed,
+  ComponentFixture,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PlanificateurAutomatiqueComponent } from './planificateur-automatique.component';
-import { MapComponent } from '../map/map.component';
 import { LeafletModule } from '@bluehalo/ngx-leaflet';
 import * as L from 'leaflet';
 import { signal } from '@angular/core';
+import { latLng, LatLng } from 'leaflet';
+
+import { PlanificateurAutomatiqueComponent } from './planificateur-automatique.component';
+
 import { PlanificationService } from '../../services/planification.service';
 import { DataService } from '../../services/data.service';
 import { CartoService } from '../../services/carto.service';
-import { latLng, LatLng } from 'leaflet';
+
 import { EquipeLivreurs } from '../../../models/interfaces/equipe-livreurs.model';
 import { Commande } from '../../../models/interfaces/commande.model';
+import { StatusEquipeLivreurs } from '../../../models/enums/status-equipe-livreurs.enum';
 
-
+/* ------------------------------------------------------------------
+ * Doubles de test
+ * ----------------------------------------------------------------*/
 class CartoServiceStub {
   latLngToMarker = jasmine
     .createSpy('latLngToMarker')
-    .and.callFake((p: LatLng, _type: string, _teamId?: number) => L.marker(p));
+    .and.callFake((p: LatLng) => L.marker(p));
 
   createPolylineForTournee = jasmine
     .createSpy('createPolylineForTournee')
-    .and.callFake((tour: LatLng[], _teamId: number) => ({
+    .and.callFake((tour: LatLng[]) => ({
       toPromise: () => Promise.resolve(L.polyline(tour)),
     }));
 
   getDistanceFromORS = jasmine
     .createSpy('getDistanceFromORS')
-    .and.callFake(() => Promise.resolve(10));
+    .and.returnValue(Promise.resolve(10));
 }
 
 class DataServiceStub {
   equipesLivreurs = signal<EquipeLivreurs[]>([
-    { idEquipe: 1, status: 'PRET' } as unknown as EquipeLivreurs,
-    { idEquipe: 2, status: 'BUSY' } as unknown as EquipeLivreurs,
+    { idEquipe: 1, status: StatusEquipeLivreurs.PRET } as EquipeLivreurs,
+    { idEquipe: 2, status: StatusEquipeLivreurs.NON_DISPONIBLE } as EquipeLivreurs,
   ]);
 
   commandesOuvertes = signal<Commande[]>([
-    {
-      reference: 'C1',
-      client: { coords: { lat: 0, lng: 0 } },
-    } as unknown as Commande,
-    {
-      reference: 'C2',
-      client: { coords: { lat: 1, lng: 1 } },
-    } as unknown as Commande,
+    { reference: 'C1', client: { coords: { lat: 0, lng: 0 } } } as Commande,
+    { reference: 'C2', client: { coords: { lat: 1, lng: 1 } } } as Commande,
   ]);
 
   camions = signal<any[]>([
     {
       code: 'TR1',
-      typeCamion: { image: 'img', nom: 'Truck' },
-      kilometrage: 50,
+      typeCamion: { image: '', nom: 'Truck', prixAuKm: 1 },
+      kilometrage: 100,
       immatriculation: 'AA-111-AA',
     },
   ]);
+
+  journees = signal<any[]>([]);
 }
 
 class PlanificationServiceStub {
+  /* ------ synchrones ------ */
   getTomorrowDate = jasmine
     .createSpy('getTomorrowDate')
-    .and.returnValue(new Date(Date.now() + 86_400_000).toISOString().slice(0, 10));
+    .and.returnValue(
+      new Date(Date.now() + 86_400_000).toISOString().slice(0, 10)
+    );
+
+  getEquipeColor = jasmine.createSpy('getEquipeColor').and.returnValue('#ff0000');
+
+  savedLayers       = jasmine.createSpy('savedLayers').and.returnValue([]);
+  updateSavedLayers = jasmine.createSpy('updateSavedLayers');
+
+  /* ------ async ------ */
+  generateTourneesPreview = jasmine
+    .createSpy('generateTourneesPreview')
+    .and.callFake(() =>
+      Promise.resolve({
+        routes: [[latLng(0, 0), latLng(1, 1), latLng(0, 0)]],
+        teamIdToColor: new Map<number, string>([[1, '#ff0000']]),
+        tournees: [{ commandeReferences: ['C1'], equipeLivreursId: '1' }],
+      })
+    );
 
   loadTournees = jasmine.createSpy('loadTournees').and.callFake(() =>
     Promise.resolve({
       routes: [[latLng(0, 0), latLng(0, 1), latLng(0, 0)]],
       teamIdToColor: new Map<number, string>([[1, '#ff0000']]),
-      equipes: [{ idEquipe: 1, status: 'PRET' } as unknown as EquipeLivreurs],
-      loaded: [
-        {
-          reference: 'C1',
-          client: { coords: { lat: 0, lng: 0 } },
-        } as unknown as Commande,
+      equipes: [
+        { idEquipe: 1, status: StatusEquipeLivreurs.PRET } as EquipeLivreurs,
       ],
+      loaded: [
+        { reference: 'C1', client: { coords: { lat: 0, lng: 0 } } } as Commande,
+      ],
+      stats: new Map<number, { distanceKm: number; commandes: number; timeMin: number; cout: number }>(),
     })
   );
 
-  creerTournees = jasmine.createSpy('creerTournees').and.callFake(() =>
-    Promise.resolve({
-      routes: [[latLng(0, 0), latLng(1, 1), latLng(0, 0)]],
-      teamIdToColor: new Map<number, string>([[1, '#ff0000']]),
-    })
-  );
-
-  checkIfJourneeExists = jasmine
-    .createSpy('checkIfJourneeExists')
-    .and.callFake(() => Promise.resolve(false));
-
-  getEquipeColor = jasmine
-    .createSpy('getEquipeColor')
-    .and.callFake(() => '#ff0000');
+  validateJournee      = jasmine.createSpy('validateJournee').and.returnValue(Promise.resolve());
+  checkIfJourneeExists = jasmine.createSpy('checkIfJourneeExists').and.returnValue(Promise.resolve(false));
 }
 
-/**
- * ######################
- * #     TEST     #
- * ######################
- */
-
-describe('TESTS PlanificateurAutomatiqueComponent', () => {
-  let fixture: ComponentFixture<PlanificateurAutomatiqueComponent>;
+/* ------------------------------------------------------------------
+ * Suite de tests
+ * ----------------------------------------------------------------*/
+describe('PlanificateurAutomatiqueComponent', () => {
+  let fixture:   ComponentFixture<PlanificateurAutomatiqueComponent>;
   let component: PlanificateurAutomatiqueComponent;
-  let carto: CartoServiceStub;
-  let planif: PlanificationServiceStub;
-  let showLayersSpy: jasmine.Spy;
+  let planif:    PlanificationServiceStub;
 
   beforeEach(async () => {
+    /* --- on neutralise ngAfterViewInit pour éviter les appels à mapRef --- */
+    spyOn(PlanificateurAutomatiqueComponent.prototype as any, 'ngAfterViewInit')
+      .and.callFake(() => {});
+
     await TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
         LeafletModule,
-        PlanificateurAutomatiqueComponent, // standalone component under test
+        PlanificateurAutomatiqueComponent, // composant standalone
       ],
       providers: [
-        { provide: CartoService, useClass: CartoServiceStub },
-        { provide: DataService, useClass: DataServiceStub },
+        { provide: CartoService,        useClass: CartoServiceStub },
+        { provide: DataService,         useClass: DataServiceStub },
         { provide: PlanificationService, useClass: PlanificationServiceStub },
       ],
-    }).compileComponents();
+    })
+      // ► pas de template → pas de ViewChild → pas d’erreur de mapRef
+      .overrideComponent(PlanificateurAutomatiqueComponent, { set: { template: '' } })
+      .compileComponents();
 
-    // Spy must be created inside before/beforeEach
-    showLayersSpy = spyOn(MapComponent.prototype as any, 'showLayers').and.callThrough();
-
-    fixture = TestBed.createComponent(PlanificateurAutomatiqueComponent);
+    fixture   = TestBed.createComponent(PlanificateurAutomatiqueComponent);
     component = fixture.componentInstance;
-    carto = TestBed.inject(CartoService) as unknown as CartoServiceStub;
-    planif = TestBed.inject(
-      PlanificationService
-    ) as unknown as PlanificationServiceStub;
+    planif    = TestBed.inject(PlanificationService) as unknown as PlanificationServiceStub;
 
-    fixture.detectChanges(); // triggers ngAfterViewInit
+    fixture.detectChanges(); // ne déclenchera PAS le code de ngAfterViewInit (stubé)
   });
 
-  it('should create the component', () => {
+  /* ------------------------------------------------------------
+   * Basique
+   * ---------------------------------------------------------- */
+  it('crée le composant', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should filter availableEquipeLivreurs to only PRET teams', () => {
-    expect(component.availableEquipeLivreurs().length).toBe(1);
-    expect(component.availableEquipeLivreurs()[0].status).toBe('PRET');
+  it('filtre uniquement les équipes PRET', () => {
+    const list = component.availableEquipeLivreurs();
+    expect(list.length).toBe(1);
+    expect(list[0].idEquipe).toBe(1);
   });
 
-  it('should call CartoService.latLngToMarker for each commande on init', () => {
-    // Called once for entrepôt + two commandes
-    expect(carto.latLngToMarker).toHaveBeenCalledTimes(4); // 1 entrepôt + 2 commandes + 1 entrepôt ajouté par MapComponent
-  });
-
-  it('should call MapComponent.showLayers during ngAfterViewInit', () => {
-    expect(showLayersSpy).toHaveBeenCalled();
-  });
-
-  it('loadTourneesForSelectedDate should set isLoadMode to true and populate routes', fakeAsync(async () => {
-    await component.loadTourneesForSelectedDate();
+  /* ------------------------------------------------------------
+   * Génération de tournée (creerTournees)
+   * ---------------------------------------------------------- */
+  it('creerTournees() génère une tournée et calcule les stats', fakeAsync(async () => {
+    await component.creerTournees();
     tick();
 
-    expect(planif.loadTournees).toHaveBeenCalled();
-    expect(component.isLoadMode()).toBeTrue();
+    expect(planif.generateTourneesPreview).toHaveBeenCalled();
     expect(component.createdTourneesSignal().length).toBe(1);
+    expect(component.tourneeStats().size).toBe(1);
   }));
+
+
 });

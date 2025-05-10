@@ -1,5 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { LatLng } from 'leaflet';
+import { Injectable, inject, signal } from '@angular/core';
+import { LatLng, Layer } from 'leaflet';
 import { DataService } from './data.service';
 import { CartoService } from './carto.service';
 import { KMeansService } from './kmeans.service';
@@ -16,6 +16,13 @@ export class PlanificationService {
   private dataService = inject(DataService);
   private cartoService = inject(CartoService);
   private kmeansService = inject(KMeansService);
+
+
+  savedLayers = signal<Layer[]>([]);
+
+  updateSavedLayers(layers :Layer[]){
+    this.savedLayers.set([...layers]);
+  }
 
   getTomorrowDate(): string {
     const d = new Date();
@@ -44,103 +51,24 @@ export class PlanificationService {
     return this.genRef('TRN', tournees, 3);
   }
 
-  async creerTournees(
-    equipes: EquipeLivreurs[],
-    commandes: Commande[],
-    entrepot: LatLng,
-    strategy: 'balanced' | 'custom',
-    date: string,
-    camions: Camion[],
-    customSizes?: number[],
-    
-
-  ) {
-    const colorMap = new Map<number, string>();
-    const routes: LatLng[][] = [];
-    const journees = this.dataService.journees();
-    const jourRef = this.generateJourneeReference(journees);
-    const existing = journees.flatMap(j => j.tournees ?? []);
-    const tournees: Tournee[] = [];
-
-    const coords = commandes.map(c => [c.client.coords.lat, c.client.coords.lng]);
-    const { clusters } = this.kmeansService.kmeans(coords, equipes.length, strategy, customSizes);
-
-    const raw: Commande[][] = Array.from({ length: equipes.length }, () => []);
-    commandes.forEach((c, i) => {
-      const cid = clusters[i];
-      if (cid != null) raw[cid].push(c);
-    });
-
-    for (let i = 0; i < raw.length; i++) {
-      const cluster = raw[i];
-      const equipe = equipes[i];
-      if (!cluster.length) continue;
-
-      const trnRef = this.generateTourneeReference([...existing, ...tournees]);
-      const resp = await this.cartoService.getOptimizationAutmatique(cluster, [equipe], entrepot).toPromise();
-      if (!resp?.routes?.length) continue;
-
-      const route = resp.routes[0];
-      const path = route.steps.map((s:any) => new LatLng(s.location[1], s.location[0]));
-      const distanceKm = await this.cartoService.getDistanceFromORS(path);
-      const commandesCount = path.length - 2;  
-      const travelTimeMin    = (distanceKm / 40) * 60;
-      const deliveryTimeMin  = commandesCount * 10;
-      const totalTimeMin     = Math.round(travelTimeMin + deliveryTimeMin);
-      const refs = route.steps
-        .filter((s:any) => s.type === 'job')
-        .map((s:any) => cluster[s.job - 1].reference);
-
-      routes.push(path);
-      colorMap.set(equipe.idEquipe, this.getEquipeColor(equipe.idEquipe));
-      const stats: { equipeId: number; distanceKm: number; timeMin: number }[] = [];
-
-
-      tournees.push({
-        reference: trnRef,
-        etat: EtatTournee.PLANIFIEE,
-        lettre: String.fromCharCode(65 + i),
-        distanceAParcourir: Math.round(distanceKm),
-        tempsAssemblageReel: totalTimeMin,
-        equipeLivreursId: String(equipe.idEquipe),
-        camion: camions[i],
-        commandeReferences: refs,
-        journeeReference: jourRef
-      });
-    }
-
-    const dto: TourneePostDto[] = tournees.map(t => ({
-      reference: t.reference,
-      etat: t.etat,
-      lettre: t.lettre,
-      distanceAParcourir: t.distanceAParcourir,
-      tempsAssemblageReel: t.tempsAssemblageReel,
-      equipeLivreursId: t.equipeLivreursId,
-      camionCode: t.camion?.code ?? null,
-      commandeReferences: t.commandeReferences,
-      journeeReference: t.journeeReference
-    }));
-
-    const post: JourneePostDto = {
-      reference: jourRef,
-      date,
-      planificateurEmail: this.dataService.planificateurEmail(),
-      tournees: dto
-    };
-    await firstValueFrom(this.dataService.createJournee(post));
-
-    return { routes, teamIdToColor: colorMap };
-  }
-
   async loadTournees(
     date: string,
     entrepot: LatLng
-  ): Promise<{ routes: LatLng[][]; teamIdToColor: Map<number,string>; equipes: EquipeLivreurs[]; remaining: Commande[]; loaded: Commande[] }> {
+  ): Promise<{ routes: LatLng[][]; teamIdToColor: Map<number,string>; equipes: EquipeLivreurs[]; remaining: Commande[]; loaded: Commande[];
+    stats: Map<number, { distanceKm: number; commandes: number; timeMin: number; cout: number }>
+   }> {
+
+    const stats = new Map<number, { distanceKm: number; commandes: number; timeMin: number; cout: number }>();
+
+
     const commandes = this.dataService.commandes();
     const used = this.dataService.journees().flatMap(j => j.tournees?.flatMap(t => t.commandeReferences) ?? []);
     const jour = this.dataService.journees().find(j => j.date?.startsWith(date));
+    
+
+    
     if (!jour) {
-      return { routes: [], teamIdToColor: new Map(), equipes: [], remaining: commandes.filter(c => !used.includes(c.reference)), loaded: [] };
+      return { routes: [], teamIdToColor: new Map(), equipes: [], remaining: commandes.filter(c => !used.includes(c.reference)), loaded: [],stats };
     }
 
     const mapEq = new Map<number,EquipeLivreurs>(this.dataService.equipesLivreurs().map(e => [e.idEquipe, e]));
@@ -148,6 +76,21 @@ export class PlanificationService {
     const colors = new Map<number,string>();
     const equipes: EquipeLivreurs[] = [];
     const loaded: Commande[] = [];
+
+    for (const eq of equipes) {
+      const tournee = jour.tournees!.find(t => t.equipeLivreursId === String(eq.idEquipe));
+      
+      if (tournee) {
+        const commandesCount = tournee.commandeReferences.length;
+        
+        stats.set(eq.idEquipe, {
+          distanceKm: tournee.distanceAParcourir,
+          commandes: commandesCount,
+          timeMin: tournee.dureeTheorique,
+          cout: tournee.cout
+        });
+      }
+    }
 
     for (const t of jour.tournees ?? []) {
       const cmds = t.commandeReferences
@@ -169,7 +112,8 @@ export class PlanificationService {
       teamIdToColor: colors,
       equipes,
       remaining: commandes.filter(c => !used.includes(c.reference)),
-      loaded
+      loaded,
+      stats
     };
   }
 
@@ -178,5 +122,115 @@ export class PlanificationService {
     await firstValueFrom(this.dataService.isDataLoaded$);
     return this.dataService.journees().some(j => j.date?.startsWith(date));
   }
+
+
+
+  async generateTourneesPreview(
+    equipes: EquipeLivreurs[],
+    commandes: Commande[],
+    entrepot: LatLng,
+    strategy: 'balanced' | 'custom',
+    camions: Camion[],
+    customSizes?: number[]
+  ): Promise<{
+    routes: LatLng[][],
+    teamIdToColor: Map<number, string>,
+    tournees: Tournee[],
+  }> {
+    const colorMap = new Map<number, string>();
+    const routes: LatLng[][] = [];
+    const tournees: Tournee[] = [];
+
+    const coords = commandes.map(c => [c.client.coords.lat, c.client.coords.lng]);
+    const { clusters } = this.kmeansService.kmeans(coords, equipes.length, strategy, customSizes);
+    console.log('Custom sizes:', customSizes);
+  
+    const raw: Commande[][] = Array.from({ length: equipes.length }, () => []);
+    commandes.forEach((c, i) => {
+      const cid = clusters[i];
+      if (cid != null) raw[cid].push(c);
+    });
+  
+    const existing = this.dataService.journees().flatMap(j => j.tournees ?? []);
+  
+    for (let i = 0; i < raw.length; i++) {
+      const cluster = raw[i];
+      const equipe = equipes[i];
+      if (!cluster.length) continue;
+  
+      const trnRef = this.generateTourneeReference([...existing, ...tournees]);
+      const resp = await this.cartoService.getOptimizationAutmatique(cluster, [equipe], entrepot).toPromise();
+      if (!resp?.routes?.length) continue;
+  
+      const route = resp.routes[0];
+      const path = route.steps.map((s: any) => new LatLng(s.location[1], s.location[0]));
+      const refs = route.steps.filter((s: any) => s.type === 'job').map((s: any) => cluster[s.job - 1].reference);
+  
+      const distanceKm = await this.cartoService.getDistanceFromORS(path);
+      const commandesCount = path.length - 2;
+      const travelTimeMin = (distanceKm / 40) * 60;
+      const deliveryTimeMin = commandesCount * 10;
+      const totalTimeMin = Math.round(travelTimeMin + deliveryTimeMin);
+      const coutTournee = camions[i].typeCamion.prixAuKm * distanceKm;
+  
+      routes.push(path);
+      colorMap.set(equipe.idEquipe, this.getEquipeColor(equipe.idEquipe));
+  
+      tournees.push({
+        reference: trnRef,
+        etat: EtatTournee.PLANIFIEE,
+        lettre: String.fromCharCode(65 + i),
+        distanceAParcourir: Math.round(distanceKm),
+        tempsAssemblageReel: 0,
+        dureeTheorique: totalTimeMin,
+        equipeLivreursId: String(equipe.idEquipe),
+        camion: camions[i],
+        cout: Math.round(coutTournee),
+        commandeReferences: refs,
+        journeeReference: ''
+      });
+    }
+  
+    return { routes, teamIdToColor: colorMap, tournees };
+  }
+
+
+
+  async validateJournee(tournees: Tournee[], date: string): Promise<void> {
+    let coutTotalJournee = 0;
+    const journees = this.dataService.journees();
+    const jourRef = this.generateJourneeReference(journees);
+  
+    tournees.forEach(t => t.journeeReference = jourRef);
+    tournees.forEach(t => coutTotalJournee += t.cout);
+
+  
+    const dto: TourneePostDto[] = tournees.map(t => ({
+      reference: t.reference,
+      etat: t.etat,
+      lettre: t.lettre,
+      distanceAParcourir: t.distanceAParcourir,
+      tempsAssemblageReel: t.tempsAssemblageReel,
+      dureeTheorique: t.dureeTheorique,
+      cout: t.cout,
+      equipeLivreursId: t.equipeLivreursId,
+      camionCode: t.camion?.code ?? null,
+      commandeReferences: t.commandeReferences,
+      journeeReference: jourRef
+    }));
+    const post: JourneePostDto = {
+      reference: jourRef,
+      date,
+      planificateurEmail: this.dataService.planificateurEmail()?? '',
+      coutTotal: Math.round(coutTotalJournee),
+      tournees: dto
+    };
+  
+    await firstValueFrom(this.dataService.createJournee(post));
+  }
+  
+  
+  
+
   
 }

@@ -49,6 +49,13 @@ export class MapComponent{
       this.layers.set([...layers]);
     }
   }
+  updateLayers(layers: Layer[], keepEntrepot = true) {
+    if (keepEntrepot) {
+      this.layers.update((oldLayers) => [this.getEntrepotMarker(),...oldLayers,...layers]);
+    } else {
+      this.layers.update((oldLayers) => [...oldLayers,...layers]);
+    }
+  }
 
   clearLayers(keepEntrepot = true) {
     if (keepEntrepot) {

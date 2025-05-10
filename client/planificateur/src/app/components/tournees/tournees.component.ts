@@ -5,6 +5,7 @@ import { DataService } from '../../services/data.service';
 import { EquipeLivreurs } from '../../../models/interfaces/equipe-livreurs.model';
 import { Livreur } from '../../../models/interfaces/livreur.model';
 import { Commande } from '../../../models/interfaces/commande.model';
+import { PlanificationService } from '../../services/planification.service';
 
 @Component({
   selector: 'app-tournees',
@@ -15,6 +16,7 @@ import { Commande } from '../../../models/interfaces/commande.model';
 })
 export class TourneesComponent {
   protected dataService = inject(DataService);
+  protected planificationService = inject(PlanificationService);
 
   readonly journees = this.dataService.journees;
   readonly equipes = this.dataService.equipesLivreurs;
@@ -40,10 +42,12 @@ export class TourneesComponent {
     if (!confirm(`Supprimer la journée #${reference} ?`)) return;
     this.dataService.deleteJournee(reference).subscribe({
       next: () => {
+        
         this.dataService.refreshJournees();
         this.dataService.refreshCommandes();
         this.dataService.refreshEquipes();
         this.dataService.refreshLivreurs();
+        this.planificationService.savedLayers.set([]);
       },
       error: err => {
         if (err?.error) {
