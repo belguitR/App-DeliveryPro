@@ -43,14 +43,15 @@
         </ul>
       </div>
 
-        <div class="livraison-buttons">
-          <button class="confirm-button" (click)="onConfirm()">
-            Confirmer
-          </button>
-          <button class="alert-button" (click)="onSignal()">
-            Signaler
-          </button>
-        </div>
+      <div class="livraison-buttons">
+        <button class="confirm-button" (click)="onConfirm()">
+          Confirmer
+        </button>
+
+        <button class="alert-button" (click)="onSignal()">
+          Signaler
+        </button>
+      </div>
     </div>
   } @else {
     <div class="contact-client">
@@ -58,3 +59,31 @@
     </div>
   }
 }
+
+<ng-template #confirmDialog let-data let-dialogRef="dialogRef">
+  <h2 mat-dialog-title style="font-weight:600; font-size:1.4rem; color:#27345a;">
+    {{ data.title }}
+  </h2>
+  <mat-dialog-content style="font-size:1rem; margin-bottom:1.5rem; color:#4a5568;">
+    {{ data.message }}
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button
+      mat-stroked-button
+      color="primary"
+      style="min-width:100px; font-weight:600; border-radius:6px; margin-right:1rem;"
+      (click)="dialogRef.close(true)"
+    >
+      Confirmer
+    </button>
+    <button
+      mat-flat-button
+      color="warn"
+      style="min-width:100px; font-weight:600; border-radius:6px;"
+      (click)="dialogRef.close(false)"
+    >
+      Annuler
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+

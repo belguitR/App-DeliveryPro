@@ -15,7 +15,7 @@ describe('TESTS KMeansService', () => {
 
   it('génère le bon nombre de clusters', () => {
     const data = generateData(100, 2);
-    const result = service.kmeans(data, 4, 'shortest');
+    const result = service.kmeans(data, 4, 'custom');  // changé ici
 
     const clusterSet = new Set(result.clusters);
     expect(clusterSet.size).toBe(4);
@@ -23,14 +23,14 @@ describe('TESTS KMeansService', () => {
 
   it('chaque point est assigné à un cluster', () => {
     const data = generateData(50, 2);
-    const result = service.kmeans(data, 3, 'shortest');
+    const result = service.kmeans(data, 3, 'custom');  // changé ici
 
     result.clusters.forEach((c) => expect(c).toBeGreaterThanOrEqual(0));
   });
 
   it('respecte la taille maximale par cluster', () => {
     const data = generateData(200, 2);
-    const result = service.kmeans(data, 4, 'shortest');
+    const result = service.kmeans(data, 4, 'custom');  // changé ici
 
     const counts = new Array(4).fill(0);
     result.clusters.forEach((cid) => counts[cid]++);
@@ -39,14 +39,14 @@ describe('TESTS KMeansService', () => {
 
   it('converge en un nombre raisonnable d’itérations', () => {
     const data = generateData(150, 2);
-    const result = service.kmeans(data, 5, 'shortest');
+    const result = service.kmeans(data, 5, 'custom');  // changé ici
     expect(result.iterations).toBeLessThanOrEqual(100);
     expect(result.converged).toBeTrue();
   });
 
   it('équilibre les clusters avec la stratégie "balanced"', () => {
     const data = generateData(120, 2);
-    const result = service.kmeans(data, 4, 'balanced');
+    const result = service.kmeans(data, 4, 'balanced');  // ici c'était déjà bon
 
     const counts = new Array(4).fill(0);
     result.clusters.forEach((cid) => counts[cid]++);

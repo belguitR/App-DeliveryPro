@@ -3,19 +3,21 @@
   <ul>
     @for (livr of commandes(); track livr.client; let idx = $index) {
       <li
-        class="commande-box"
-        [class.active]="originalIndex() === idx"
-      >
-        <p class="client-title colored-title"><span>Livraison {{ idx + 1 }}</span></p>
-        <p>
-          <b>Nom et Prénom:</b>
-          {{ livr.client.nom }} {{ livr.client.prenom }}
-        </p>
-        <p>
-          <b>Adresse:</b>
-          {{ livr.client.adresse.adresse }}, {{ livr.client.adresse.ville }}
-        </p>
-      </li>
+      class="commande-box"
+      [class.active]="originalIndex() === idx"
+      [class.livraison-confirmee]="livr.etat === 'LIVREE'"
+      [class.livraison-signalee]="livr.etat === 'OUVERTE'"
+    >
+      <p class="client-title colored-title"><span>Livraison {{ idx + 1 }}</span></p>
+      <p>
+        <b>Nom et Prénom:</b>
+         {{ livr.client.nom }} {{ livr.client.prenom }}
+      </p>
+      <p>
+        <b>Adresse:</b> 
+        {{ livr.client.adresse.adresse }}, {{ livr.client.adresse.ville }}
+      </p>
+    </li>
     }
   </ul>
 </div>

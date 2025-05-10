@@ -145,4 +145,16 @@ describe('TESTS  CartoService ', () => {
       });
   });
 
+  it('devrait retourner une couleur pour une équipe', () => {
+    const color = service.getColorForTeam(0);
+    expect(typeof color).toBe('string');
+  });
+  it('devrait retourner un marker Leaflet avec coordonnées et popup', () => {
+    const latLng = new LatLng(45.1, 3.1);
+    const marker = service.latLngToMarker(latLng, { nom: 'Client A' } as any);
+    expect(marker.getLatLng()).toEqual(latLng);
+  });
+
+
+
 });

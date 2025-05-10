@@ -16,8 +16,8 @@ export class DataService {
   private _isDataLoaded$ = new BehaviorSubject<boolean>(false);
   readonly isDataLoaded$ = this._isDataLoaded$.asObservable();
 
-  // private apiBaseUrl = 'http://localhost:8080';
-  private apiBaseUrl = '';
+  private apiBaseUrl = 'http://localhost:8080';
+  // private apiBaseUrl = '';
 
   private apiUrl(path: string): string {
     if (!path.startsWith('/')) path = '/' + path;
@@ -256,7 +256,7 @@ export class DataService {
       }),
       catchError((err: HttpErrorResponse) => {
         console.error('Error creating journée:', err);
-        return of(null);
+        return throwError(() => err);
       })
     );
   }

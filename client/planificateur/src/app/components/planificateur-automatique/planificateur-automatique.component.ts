@@ -19,6 +19,7 @@ import { EquipeLivreurs } from '../../../models/interfaces/equipe-livreurs.model
 import { Commande } from '../../../models/interfaces/commande.model';
 import { planificateurSchema } from '../../../models/interfaces/planificateur.model';
 import { CartoService } from '../../services/carto.service';
+import { Tournee } from '../../../models/interfaces/tournee.model';
 
 // =======================
 // Décorateur du composant
@@ -60,7 +61,7 @@ export class PlanificateurAutomatiqueComponent {
   availableEquipeLivreurs = computed(() =>
     this.dataService.equipesLivreurs().filter(eq => eq.status === 'PRET')
   ); // Équipes prêtes pour la planification
-  loadDate = new Date(); // Date pour charger une planification existante
+  loadDate = new Date(this.planificationService.getTomorrowDate()); // Initialize with tomorrow's date
   planningDate = signal<string>(this.planificationService.getTomorrowDate()); // Date de planification
   canCreateTournee = signal<boolean>(true);
   allSelectedEquipesHaveCamion = computed(() => {
@@ -80,7 +81,7 @@ export class PlanificateurAutomatiqueComponent {
   createdTourneesSignal = signal<LatLng[][]>([]); // Tournées créées (chemins)
   teamIdToColor = signal<Map<number, string>>(new Map()); // Couleur associée à chaque équipe
   polylineColorMap = computed(() => Array.from(this.teamIdToColor().values()));
-  tourneeStats = signal<Map<number, { distanceKm: number; commandes: number; timeMin: number }>>(new Map());
+  tourneeStats = signal<Map<number, { distanceKm: number; commandes: number; timeMin: number, cout?:number }>>(new Map());
   totalDistanceKm = computed(() => {
     let sum = 0;
     for (const stat of this.tourneeStats().values()) {
@@ -88,6 +89,29 @@ export class PlanificateurAutomatiqueComponent {
     }
     return Math.round(sum);
   });
+  plannedTournees = signal<Tournee[]>([]);
+  public totalCostEuros = computed(() => {
+    let sum = 0;
+    for (const stat of this.tourneeStats().values()) {
+      sum += stat.cout?? 0;
+    }
+    return Math.round(sum);  
+  });
+
+calculateEquipeCost(equipeId: number): string {
+  const stat = this.tourneeStats().get(equipeId);
+  if (!stat) return '0.00';
+  
+  const camion = this.getCamionForEquipe(equipeId);
+  const cost = stat.distanceKm * camion.typeCamion.prixAuKm;
+  
+  return cost.toFixed(2);
+}
+  // Helper method to get the right camion for an équipe
+  private getCamionForEquipe(idEquipe: number) {
+    const camionCode = this.equipeCamionMap().get(idEquipe);
+    return this.camions().find(c => c.code === camionCode) || this.camions()[0];
+  }
 
   // Attribution des camions
   readonly camions = this.dataService.camions; // Liste des camions disponibles
@@ -102,21 +126,29 @@ export class PlanificateurAutomatiqueComponent {
       : this.displayedCommandes()   // Afficher les commandes ouvertes pour la planification
   );
 
+
+  //Modal
+  feedbackOpen = signal<boolean>(false);
+  feedbackMessage = signal<string>('');
+
+
   // =======================
   // Constructeur & Effets
   // =======================
   constructor() {
-    // Initialisation du nombre de commandes et des commandes affichées
+    // Initialisation du nombre de commandes et des commandes affichées (Existing)
     this.nombreCommandesUtilisees.set(this.commandesOuvertes().length);
     this.displayedCommandes.set(this.selectedCommandesAuto());
     this.checkIfJourneeExistsForDate(this.planningDate());
 
-    // Effet : met à jour les équipes sélectionnées et la répartition à chaque changement
+    
     effect(() => {
       const avail = this.availableEquipeLivreurs();
       const totalCmds = this.nombreCommandesUtilisees();
 
+
       if (avail.length && this.selectedEquipes().length === 0) {
+
         this.selectedEquipes.set(avail);
       }
 
@@ -124,7 +156,25 @@ export class PlanificateurAutomatiqueComponent {
       const newSizes = this.distributeEvenly(totalCmds, selected.length || 1);
       this.desiredSizes.set(newSizes);
     });
+
+    effect(() => {
+      // as soon as selectedEquipes is nonempty and we haven't filled the map yet…
+      const sel = this.selectedEquipes();
+      if (!sel.length || this.equipeCamionMap().size) return;
+
+      const map = new Map<number,string>();
+      const used = new Set<string>();
+      sel.forEach(e => {
+        const free = this.camions().find(c => !used.has(c.code));
+        if (free) {
+          map.set(e.idEquipe, free.code);
+          used.add(free.code);
+        }
+      });
+      this.equipeCamionMap.set(map);
+    });
   }
+   
 
   // =======================
   // Hooks du cycle de vie
@@ -133,6 +183,7 @@ export class PlanificateurAutomatiqueComponent {
   // Affiche les commandes sur la carte après l'initialisation de la vue
   ngAfterViewInit() {
     this.showCommandesOnMap();
+    this.mapRef.updateLayers(this.planificationService.savedLayers(), true);
   }
 
   // =======================
@@ -234,82 +285,90 @@ export class PlanificateurAutomatiqueComponent {
   // Logique de planification/création
   // =======================
 
-  // Crée les tournées pour les équipes et commandes sélectionnées
   async creerTournees() {
     this.isLoadMode.set(false);
     const equipes = this.selectedEquipes();
     const entrepot = this.entrepot();
-    const maxPerTeam = 50;
-    
-
-    if (this.selectedCommandesAuto().length > equipes.length * maxPerTeam) {
-      const userConfirmed = confirm("Pas assez d'équipes. Voulez-vous planifier le max pour demain et le reste pour le jour aprés ?");
-      if (!userConfirmed) return;
-      this.planningDate.set(this.planificationService.getTomorrowDate());
-      this.nombreCommandesUtilisees.set(equipes.length * maxPerTeam);
-    }
-
     const commandes = this.selectedCommandesAuto();
-    const camions = equipes.map(equipe => {
-      const camionCode = this.equipeCamionMap().get(equipe.idEquipe);
-      return this.camions().find(c => c.code === camionCode)!;
-    });
-
-    console.log("camions selected", camions);
-    const custom = this.selectedStrategy() === 'custom';
-
-    const chemins = await this.planificationService.creerTournees(
-      equipes,
-      commandes,
-      entrepot,
-      this.selectedStrategy(),
-      this.planningDate(),
-      camions,
-      custom ? this.desiredSizes() : undefined
+    const camions = equipes.map(e =>
+      this.camions().find(c => c.code === this.equipeCamionMap().get(e.idEquipe))!
     );
+    const customSizes = this.selectedStrategy() === 'custom' ? this.desiredSizes() : undefined;
+  
+    try {
+      console.log('strategy:', this.selectedStrategy());
+    console.log('desiredSizes:', this.desiredSizes());
 
-    this.createdTourneesSignal.set(chemins.routes);
-    this.teamIdToColor.set(chemins.teamIdToColor);
-    const info = new Map<number, { distanceKm: number; commandes: number; timeMin: number }>();
+      const result = await this.planificationService.generateTourneesPreview(
+        equipes,
+        commandes,
+        entrepot,
+        this.selectedStrategy(),
+        camions,
+        customSizes
+      );
+      // 2) Traitement ORS et post-processing
 
-    for (let i = 0; i < chemins.routes.length; i++) {
-      const equipe = equipes[i];
-      const route = chemins.routes[i];
-      if (!equipe || !route) continue;
-      const commandesCount = route.length - 2;
-      const distanceKm = await this.cartoService.getDistanceFromORS(route);
-      const camionCode = this.equipeCamionMap().get(equipe.idEquipe) ?? '';
-      const timeMin = this.getEstimatedTime(distanceKm, commandesCount);
-      info.set(equipe.idEquipe, {
-        distanceKm: Math.round(distanceKm),
-        commandes: commandesCount,
-        timeMin,
-      });
+      this.createdTourneesSignal.set(result.routes);
+      this.teamIdToColor.set(result.teamIdToColor);
+      this.plannedTournees.set(result.tournees);
+
+  
+      // Stats
+      const stats = new Map<number, { distanceKm: number; commandes: number; timeMin: number,cout?:number }>();
+      for (let i = 0; i < result.routes.length; i++) {
+        const equipe = equipes[i];
+        const route = result.routes[i];
+        if (!route || !equipe) continue;
+        const commandesCount = route.length - 2;
+        const distanceKm = await this.cartoService.getDistanceFromORS(route);
+        const timeMin = this.getEstimatedTime(distanceKm, commandesCount);
+        const camionCode = this.equipeCamionMap().get(equipe.idEquipe);
+        const camion = this.camions().find(c => c.code === camionCode);
+        const cout = distanceKm * (camion?.typeCamion.prixAuKm || 0);
+        stats.set(equipe.idEquipe, {
+          distanceKm: Math.round(distanceKm),
+          commandes: commandesCount,
+          timeMin,
+          cout:Math.round(cout)
+        });
+      }
+      this.tourneeStats.set(stats);
+      // affiche les tournées sur la carte
+      await this.showTourneesOnMap();
+      this.feedbackMessage.set('Tournées générées. Cliquez sur "Valider Journée" pour les sauvegarder.');
+      this.feedbackOpen.set(true);
+    } catch (err: any) {
+      this.feedbackMessage.set(`Erreur lors de la génération : ${err.message}`);
+      this.feedbackOpen.set(true);
     }
-    this.tourneeStats.set(info);
-
-    const plannedRefs = new Set<string>();
-    commandes.forEach(cmd => plannedRefs.add(cmd.reference));
-    const remainingCommandes = this.displayedCommandes().filter(c => !plannedRefs.has(c.reference));
-    this.displayedCommandes.set(remainingCommandes);
-    await this.checkIfJourneeExistsForDate(this.planningDate());
-    // Après création, vérifie si la journée existe et mets à jour canCreateTournee
-    await this.checkIfJourneeExistsForDate(this.planningDate());
-
-    // Autres actions post-création
-    await this.showTourneesOnMap();
-
-    this.isLoadMode.set(true);
-    console.log('[creerTournees] Called checkIfJourneeExistsForTomorrow after creation');
-    await this.showTourneesOnMap();
-    this.isLoadMode.set(true);
   }
+  async validerJournee() {
+    // Appel POST vers votre backend
+    try {
+      await this.planificationService.validateJournee(
+        this.plannedTournees(),
+        this.planningDate()
+      );
+       // retire les commandes planifiées de l'affichage
+      const plannedRefs = new Set(this.plannedTournees().flatMap(t => t.commandeReferences));
+      const remainingCommandes = this.displayedCommandes().filter(c => !plannedRefs.has(c.reference));
+      this.displayedCommandes.set(remainingCommandes);
+      // met à jour canCreateTournee
+      await this.checkIfJourneeExistsForDate(this.planningDate());
+      //  Tout est OK
+      this.feedbackMessage.set('Journée validée et enregistrée avec succès !');
+      this.feedbackOpen.set(true);
+    } catch (err: any) {
+      this.feedbackMessage.set(`Erreur lors de la validation : ${err.message}`);
+      this.feedbackOpen.set(true);
+    }
+  }
+  
 
   // Vérifie si une journée de planification existe déjà pour une date donnée
   async checkIfJourneeExistsForDate(date: string) {
-    console.log('[checkIfJourneeExistsForDate] Checking for:', date);
     const exists = await this.planificationService.checkIfJourneeExists(date);
-    console.log('[checkIfJourneeExistsForDate] exists:', exists);
     this.canCreateTournee.set(!exists);
   }
 
@@ -327,23 +386,40 @@ export class PlanificateurAutomatiqueComponent {
     this.createdTourneesSignal.set(result.routes);
     this.teamIdToColor.set(result.teamIdToColor);
     this.selectedEquipes.set(result.equipes);
-    const info = new Map<number, { distanceKm: number; commandes: number; timeMin: number }>();
+    const stats = new Map<number, { distanceKm: number; commandes: number; timeMin: number; cout?: number }>();
+  
+  for (const equipe of result.equipes) {
+    if (result.stats && result.stats.has(equipe.idEquipe)) {
+      stats.set(equipe.idEquipe, result.stats.get(equipe.idEquipe)!);
+    } else {
+      const i = result.equipes.findIndex(e => e.idEquipe === equipe.idEquipe);
+      if (i >= 0 && i < result.routes.length) {
+        const route = result.routes[i];
+        if (route) {
+          const commandesCount = route.length - 2;
+          const distanceKm = await this.cartoService.getDistanceFromORS(route);
+          const camionCode = this.equipeCamionMap().get(equipe.idEquipe) ?? '';
+          const camion = this.camions().find(c => c.code === camionCode);
+          
+          const jour = this.dataService.journees().find(j => j.date?.startsWith(formattedDate));
+          const tournee = jour?.tournees?.find(t => t.equipeLivreursId === String(equipe.idEquipe));
+          const cout = tournee?.cout || 0;
 
-    for (let i = 0; i < result.routes.length; i++) {
-      const equipe = result.equipes[i];
-      const route = result.routes[i];
-      if (!equipe || !route) continue;
-      const commandesCount = route.length - 2; // entrepot + retour
-      const distanceKm = await this.cartoService.getDistanceFromORS(route);
-      const camionCode = this.equipeCamionMap().get(equipe.idEquipe) ?? '';
-      const timeMin = this.getEstimatedTime(distanceKm, commandesCount);
-      info.set(equipe.idEquipe, {
-        distanceKm: Math.round(distanceKm),
-        commandes: commandesCount,
-        timeMin,
-      });
+          const timeMin = this.getEstimatedTime(distanceKm, commandesCount);
+          stats.set(equipe.idEquipe, {
+            distanceKm: Math.round(distanceKm),
+            commandes: commandesCount,
+            timeMin,
+            cout: Math.round(cout)
+          });
+        }
+      }
     }
-    this.tourneeStats.set(info);
+  }
+  
+  this.tourneeStats.set(stats);
+  console.log("Stats after setting:", this.tourneeStats());
+  
     this.loadedCommandesSignal.set(result.loaded);
     this.isLoadMode.set(true);
     this.displayedCommandes.set(result.loaded);
@@ -363,17 +439,12 @@ export class PlanificateurAutomatiqueComponent {
   // Affiche les commandes actuellement sélectionnées sur la carte
   showCommandesOnMap() {
     const commandes = this.displayedCommandes();
-    const entrepotMarker = this.cartoService.latLngToMarker(
-      this.entrepot(),
-      'entrepot'
-    );
     const commandeMarkers = commandes.map(cmd =>
       this.cartoService.latLngToMarker(
         latLng(cmd.client.coords.lat, cmd.client.coords.lng),
         'destination'
       )
     );
-    console.log("commandesMarkers", commandeMarkers);
     this.mapRef.showLayers([...commandeMarkers], true);
   }
 
@@ -397,6 +468,7 @@ export class PlanificateurAutomatiqueComponent {
     }
     this.mapRef.clearLayers(true);
     this.mapRef.showLayers([...newMarkers, ...newPolylines], true);
+    this.planificationService.updateSavedLayers([...newMarkers, ...newPolylines]);
   }
 
   // Affiche la tournée d'une seule équipe sur la carte
@@ -418,7 +490,6 @@ export class PlanificateurAutomatiqueComponent {
       );
     }
     this.mapRef.clearLayers(true);
-    console.log("equipe", equipe);
     this.mapRef.showLayers(layers, true);
   }
 
@@ -476,4 +547,6 @@ export class PlanificateurAutomatiqueComponent {
     }
     return indices;
   }
+
+
 }
