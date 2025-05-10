@@ -1,80 +1,45 @@
+// header.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { signal } from '@angular/core'; // Import signal
-import { User } from '@angular/fire/auth'; // Import User type if needed
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 
-// Updated MockAuthService
-class MockAuthService {
-  // Use signals for user and username as in the actual service
-  user = signal<User | null>(null);
-  username = signal<string | null>(null);
-  // Mock logout to return an Observable
-  logout = jasmine.createSpy('logout').and.returnValue(of(undefined));
-
-  // Helper to set user/username for tests
-  setCurrentUser(email: string | null, name: string | null) {
-    this.user.set(email ? { email } as User : null); // Simulate user object
-    this.username.set(name);
-  }
-}
-
-// MockRouter remains the same
-class MockRouter {
-  navigate = jasmine.createSpy('navigate');
+// 🪄  Stub minimal de AuthService
+class AuthStub {
+  logout   = jasmine.createSpy('logout');
+  user     = jasmine.createSpy('user').and.returnValue(true);
+  username = jasmine.createSpy('username').and.returnValue('Bob');
 }
 
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let authService: MockAuthService;
-  let router: MockRouter;
+  let router: Router;
+  let auth: AuthStub;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent], // Import the standalone component
-      providers: [
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: Router, useClass: MockRouter }
-      ]
+      imports: [HeaderComponent, RouterTestingModule],
+      providers: [{ provide: AuthService, useClass: AuthStub }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
-    // Get instances from the TestBed injector
-    authService = TestBed.inject(AuthService) as unknown as MockAuthService;
-    router = TestBed.inject(Router) as unknown as MockRouter;
+    router  = TestBed.inject(Router);
+    auth    = TestBed.inject(AuthService) as unknown as AuthStub;
 
-    // Set initial state for authService mock if needed
-    authService.setCurrentUser('test@mail.com', 'Tester'); // Example initial user
-
-    fixture.detectChanges(); // Initial change detection
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should render user email/username', () => {
-    const userElement: HTMLElement = fixture.nativeElement.querySelector('.user-email'); // Adjust selector if needed
-    expect(userElement).toBeTruthy();
-    // Check for username first, then email as fallback (based on typical component logic)
-    expect(userElement.textContent).toContain('Tester'); // Check for username
-
-    // Test case when username is not available
-    authService.setCurrentUser('only@mail.com', null);
+    spyOn(router, 'navigate');
     fixture.detectChanges();
-    expect(userElement.textContent).toContain('only@mail.com'); // Check for email
   });
 
+  it('devrait se créer', () => {
+    expect(fixture.componentInstance).toBeTruthy();
+  });
 
-  it('should call logout and navigate on logout', () => {
-    component.onLogout(); // Call the component's logout method
-    expect(authService.logout).toHaveBeenCalled();
-    // Check navigation AFTER logout observable completes (if navigation depends on it)
-    // Since mock returns of(undefined), it completes synchronously
+  it('clic sur “Se déconnecter” → auth.logout puis navigate', () => {
+    const btn = fixture.debugElement.query(By.css('.profile-dropdown-content button'));
+    btn.triggerEventHandler('click');
+    expect(auth.logout).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

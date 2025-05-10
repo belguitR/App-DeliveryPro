@@ -5,20 +5,23 @@ import { TourneePostDto } from './tournee.model';
 export interface Journee {
   reference: string;
   date: string;
-  planificateurEmail: string | null;
+  planificateurEmail: string;
+  coutTotal: number;
   tournees: Tournee[];
 }
 
 export const journeeSchema = z.object({
     reference: z.string(),
     date: z.string(),
-    planificateurEmail: z.string().nullable(),
+    planificateurEmail: z.string(),
+    coutTotal: z.number(),
     tournees: z.array(z.lazy(() => tourneeSchema)),
   });
 
   export interface JourneePostDto {
     reference: string;
     date: string;
-    planificateurEmail: string | null;
+    planificateurEmail: string;
+    coutTotal: number;
     tournees: TourneePostDto[];
   }

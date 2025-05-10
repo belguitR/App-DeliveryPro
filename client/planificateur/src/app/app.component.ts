@@ -1,5 +1,4 @@
-import { Component, inject, signal,model,computed,OnInit } from '@angular/core';
-import { LatLng,latLng } from 'leaflet';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterOutlet } from '@angular/router';
@@ -8,9 +7,6 @@ import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 
 
-import { EquipeLivreurs } from '../models/interfaces/equipe-livreurs.model';
-import { Commande } from '../models/interfaces/commande.model';
-import { DataService } from './services/data.service';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
