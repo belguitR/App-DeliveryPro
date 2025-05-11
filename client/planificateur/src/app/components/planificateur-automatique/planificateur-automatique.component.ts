@@ -357,6 +357,7 @@ calculateEquipeCost(equipeId: number): string {
       // met à jour canCreateTournee
       await this.checkIfJourneeExistsForDate(this.planningDate());
       //  Tout est OK
+      this.isLoadMode.set(true);
       this.feedbackMessage.set('Journée validée et enregistrée avec succès !');
       this.feedbackOpen.set(true);
     } catch (err: any) {
