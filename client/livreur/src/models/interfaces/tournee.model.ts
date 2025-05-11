@@ -5,11 +5,13 @@ import { z } from 'zod';
 export interface Tournee {
   reference: string;
   etat: EtatTournee;
-  lettre: string | null;
-  distanceAParcourir: number | null;
+  lettre: string;
+  distanceAParcourir: number ;
   tempsAssemblageReel: number | null;
-  equipeLivreursId: string | null;
-  camion: Camion | null;
+  equipeLivreursId: string;
+  camion: Camion ;
+  dureeTheorique: number;
+  cout :number;
   journeeReference: string;
   commandeReferences: string[];
 }
@@ -17,11 +19,13 @@ export interface Tournee {
 export const tourneeSchema: z.ZodType<Tournee> = z.object({
   reference: z.string(),
   etat: EtatTourneeSchema,
-  lettre: z.string().nullable(),
-  distanceAParcourir: z.number().nullable(),
+  lettre: z.string(),
+  distanceAParcourir: z.number(),
   tempsAssemblageReel: z.number().nullable(),
-  equipeLivreursId: z.string().nullable(),
-  camion: camionSchema.nullable(),
+  equipeLivreursId: z.string(),
+  camion: camionSchema,
+  dureeTheorique: z.number(),
+  cout: z.number(),
   journeeReference: z.string(),
   commandeReferences: z.array(z.string()),
 });
@@ -29,11 +33,13 @@ export const tourneeSchema: z.ZodType<Tournee> = z.object({
 export interface TourneePostDto {
   reference: string;
   etat: EtatTournee;
-  lettre: string | null;
-  distanceAParcourir: number | null;
+  lettre: string ;
+  distanceAParcourir: number;
   tempsAssemblageReel: number | null;
-  equipeLivreursId: string | null;
-  camionCode: string | null;
+  equipeLivreursId: string;
+  camionCode: string;
+  dureeTheorique: number;
+  cout :number;
   commandeReferences: string[];
   journeeReference: string;
 }
